@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cfg>
+	<cpts id="gd">
+		<cpt id="0" cptDomainId="1010002" domainId="1010002" acceptDeptId="1200000418"
+			cptDomainName="省无线中心" desc="/无线网络运营中心/无线网络优化中心/网络优化部/" faultAssigned="2" />
+		<cpt id="20" cptDomainId="1020002" domainId="1020002"
+			acceptDeptId="1500031592" cptDomainName="广州"
+			desc="/无线网络运营中心/无线网络优化中心/广州无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="755" cptDomainId="1010001" domainId="1010001"
+			acceptDeptId="1500031594" cptDomainName="深圳"
+			desc="/无线网络运营中心/无线网络优化中心/深圳无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="769" cptDomainId="1040008" domainId="1040008"
+			acceptDeptId="1500031595" cptDomainName="东莞"
+			desc="/无线网络运营中心/无线网络优化中心/东莞无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="757" cptDomainId="1050011" domainId="1050011"
+			acceptDeptId="1500031596" cptDomainName="佛山"
+			desc="/无线网络运营中心/无线网络优化中心/佛山无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="760" cptDomainId="1030006" domainId="1030006"
+			acceptDeptId="1500031598" cptDomainName="中山"
+			desc="/无线网络运营中心/无线网络优化中心/中山无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="752" cptDomainId="1040009" domainId="1040009"
+			acceptDeptId="1500031599" cptDomainName="惠州"
+			desc="/无线网络运营中心/无线网络优化中心/惠州无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="750" cptDomainId="1030007" domainId="1030007"
+			acceptDeptId="1500031600" cptDomainName="江门"
+			desc="/无线网络运营中心/无线网络优化中心/江门无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="756" cptDomainId="1030022" domainId="1030022"
+			acceptDeptId="1500031602" cptDomainName="珠海"
+			desc="/无线网络运营中心/无线网络优化中心/珠海无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="754" cptDomainId="1060019" domainId="1060019"
+			acceptDeptId="1500031597" cptDomainName="汕头"
+			desc="/无线网络运营中心/无线网络优化中心/汕头无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="663" cptDomainId="1060018" domainId="1060018"
+			acceptDeptId="1500030857" cptDomainName="揭阳"
+			desc="/无线网络运营中心/无线网络优化中心/揭阳无线网络运营中心/网优维护部/" faultAssigned="1" />
+		<cpt id="768" cptDomainId="1060020" domainId="1060020"
+			acceptDeptId="1500030861" cptDomainName="潮州"
+			desc="/无线网络运营中心/无线网络优化中心/潮州无线网络运营中心/网优维护部/" faultAssigned="1" />
+		<cpt id="660" cptDomainId="1060017" domainId="1060017"
+			acceptDeptId="1500031607" cptDomainName="汕尾"
+			desc="/无线网络运营中心/无线网络优化中心/汕尾无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="759" cptDomainId="1050016" domainId="1050016"
+			acceptDeptId="1500031601" cptDomainName="湛江"
+			desc="/无线网络运营中心/无线网络优化中心/湛江无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="668" cptDomainId="1050014" domainId="1050014"
+			acceptDeptId="1500030853" cptDomainName="茂名"
+			desc="/无线网络运营中心/无线网络优化中心/茂名无线网络运营中心/网优维护部/" faultAssigned="1" />
+		<cpt id="662" cptDomainId="1050015" domainId="1050015"
+			acceptDeptId="1500031608" cptDomainName="阳江"
+			desc="/无线网络运营中心/无线网络优化中心/阳江无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="766" cptDomainId="1050013" domainId="1050013"
+			acceptDeptId="1500031614" cptDomainName="云浮"
+			desc="/无线网络运营中心/无线网络优化中心/云浮无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="758" cptDomainId="1050012" domainId="1050012"
+			acceptDeptId="1500031603" cptDomainName="肇庆"
+			desc="/无线网络运营中心/无线网络优化中心/肇庆无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="753" cptDomainId="1060021" domainId="1060021"
+			acceptDeptId="1500031604" cptDomainName="梅州"
+			desc="/无线网络运营中心/无线网络优化中心/梅州无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="763" cptDomainId="1020003" domainId="1020003"
+			acceptDeptId="1500031606" cptDomainName="清远"
+			desc="/无线网络运营中心/无线网络优化中心/清远无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="762" cptDomainId="1040010" domainId="1040010"
+			acceptDeptId="1500031609" cptDomainName="河源"
+			desc="/无线网络运营中心/无线网络优化中心/河源无线网络运营中心/网络优化部/" faultAssigned="1" />
+		<cpt id="751" cptDomainId="1020004" domainId="1020004"
+			acceptDeptId="1500031605" cptDomainName="韶关"
+			desc="/无线网络运营中心/无线网络优化中心/韶关无线网络运营中心/网络优化部/" faultAssigned="1" />
+	</cpts>
+	
+	<orderStates>
+		<orderState id = "0" desc="待派"/>
+		<orderState id = "1" desc="评估"/>
+		<orderState id = "2" desc="强制结单"/>
+		<orderState id = "3" desc="挂起"/>
+		<orderState id = "4" desc="解挂"/>
+		<orderState id = "5" desc="处理中"/>
+		<orderState id = "6" desc="派单失败"/>
+		<orderState id = "7" desc="结单"/>
+		<orderState id = "8" desc="不派"/>
+	</orderStates>
+</cfg>

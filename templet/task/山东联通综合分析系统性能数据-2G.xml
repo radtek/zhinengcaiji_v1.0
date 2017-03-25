@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@10.5.15.4:1521:noap</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noap</property>
+		<property name="password">noap</property>
+	</ds>
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+
+			<mapping name="WXWYPM07_%%Y%%M%%D%%H%%m_001.csv" templet="山东联通综合分析系统性能数据-2G.ftl">
+
+				<sql>
+
+
+<![CDATA[
+
+SELECT p.start_time,
+       PROV_CODE,
+       cfg.CITY_NAME,
+       RELATED_BSCNAME,
+       RELATED_BTSNAME,
+       LAC,
+       CI,
+       LAC || '_' || CI,
+       TCH_F_AVAIL_CARRIER,
+       TCH_F_COUNT,
+       S_AVAIL_CARRIER,
+       SDCCH_COUNT,
+       DL_BUSY_PDCH_MEAN,
+       PDCH_AVAIL_MEAN,
+       PDCH_OCCUPIEDMAXNBR,
+       CONFIG_DEDICATED_PDCH,
+       CONFIG_DEMAND_PDCH,
+       ACTIVATED_PDCH,
+       T_TRAFFIC,
+       T_TRAFFIC_F,
+       T_TRAFFIC_H,
+       S_TRAFFIC,
+       S_CALL_ATT,
+       PAGING_ATT,
+       SDCCH_REQUEST_HOREADY,
+       SDCCH_ASSIGNSUCC,
+       PAGING_SUC,
+       SDCCH_ASSIGNSUCC_HOREADY,
+       S_CALL_BLOCK,
+       SDCCH_CONGESTION_IA,
+       SDCCH_CONGESTION_HOREADY,
+       S_CALL_SEIZE,
+       SDCCH_OCCUPIEDSUCC_CS,
+       SDCCH_OCCUPIEDSUCC_HOREADY,
+       T_CALL_ATT,
+       T_TCH_ATT,
+       TCH_REQUEST_HOREADY,
+       TCH_ASSIGNSUCC,
+       TCH_ASSIGNSUCC_ASSIGN,
+       TCH_ASSIGNSUCC_HOREADY,
+       T_CALL_BLOCK,
+       T_CALL_UN_BLOCK,
+       TCH_CONGESTION_HOREADY,
+       T_CALL_SEIZE,
+       T_TCH_SEIZE,
+       TCH_OCCUPIEDSUCC_HOREADY,
+       SEND_SM_ULSDCCH,
+       RECIEVE_SM_DLSDCCH,
+       SEND_SM_ULTCH,
+       SEND_SM_DLTCH,
+       PAGING_SEND_FAIL,
+       PDCH_ASSIGNREQ,
+       PDCH_ASSIGNFAIL,
+       NUM_UL_TBF_EST,
+       TBF_SUC_UL,
+       NUM_DL_TBF_EST,
+       TBF_SUC_DL,
+       UL_TBF_CONGESTION,
+       DL_TBF_CONGESTION,
+       GPRS_UL_LLC_THROUGHPUT_PER,
+       GPRS_DL_LLC_THROUGHPUT_PER,
+       GPRS_UL_LLC_FLUX,
+       GPRS_DL_LLC_FLUX,
+       C_ACCESS_PER_RACH,
+       C_OK_ACC_PROC_SUC_R,
+       T_CALL_DROP,
+       TCH_CALLDROP,
+       TCH_CALLDROP_RADIOREASON,
+       TCH_CALLDROP_OTHER,
+       CALL_TCH_DROP,
+       TRAFFIC_DROP_PER,
+       S_CALL_DROP,
+       SDCCH_CALLDROP_RADIOREASON,
+       SDCCH_CALLDROP_OTHER,
+       CALL_ATT,
+       CALL_SUC,
+       GTOD_HO_REQ,
+       GTOD_HO_SUCC,
+       DTOG_HO_REQ,
+       DTOG_HO_SUCC,
+       SITE_ATT,
+       SITE_SUC,
+       INNABSC_HOO_REQUEST_G_G,
+       INNABSC_HOO_SUCC_G_G,
+       INNABSC_HOO_REQUEST_D_D,
+       INNABSC_HOO_SUCC_D_D,
+       INNABSC_HOO_REQUEST_G_D,
+       INNABSC_HOO_SUCC_G_D,
+       INNABSC_HOO_REQUEST_D_G,
+       INNABSC_HOO_SUCC_D_G,
+       INTERBSC_HOO_REQUEST_G_G,
+       INTERBSC_HOO_SUCC_G_G,
+       INTERBSC_HOO_REQUEST_D_D,
+       INTERBSC_HOO_SUCC_D_D,
+       INTERBSC_HOO_REQUEST_G_D,
+       INTERBSC_HOO_SUCC_G_D,
+       INTERBSC_HOO_REQUEST_D_G,
+       INTERBSC_HOO_SUCC_D_G,
+       HO_3GTO2G_SUCC_PER,
+       HO_3GTO2G_REQ,
+       HO_3GTO2G_SUC,
+       HOFAIL_RETURNSUC,
+       HOFAIL_CALLDROP,
+       CASE WHEN NVL(T_CALL_ATT,0)=0 THEN 100 ELSE ROUND((T_CALL_SEIZE)/(T_CALL_ATT)*100,2) END OUTGOINT_CALL_PERCENT,
+       PAGING_REQ,
+       PAGING_SUCC,
+       BAND_1,
+       BAND_2,
+       BAND_3,
+       BAND_4,
+       BAND_5,
+       BSC_INTER_ATT,
+       BSC_INTER_SUC,
+       BSC_INTRA_ATT,
+       BSC_INTRA_SUC,
+       WIRE_LOAD,
+       DL_BUSY_PDCH_MEAN
+  FROM CFG_CITY_MAP_HQ_ID CFG, PERF_CELL_G P
+ WHERE CFG.CITY_ID = P.CITY_ID
+ 
+  and p.start_time>=to_date('%%Y-%%M-%%D %%H','YYYY-MM-DD HH24')  and  p.start_time  < to_date('%%Y-%%M-%%D %%H','YYYY-MM-DD HH24')+1/24
+
+]]>
+
+
+        </sql>
+			</mapping>
+			
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">134.54.160.117</property>
+		<property name="port">21</property>
+		<property name="username">uwayftp</property>
+		<property name="password">uwayftp</property>
+		<property name="path">/gongke/perf_gsm</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!---->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>
+

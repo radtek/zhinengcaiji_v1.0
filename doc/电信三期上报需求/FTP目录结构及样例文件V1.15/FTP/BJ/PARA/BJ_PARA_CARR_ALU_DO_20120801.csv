@@ -1,0 +1,5 @@
+,,,,,,,,,,,MP4.5.2.3.1,MP4.5.2.3.2
+时间戳,载扇标识,省份,城市,载扇所属MSC标识,载扇所属MGW标识,载扇所属BSC标识,载扇所属BTS标识,载扇所属扇区标识,载扇所属扇区名称,载波编号,preamblelengthslots,sectoraccessmaxrate
+2011-04-01,QZ_OMP2.713.2.5,北京,北京,ZJ_MSCe34,QZ_MGW1,QZ_OMP2.12,QZ_OMP2.713,QZ_OMP2.713.2,常山青石虹桥_2,5,,
+2011-04-01,QZ_OMP2.542.2.5,北京,北京,ZJ_MSCe34,QZ_MGW2,QZ_OMP2.13,QZ_OMP2.542,QZ_OMP2.542.2,龙游小南海雅塘_2,5,,
+2011-04-01,QZ_OMP2.877.1.5,北京,北京,ZJ_MSCe34,QZ_MGW1,QZ_OMP2.12,QZ_OMP2.877,QZ_OMP2.877.1,开化杨林梨岭坞_1,5,,

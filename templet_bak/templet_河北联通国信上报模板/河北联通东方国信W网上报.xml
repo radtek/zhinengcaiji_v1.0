@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="600">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ORA11</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">wcdma2</property>
+		<property name="password">uwaysoft2010</property>
+	</ds>
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="河北联通资源情况_基站(WCDMA)_%%Y.%%M.%%D.xlsx"  templet="河北联通资源情况_基站(WCDMA)">
+				<sql>
+SELECT TO_CHAR(P.START_TIME, 'YYYY-MM-DD HH24:MI:SS') "时间",
+       P.CITY_NAME "城市名称",
+       NE.ADM_AREA "行政区",
+       P.VENDORNAME "厂家",
+       P.BSC_NAME "RNC名称",
+       P.BTS_NAME "基站名称",
+       NE.BSC_ID || '_' || NE.BTS_ID AS "所属NODEB标识",
+       ROUND(AVG(CEUPUSAGERATIO), 3) "基站上行CE资源利用率",
+       ROUND(AVG(CEDOWNUSAGERATIO), 3) "基站下行CE资源利用率"
+  FROM PERF_BTS_W_H P, DS_PERF_BUSY_BTS_D D, NE_BTS_W NE
+ WHERE P.START_TIME = D.BT_DAY_CSERLTRAFFIC
+   AND P.NE_BTS_ID = D.NE_BTS_ID
+   AND P.NE_BTS_ID = NE.NE_BTS_ID
+   AND D.START_TIME = TO_DATE('%%Y%%M%%D', 'YYYYMMDD') --需要每天取数据 如10月8号 取10月7号 数据
+ GROUP BY TO_CHAR(P.START_TIME, 'YYYY-MM-DD HH24:MI:SS'),
+          P.CITY_NAME,
+          NE.ADM_AREA,
+          P.VENDORNAME,
+          P.BSC_NAME,
+          P.BTS_NAME,
+          NE.BSC_ID,
+          NE.BTS_ID
+
+					</sql>
+					<!-- 生成excel文件时，excel字段的样式设置，index表示该字段在excel中的列号，从1开始（这个一定要填对，不然没法对齐），filed表示字段名，type表示该字段的类型（整形，小数，时间等），sytle表示样式 -->
+				    <excel sheet="小区" version="2007">
+				    <formart index="8" filed="基站上行CE资源利用率" type="float" style="0.00000"/>
+				    <formart index="9" filed="基站下行CE资源利用率" type="float" style="0.00000"/>
+			        </excel>
+			</mapping>
+			
+			<mapping name="河北联通资源情况_小区(WCDMA)_%%Y.%%M.%%D.xlsx" templet="河北联通资源情况_小区(WCDMA)">
+                <sql>
+SELECT TO_CHAR(P.START_TIME, 'YYYY-MM-DD HH24:MI:SS') "时间",
+       P.CITY_NAME "城市名称",
+       P.ADM_AREA "行政区",
+       P.VENDORNAME "厂家",
+       P.BSC_NAME "RNC名称",
+       P.BTS_NAME "基站名称",
+       NE.BSC_ID || '_' || NE.BTS_ID AS "所属NODEB标识",
+       P.CELL_NAME "小区名称",
+       P.LAC "LAC",
+       P.CI "CI",
+       N.PRIMARYSCRAMBLINGCODE "扰码",
+       ROUND(SUM(NBRRABASSIGNUPCECONG), 4) "上行CE拥塞RAB建立拥塞次数",--由于ORACLE 字段长度限制需要替换为 "上行CE拥塞导致的RAB建立拥塞次数"
+       ROUND(SUM(NBRRABASSIGNDOWNCECONG), 4) "下行CE拥塞RAB建立拥塞次数",--由于ORACLE 字段长度限制需要替换为 "下行CE拥塞导致的RAB建立拥塞次数"
+       ROUND(SUM((HSUPARLCUPTRAFFIC / 1024 + NBRCSUSER * 180) /
+                 (NBRREFTHROUGHPUT * 0.9 + 0.0000001)),
+             3) AS "无线资源利用率"
+  FROM PERF_CELL_W_H P, DS_PERF_BUSY_CELL_D D, NE_BTS_W NE,NE_CELL_W N
+ WHERE P.START_TIME = D.BT_DAY_CS_HUS
+   AND P.NE_CELL_ID = D.NE_CELL_ID
+   AND P.NE_BTS_ID = NE.NE_BTS_ID
+   AND P.NE_CELL_ID=N.NE_CELL_ID
+   AND D.START_TIME = TO_DATE('%%Y%%M%%D', 'YYYYMMDD') --需要每天取数据 如10月8号 取10月7号 数据
+ GROUP BY P.START_TIME,
+          P.LAC,
+          P.CI,
+          P.CELL_NAME,
+          P.BTS_NAME,
+          P.BSC_NAME,
+          P.CITY_NAME,
+          P.ADM_AREA,
+          P.VENDORNAME,
+          NE.BSC_ID,N.PRIMARYSCRAMBLINGCODE,
+          NE.BTS_ID
+
+                    </sql>
+                    <!-- 生成excel文件时，excel字段的样式设置，index表示该字段在excel中的列号，从1开始（这个一定要填对，不然没法对齐），filed表示字段名，type表示该字段的类型（整形，小数，时间等），sytle表示样式 -->
+                    <excel sheet="小区" version="2007">
+                    <tableheader>时间,城市名称,行政区,厂家,RNC名称,基站名称,所属NODEB标识,小区名称,LAC,CI,扰码,上行CE拥塞导致的RAB建立拥塞次数,下行CE拥塞导致的RAB建立拥塞次数,无线资源利用率</tableheader>
+                    <formart index="9" filed="LAC" type="float"/>
+                    <formart index="10" filed="CI" type="float"/>
+                    <formart index="11" filed="扰码" type="float"/>
+                    <formart index="12" filed="上行CE拥塞RAB建立拥塞次数" type="float"/>
+                    <formart index="13" filed="下行CE拥塞RAB建立拥塞次数" type="float"/>
+                    <formart index="14" filed="无线资源利用率" type="float"/>
+                    </excel>
+            </mapping>
+            
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.94</property>
+		<property name="port">21</property>
+		<property name="username">admin</property>
+		<property name="password">admin</property>
+		<property name="path">/CCH/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--?????-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>

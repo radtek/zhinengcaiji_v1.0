@@ -1,0 +1,11 @@
+<rnop_service_output_para>
+	<service_instance>
+		<service_id>DRS102</service_id>
+		<version>R1</version>
+		<service_name>文件获取请求</service_name>
+		<service_desc>总部系统向省级系统要求上报数据文件,例如补报或文件查询等</service_desc>
+		<service_content>
+			<resultGetFileReq>success</resultGetFileReq>
+		</service_content>
+	</service_instance>
+</rnop_service_output_para>

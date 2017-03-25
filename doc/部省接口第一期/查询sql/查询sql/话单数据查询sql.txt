@@ -1,0 +1,198 @@
+
+--1X‘Á√¶ ±
+select key,
+sum(nvl(voice_call_num,0)) as voice_call_num,
+sum(nvl(data_call_num,0))  as data_call_num,
+sum(nvl(sms_call_num,0))   as sms_call_num,
+sum(nvl(voice_drop_num,0)) as voice_drop_num,
+sum(nvl(data_drop_num,0))  as data_drop_num,
+sum(nvl(sms_drop_num,0))   as sms_drop_num,
+sum(nvl(accesspnstravg,0)) as accesspnstravg,
+sum(nvl(callnum,0))
+from (select longitude * 100 || latitude * 100 key,
+voice_call_num,
+voice_drop_num,
+data_call_num,
+data_drop_num,
+sms_call_num,
+sms_drop_num,
+accesspnstravg,
+callnum
+from (select trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) / 1000,
+             2.1) as latitude,
+       trunc(to_number(substr(grid_id, 0, length(grid_id) - 5)) / 1000,
+             2.1) as longitude,
+       t.voice_call_num,
+       t.voice_drop_num,
+       t.data_call_num,
+       t.data_drop_num,
+       t.sms_call_num,
+       t.sms_drop_num,
+       t.accesspnstravg,
+       t.callnum
+  from mod_cdl_grid t
+ where city_id=20 and start_time = to_date('2011-05-19 10:00:00', 'YYYY-MM-DD HH24:MI:SS')
+ order by longitude))
+group by key
+--DO‘Á√¶ ±
+select key,
+sum(nvl(dodata_call_num,0)) as dodata_call_num
+from (select longitude * 100 || latitude * 100 key,
+dodata_call_num
+from (select trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) / 1000,
+             2.1) as latitude,
+       trunc(to_number(substr(grid_id, 0, length(grid_id) - 5)) / 1000,
+             2.1) as longitude,
+       t.dodata_call_num
+  from mod_cdl_do_grid t
+ where city_id=20 and start_time = to_date('2011-05-19 10:00:00', 'YYYY-MM-DD HH24:MI:SS')
+ order by longitude))
+group by key
+
+--1XÕÌ√¶ ±
+  select key,
+sum(nvl(voice_call_num,0)) as voice_call_num,
+sum(nvl(data_call_num,0))  as data_call_num,
+sum(nvl(sms_call_num,0))   as sms_call_num,
+sum(nvl(voice_drop_num,0)) as voice_drop_num,
+sum(nvl(data_drop_num,0))  as data_drop_num,
+sum(nvl(sms_drop_num,0))   as sms_drop_num,
+sum(nvl(accesspnstravg,0)) as accesspnstravg,
+sum(nvl(callnum,0))
+from (select longitude * 100 || latitude * 100 key,
+voice_call_num,
+voice_drop_num,
+data_call_num,
+data_drop_num,
+sms_call_num,
+sms_drop_num,
+accesspnstravg,
+callnum
+from (select trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) / 1000,
+             2.1) as latitude,
+       trunc(to_number(substr(grid_id, 0, length(grid_id) - 5)) / 1000,
+             2.1) as longitude,
+       t.voice_call_num,
+       t.voice_drop_num,
+       t.data_call_num,
+       t.data_drop_num,
+       t.sms_call_num,
+       t.sms_drop_num,
+       t.accesspnstravg,
+       t.callnum
+  from mod_cdl_grid t
+ where city_id=20 and start_time = to_date('2011-05-19 20:00:00', 'YYYY-MM-DD HH24:MI:SS')
+ order by longitude))
+group by key
+
+--DOÕÌ√¶ ±
+  select key,
+sum(nvl(dodata_call_num,0)) as dodata_call_num
+from (select longitude * 100 || latitude * 100 key,
+dodata_call_num
+from (select trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) / 1000,
+             2.1) as latitude,
+       trunc(to_number(substr(grid_id, 0, length(grid_id) - 5)) / 1000,
+             2.1) as longitude,
+       t.dodata_call_num
+  from mod_cdl_do_grid t
+ where city_id=20 and start_time = to_date('2011-05-19 20:00:00', 'YYYY-MM-DD HH24:MI:SS')
+ order by longitude))
+group by key
+
+--VIP1X‘Á√¶ ±
+  select key,
+sum(nvl(voice_call_num,0)) as voice_call_num,
+sum(nvl(data_call_num,0))  as data_call_num,
+sum(nvl(sms_call_num,0))   as sms_call_num,
+sum(nvl(voice_drop_num,0)) as voice_drop_num,
+sum(nvl(data_drop_num,0))  as data_drop_num,
+sum(nvl(sms_drop_num,0))   as sms_drop_num,
+sum(nvl(accesspnstravg,0)) as accesspnstravg
+from (select longitude * 100 || latitude * 100 key,
+voice_call_num,
+voice_drop_num,
+data_call_num,
+data_drop_num,
+sms_call_num,
+sms_drop_num,
+accesspnstravg
+from (select trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) / 1000,
+             2.1) as latitude,
+       trunc(to_number(substr(grid_id, 0, length(grid_id) - 5)) / 1000,
+             2.1) as longitude,
+       t.voice_call_num,
+       t.voice_drop_num,
+       t.data_call_num,
+       t.data_drop_num,
+       t.sms_call_num,
+       t.sms_drop_num,
+       t.accesspnstravg
+  from mod_cdl_grid_vip t
+ where city_id=20 and start_time = to_date('2011-05-19 10:00:00', 'YYYY-MM-DD HH24:MI:SS')
+ order by longitude))
+group by key
+
+--VIPDO‘Á√¶ ±
+  select key,
+sum(nvl(dodata_call_num,0)) as dodata_call_num
+from (select longitude * 100 || latitude * 100 key,
+dodata_call_num
+from (select trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) / 1000,
+             2.1) as latitude,
+       trunc(to_number(substr(grid_id, 0, length(grid_id) - 5)) / 1000,
+             2.1) as longitude,
+       t.dodata_call_num
+  from mod_cdl_grid_do_vip t
+ where city_id=20 and start_time = to_date('2011-05-19 10:00:00', 'YYYY-MM-DD HH24:MI:SS')
+ order by longitude))
+group by key
+
+--VIP1XÕÌ√¶ ±
+  select key,
+sum(nvl(voice_call_num,0)) as voice_call_num,
+sum(nvl(data_call_num,0))  as data_call_num,
+sum(nvl(sms_call_num,0))   as sms_call_num,
+sum(nvl(voice_drop_num,0)) as voice_drop_num,
+sum(nvl(data_drop_num,0))  as data_drop_num,
+sum(nvl(sms_drop_num,0))   as sms_drop_num,
+sum(nvl(accesspnstravg,0)) as accesspnstravg
+from (select longitude * 100 || latitude * 100 key,
+voice_call_num,
+voice_drop_num,
+data_call_num,
+data_drop_num,
+sms_call_num,
+sms_drop_num,
+accesspnstravg
+from (select trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) / 1000,
+             2.1) as latitude,
+       trunc(to_number(substr(grid_id, 0, length(grid_id) - 5)) / 1000,
+             2.1) as longitude,
+       t.voice_call_num,
+       t.voice_drop_num,
+       t.data_call_num,
+       t.data_drop_num,
+       t.sms_call_num,
+       t.sms_drop_num,
+       t.accesspnstravg
+  from mod_cdl_grid_vip t
+ where city_id=20 and start_time = to_date('2011-05-19 20:00:00', 'YYYY-MM-DD HH24:MI:SS')
+ order by longitude))
+group by key
+
+--VIPDOÕÌ√¶ ±
+
+  select key,
+sum(nvl(dodata_call_num,0)) as dodata_call_num
+from (select longitude * 100 || latitude * 100 key,
+dodata_call_num
+from (select trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) / 1000,
+             2.1) as latitude,
+       trunc(to_number(substr(grid_id, 0, length(grid_id) - 5)) / 1000,
+             2.1) as longitude,
+       t.dodata_call_num
+  from mod_cdl_grid_do_vip t
+ where city_id=20 and start_time = to_date('2011-05-19 20:00:00', 'YYYY-MM-DD HH24:MI:SS')
+ order by longitude))
+group by key

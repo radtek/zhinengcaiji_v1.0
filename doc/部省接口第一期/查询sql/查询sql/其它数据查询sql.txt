@@ -1,0 +1,929 @@
+
+--客户投诉统计数据1X
+  select to_char(COM.accepttime,'yyyy-mm-dd hh24:mi:ss') as ID1001,'广东' as ID1002,CITY.CITY_NAME as ID1003,COM.YGCOVERCOUNT as ID1004,COM.CRCOVERCOUNT as ID1005,COM.PILOTPOLLCOUNT as ID1006,COM.OBSTACCOUNT as ID1007,COM.EQUIPMENTCOUNT as ID1008,COM.USERRELUCOUNT as ID1009,COM.ROAMRESCOUNT as ID1010,COM.TELEPHONECOUNT as ID1011,COM.UIMRESCOUNT as ID1012,COM.THNETCOUNT as ID1013,COM.NORESCOUNT as ID1014,COM.NETMANAGCOUNT as ID1015, '' as ID1016, '' as ID1017, '' as ID1018, '' as ID1019, '' as ID1020 from ne_uway_complaintdata com,cfg_city city
+                                                        where com.businesstype<>'DO' and com.city_id=city.city_id and to_char(accepttime,'yyyy-MM-dd')='2011-05-19'
+														
+--客户投诉统计数据DO
+  select to_char(COM.accepttime,'yyyy-mm-dd hh24:mi:ss') as ID1001,'广东' as ID1002,CITY.CITY_NAME as ID1003,COM.YGCOVERCOUNT as ID1004,COM.CRCOVERCOUNT as ID1005,COM.PILOTPOLLCOUNT as ID1006,COM.OBSTACCOUNT as ID1007,COM.EQUIPMENTCOUNT as ID1008,COM.USERRELUCOUNT as ID1009,COM.ROAMRESCOUNT as ID1010,COM.TELEPHONECOUNT as ID1011,COM.UIMRESCOUNT as ID1012,COM.THNETCOUNT as ID1013,COM.NORESCOUNT as ID1014,COM.NETMANAGCOUNT as ID1015, '' as ID1016, '' as ID1017, '' as ID1018, '' as ID1019, '' as ID1020 from ne_uway_complaintdata com,cfg_city city
+                                                        where com.businesstype='DO' and com.city_id=city.city_id and to_char(accepttime,'yyyy-MM-dd')='2011-05-19'											
+														
+--测评信息
+  --CITYHP														
+    select '2011-5-19' as ID1001,HOT.SERIAL_ID as ID1002,HOT.CITY_NAME as ID1003,'广东' as ID1004,HOT.AREA_NAME as ID1005,HOT.TOWN_NAME as ID1006,HOT.BUILDNAME as ID1007,HOT.ADDRESS as ID1008,HOT.LONGITUDE as ID1009,HOT.LATITUDE as ID1010,HOT.PROPERTYONETYPE as ID1011,HOT.PROPERTYTWOTYPE as ID1012,HOT.PROPERTYTHREETYPE as ID1013,HOT.ONEXGRADE as ID1014,HOT.DOGRADE as ID1015,HOT.MOVEGSMGRADE as ID1016,HOT.MOVETDGRADE as ID1017,HOT.LINKGSMGRADE as ID1018,HOT.LINKWCDMAGRADE as ID1019,HOT.CGOODPNONE as ID1020,HOT.CGOODPNTWO as ID1021,HOT.INDOORDISTRIBUT as ID1022,HOT.CSIGNAL as ID1023,HOT.VOICEGRADE as ID1024,HOT.DATAGRADE as ID1025, '' as ID1026, '' as ID1027, '' as ID1028, '' as ID1029, '' as ID1030 from ne_uway_hotinfor hot
+  --CITYROAD
+    select '2011-5-19' as ID2001,ROAD.SERIAL_ID as ID2002,ROAD.CITY_NAME as ID2003,'广东' as ID2004,ROAD.AREA_NAME as ID2005,ROAD.TOWN_NAME as ID2006,ROAD.ROADTYPE as ID2007,ROAD.ROADNAME as ID2008,ROAD.STARNAME as ID2009,ROAD.STARLONGITUDE as ID2010,ROAD.STARLATITUDE as ID2011,ROAD.ENDNAME as ID2012,ROAD.ENDLONGITUDE as ID2013,ROAD.ENDLATITUDE as ID2014,ROAD.ROADLONG as ID2015,ROAD.ONEXGRADE as ID2016,ROAD.DOGRADE as ID2017, '' as ID2018, '' as ID2019, '' as ID2020, '' as ID2021, '' as ID2022 from ne_uway_roadinfor road
+  --VILLAGE
+    select '2011-5-19' as ID3001,TOWN.SERIAL_ID as ID3002,TOWN.CITY_NAME as ID3003,'广东' as ID3004,TOWN.AREA_NAME as ID3005,TOWN.TOWN_NAME as ID3006,TOWN.VILLAGENAME as ID3007,TOWN.VILLAGLONGITUDE as ID3008,TOWN.VILLAGLATITUDE as ID3009,TOWN.OUTROADONE as ID3010,TOWN.OUTROADTWO as ID3011,TOWN.OUTROADTHREE as ID3012,TOWN.ONEXGRADE as ID3013,TOWN.DOGRADE as ID3014, '' as ID3015, '' as ID3016, '' as ID3017, '' as ID3018, '' as ID3019 from ne_uway_towninfor town
+	
+--平台使用情况数据
+  --模块点击次数前TOP10
+    select '广东' as pro,'2011-5-19' as uptime,modulename,count
+                                              from (select b.modulename, count(a.id) as count
+                                                      from sec_operatelog a, cfg_module b
+                                                     where a.modleid = b.id
+                                                       and a.operatetime>=to_date('2011-5-19 00:00:00','yyyy-MM-dd hh24:mi:ss')
+                                                       and a.operatetime<=to_date('2011-5-19 23:59:59','yyyy-MM-dd hh24:mi:ss')                                                       
+                                                     group by b.modulename
+                                                     order by count desc)
+                                             where rownum <= 10
+											 
+  --用户登录时长和登录次数
+    循环查每一个用户
+	select a.loginname,b.username,a.entertime,a.exittime 
+                                             from sec_userinfo b,sec_loginlog a
+                                            where a.loginname=b.loginname 
+                                                  and a.entertime>=to_date('2011-5-19 00:00:00','YYYY-MM-DD HH24:MI:SS') 
+                                                  and a.entertime<=to_date('2011-5-19 23:59:59','YYYY-MM-DD HH24:MI:SS') and b.username ='刘秋明'
+												  
+--省际边界扇区参数数据
+  --华为
+    --1X同频载频
+	  select case BSC.vendor when 'ZY0808' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID1001,'2011-5-19' as ID1002,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID1003,'广东' as ID1004,CITY.CITY_NAME as ID1005,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME when 'ZY0810' then MSC.MSCNAME when 'ZY0804' then MSC.MSCNAME end as ID1006, '' as ID1007,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0804' then MSC.BSCNAME      end as ID1008,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0804' then MSC.BSCNAME || '.' || BTS.BTS_ID end as ID1009,case BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID1010,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID1011,case BSC.vendor when 'ZY0808' then SECTOR.SECTOR_ID when 'ZY0804' then SECTOR.SECTOR_ID when 'ZY0810' then SECTOR.SECTOR_ID end as ID1012,carr.carr_seq as ID1013,carr.carrier_id as ID1014,SECTOR.PN as ID1015,SFNBRCH.SFRSN as ID1016, '' as ID1017,case NEIBSC.vendor when 'ZY0808' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0804' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0810' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID end as ID1018,replace(NEIADM.COUNTY_NAME, '区', '') as ID1019,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME when 'ZY0810' then NEIMSC.MSCNAME when 'ZY0804' then NEIMSC.MSCNAME end as ID1020, '' as ID1021,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0804' then          NEIMSC.BSCNAME end as ID1022,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0804' then NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID end as ID1023,case BSC.vendor when 'ZY0808' then NEISECTOR.SECTOR_ID when 'ZY0804' then NEISECTOR.SECTOR_ID when 'ZY0810' then NEISECTOR.SECTOR_ID end as ID1024,case NEIBSC.vendor when 'ZY0808' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(NEISECTOR.CHINA_NAME, ',', '，') end as ID1025,NEICARR.CARR_SEQ as ID1026,NEICARR.CARRIER_ID as ID1027,NEISECTOR.PN as ID1028,NEITZCELL.PROVINCE as ID1029,NEITZCELL.CITY_NAME as ID1030,case NEITZCELL.BORDER_TYPE when '非边界' then '0' when '省际边界' then '1' when '省内边界' then '2' when '同为省际省内边界' then '3' end as ID1031,case neitzcell.vendor when 'ZY0808' then '华为' when 'ZY0804' then '中兴' when 'ZY0810' then '朗讯' end as ID1032, '' as ID1033,SFNBRCH.CCDMACH as ID1034,SFNBRCH.NBRCDMACH as ID1035,SFNBRCH.SFRSN as ID1036,SFNBRCH_SFNBRPARA.CCDMACH as ID1037,SFNBRCH_SFNBRPARA.NBRCDMACH as ID1038,SFNBRCH_SFNBRPARA.NSRCHWININC as ID1039,SFNBRCH_SFNBRPARA.NSRCHWINSIZE as ID1040,SFNBRCH_SFNBRPARA.NSRCHWINOFFSETINC as ID1041,SFNBRCH_SFNBRPARA.NSRCHWINOFFSET as ID1042,SFNBRCH_SFNBRPARA.SRCHP as ID1043 from ne_carrier_c     carr,
+                                                                                           ne_cell_c        sector,
+                                                                                           ne_bts_c         bts,
+                                                                                           ne_bsc_c         bsc,
+                                                                                           cfg_bsc_map_city msc,
+                                                                                           cfg_city         city,
+                                                                                           ne_taizhang_cell tzcell,
+                                                                                           --ne_taizhang_carrier tzcarr,
+                                                                                           --para_adj         para,
+                                                                                           ne_carrier_c     neicarr,
+                                                                                           ne_cell_c        neisector,
+                                                                                           ne_bts_c         neibts,
+                                                                                           ne_bsc_c         neibsc,
+                                                                                           cfg_bsc_map_city neimsc,
+                                                                                           cfg_city         neicity,
+                                                                                           cfg_county       neiadm,
+                                                                                           ne_taizhang_cell neitzcell,
+                                                                                           --ne_taizhang_carrier neitzcarr,
+                                                                                           CLT_CM_ODTMOC_SFNBRCH_HW SFNBRCH,
+                                                                                           CLT_CM_ODTMOC_SFNBRCH_SP_HW SFNBRCH_SFNBRPARA
+                                                                                           --(select p.ne_sys_id,ROW_NUMBER() OVER(PARTITION BY p.ne_sys_id ORDER BY p.nbrseq) - 1 as sortnum
+                                                                                               --from para_adj p, ne_carrier_c c
+                                                                                              --where p.ne_sys_id = c.ne_sys_id
+                                                                                                --and p.vendor = 'ZY0808') para_sort
+                                                                                 where sector.bsc_id = tzcell.bsc_id
+                                                                                       and sector.local_cell_id = tzcell.local_cell_id
+                                                                                       and sector.sector_id = tzcell.sector_id --关联台账
+                                                                                       --and tzcell.bsc_id=tzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.local_cell_id=tzcarr.local_cell_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.sector_id=tzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and tzcell.border_type in ('省际边界', '同为省内省际边界')--边界类型
+                                                                                       and tzcell.isdo='否'--业务类型
+                                                                                       --and tzcarr.carrier_type='1X'--业务类型
+                                                                                       and carr.bustype='1X'--业务类型
+                                                                                       and carr.vendor='ZY0808'--厂家
+                                                                                       and carr.related_cell=sector.ne_sys_id--基础数据carr-cell
+                                                                                       and sector.related_bts = bts.ne_sys_id--基础数据cell-bts
+                                                                                       and bts.Related_Bsc = bsc.ne_sys_id--基础数据bts-bsc
+                                                                                       and bsc.ne_sys_id = msc.ne_bsc_id--基础数据bsc-msc
+                                                                                       and carr.city_id=city.city_id
+                                                                                       and carr.city_id = sector.city_id
+                                                                                       and sector.city_id = bts.city_id
+                                                                                       and sector.city_id = bsc.city_id
+                                                                                       and sector.city_id = msc.city_id
+                                                                                       --and carr.ne_sys_id = para.ne_sys_id(+)
+                                                                                       --and para.nei_ne_sys_id = neicarr.ne_sys_id
+                                                                                       and neicarr.related_cell=neisector.ne_sys_id
+                                                                                       and neisector.bsc_id = neitzcell.bsc_id
+                                                                                       and neisector.local_cell_id = neitzcell.local_cell_id
+                                                                                       and neisector.sector_id = neitzcell.sector_id --关联台账
+                                                                                       --and neitzcell.bsc_id=neitzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.local_cell_id=neitzcarr.local_cell_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.sector_id=neitzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and neisector.related_bts = neibts.ne_sys_id
+                                                                                       and neibts.related_bsc = neibsc.ne_sys_id
+                                                                                       and neibsc.ne_sys_id = neimsc.ne_bsc_id
+                                                                                       and neicarr.city_id=city.city_id
+                                                                                       and neicarr.city_id = neisector.city_id
+                                                                                       and neisector.city_id = neibts.city_id
+                                                                                       and neisector.city_id = neibsc.city_id
+                                                                                       and neisector.city_id = neimsc.city_id
+                                                                                       and neiadm.county_id(+) = neisector.adm_area
+                                                                                       --and para_sort.ne_sys_id=para.ne_sys_id
+                                                                                       and substr(SFNBRCH.omcid,length(SFNBRCH.omcid))=neicarr.bsc_id --bsc_id
+                                                                                       and SUBSTR(SFNBRCH.NBRCDMACH,1,INSTR(SFNBRCH.NBRCDMACH,'-',1,1)-1)=neicarr.bts_id--bts_id
+                                                                                       and SUBSTR(SFNBRCH.NBRCDMACH,INSTR(SFNBRCH.NBRCDMACH,'-',1,1) + 1,INSTR(SFNBRCH.NBRCDMACH,'-',1,2)-(INSTR(SFNBRCH.NBRCDMACH,'-',1,1) + 1))=neicarr.local_cell_id--local_cell_id
+                                                                                       and SUBSTR(SFNBRCH.NBRCDMACH,INSTR(SFNBRCH.NBRCDMACH,'-',1,2) + 1,INSTR(SFNBRCH.NBRCDMACH,'-',1,3)-(INSTR(SFNBRCH.NBRCDMACH,'-',1,2) + 1))=neicarr.sector_id--sector_id
+                                                                                       and SUBSTR(SFNBRCH.NBRCDMACH,INSTR(SFNBRCH.NBRCDMACH,'-',1,3) + 1,INSTR(SFNBRCH.NBRCDMACH,'-',1,4)-(INSTR(SFNBRCH.NBRCDMACH,'-',1,3) + 1))=neicarr.carrier_id--carrier_id
+                                                                                       and substr(SFNBRCH_SFNBRPARA.omcid,length(SFNBRCH_SFNBRPARA.omcid))=neicarr.bsc_id --bsc_id
+                                                                                       and SUBSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,1,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,1)-1)=neicarr.bts_id--bts_id
+                                                                                       and SUBSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,1) + 1,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,2)-(INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,1) + 1))=neicarr.local_cell_id--local_cell_id
+                                                                                       and SUBSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,2) + 1,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,3)-(INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,2) + 1))=neicarr.sector_id--sector_id
+                                                                                       and SUBSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,3) + 1,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,4)-(INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,3) + 1))=neicarr.carrier_id--carrier_id
+                                                                                       and SFNBRCH.CTYP='CDMA1X'
+                                                                                       and SFNBRCH.stamptime=trunc(sysdate-2)
+                                                                                       and SFNBRCH_SFNBRPARA.stamptime=trunc(sysdate-2)
+	--1X异频载频
+	  select case BSC.vendor when 'ZY0808' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID2001,'2011-5-19' as ID2002,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID2003,'广东' as ID2004,CITY.CITY_NAME as ID2005,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME when 'ZY0810' then MSC.MSCNAME when 'ZY0804' then MSC.MSCNAME end as ID2006, '' as ID2007,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0804' then MSC.BSCNAME      end as ID2008,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0804' then MSC.BSCNAME || '.' || BTS.BTS_ID end as ID2009,case BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID2010,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID2011,case BSC.vendor when 'ZY0808' then SECTOR.SECTOR_ID when 'ZY0804' then SECTOR.SECTOR_ID when 'ZY0810' then SECTOR.SECTOR_ID end as ID2012,carr.carr_seq as ID2013,carr.carrier_id as ID2014,SECTOR.PN as ID2015,DFNBRCH.DFRSN as ID2016, '' as ID2017,case NEIBSC.vendor when 'ZY0808' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0804' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0810' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID end as ID2018,replace(NEIADM.COUNTY_NAME, '区', '') as ID2019,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME when 'ZY0810' then NEIMSC.MSCNAME when 'ZY0804' then NEIMSC.MSCNAME end as ID2020, '' as ID2021,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0804' then          NEIMSC.BSCNAME end as ID2022,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0804' then NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID end as ID2023,case BSC.vendor when 'ZY0808' then NEISECTOR.SECTOR_ID when 'ZY0804' then NEISECTOR.SECTOR_ID when 'ZY0810' then NEISECTOR.SECTOR_ID end as ID2024,case NEIBSC.vendor when 'ZY0808' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(NEISECTOR.CHINA_NAME, ',', '，') end as ID2025,NEICARR.CARR_SEQ as ID2026,NEICARR.CARRIER_ID as ID2027,NEISECTOR.PN as ID2028,NEITZCELL.PROVINCE as ID2029,NEITZCELL.CITY_NAME as ID2030,case NEITZCELL.BORDER_TYPE when '非边界' then '0' when '省际边界' then '1' when '省内边界' then '2' when '同为省际省内边界' then '3' end as ID2031,case neitzcell.vendor when 'ZY0808' then '华为' when 'ZY0804' then '中兴' when 'ZY0810' then '朗讯' end as ID2032, '' as ID2033,DFNBRCH.CCDMACH as ID2034,DFNBRCH.NBRCDMACH as ID2035,DFNBRCH.DFRSN as ID2036,DFNBRCH_DFNBRPARA.CCDMACH as ID2037,DFNBRCH_DFNBRPARA.NBRCDMACH as ID2038,DFNBRCH_DFNBRPARA.SRCHSET as ID2039,DFNBRCH_DFNBRPARA.NSRCHWINSIZE as ID2040,DFNBRCH_DFNBRPARA.NSRCHWINOFFSETINC as ID2041,DFNBRCH_DFNBRPARA.NSRCHWINOFFSET as ID2042,DFNBRCH_DFNBRPARA.SRCHP as ID2043 from ne_carrier_c     carr,
+                                                                                           ne_cell_c        sector,
+                                                                                           ne_bts_c         bts,
+                                                                                           ne_bsc_c         bsc,
+                                                                                           cfg_bsc_map_city msc,
+                                                                                           cfg_city         city,
+                                                                                           ne_taizhang_cell tzcell,
+                                                                                           --ne_taizhang_carrier tzcarr,
+                                                                                           --para_adj         para,
+                                                                                           ne_carrier_c     neicarr,
+                                                                                           ne_cell_c        neisector,
+                                                                                           ne_bts_c         neibts,
+                                                                                           ne_bsc_c         neibsc,
+                                                                                           cfg_bsc_map_city neimsc,
+                                                                                           cfg_city         neicity,
+                                                                                           cfg_county       neiadm,
+                                                                                           ne_taizhang_cell neitzcell,
+                                                                                           --ne_taizhang_carrier neitzcarr,
+                                                                                           CLT_CM_ODTMOC_DFNBRCH_HW DFNBRCH,
+                                                                                           CLT_CM_ODTMOC_DFNBRCH_P_HW DFNBRCH_DFNBRPARA
+                                                                                           --(select p.ne_sys_id,ROW_NUMBER() OVER(PARTITION BY p.ne_sys_id ORDER BY p.nbrseq) - 1 as sortnum
+                                                                                               --from para_adj p, ne_carrier_c c
+                                                                                              --where p.ne_sys_id = c.ne_sys_id
+                                                                                                --and p.vendor = 'ZY0808') para_sort
+                                                                                 where sector.bsc_id = tzcell.bsc_id
+                                                                                       and sector.local_cell_id = tzcell.local_cell_id
+                                                                                       and sector.sector_id = tzcell.sector_id --关联台账
+                                                                                       --and tzcell.bsc_id=tzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.local_cell_id=tzcarr.local_cell_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.sector_id=tzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and tzcell.border_type in ('省际边界', '同为省内省际边界')--边界类型
+                                                                                       and tzcell.isdo='否'--业务类型
+                                                                                       --and tzcarr.carrier_type='1X'--业务类型
+                                                                                       and carr.bustype='1X'--业务类型
+                                                                                       and carr.vendor='ZY0808'--厂家
+                                                                                       and carr.related_cell=sector.ne_sys_id--基础数据carr-cell
+                                                                                       and sector.related_bts = bts.ne_sys_id--基础数据cell-bts
+                                                                                       and bts.Related_Bsc = bsc.ne_sys_id--基础数据bts-bsc
+                                                                                       and bsc.ne_sys_id = msc.ne_bsc_id--基础数据bsc-msc
+                                                                                       and carr.city_id=city.city_id
+                                                                                       and carr.city_id = sector.city_id
+                                                                                       and sector.city_id = bts.city_id
+                                                                                       and sector.city_id = bsc.city_id
+                                                                                       and sector.city_id = msc.city_id
+                                                                                       --and carr.ne_sys_id = para.ne_sys_id(+)
+                                                                                       --and para.nei_ne_sys_id = neicarr.ne_sys_id
+                                                                                       and neicarr.related_cell=neisector.ne_sys_id
+                                                                                       and neisector.bsc_id = neitzcell.bsc_id
+                                                                                       and neisector.local_cell_id = neitzcell.local_cell_id
+                                                                                       and neisector.sector_id = neitzcell.sector_id --关联台账
+                                                                                       --and neitzcell.bsc_id=neitzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.local_cell_id=neitzcarr.local_cell_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.sector_id=neitzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and neisector.related_bts = neibts.ne_sys_id
+                                                                                       and neibts.related_bsc = neibsc.ne_sys_id
+                                                                                       and neibsc.ne_sys_id = neimsc.ne_bsc_id
+                                                                                       and neicarr.city_id=city.city_id
+                                                                                       and neicarr.city_id = neisector.city_id
+                                                                                       and neisector.city_id = neibts.city_id
+                                                                                       and neisector.city_id = neibsc.city_id
+                                                                                       and neisector.city_id = neimsc.city_id
+                                                                                       and neiadm.county_id(+) = neisector.adm_area
+                                                                                       --and para_sort.ne_sys_id=para.ne_sys_id
+                                                                                       and substr(DFNBRCH.omcid,length(DFNBRCH.omcid))=neicarr.bsc_id --bsc_id
+                                                                                       and SUBSTR(DFNBRCH.NBRCDMACH,1,INSTR(DFNBRCH.NBRCDMACH,'-',1,1)-1)=neicarr.bts_id--bts_id
+                                                                                       and SUBSTR(DFNBRCH.NBRCDMACH,INSTR(DFNBRCH.NBRCDMACH,'-',1,1) + 1,INSTR(DFNBRCH.NBRCDMACH,'-',1,2)-(INSTR(DFNBRCH.NBRCDMACH,'-',1,1) + 1))=neicarr.local_cell_id--local_cell_id
+                                                                                       and SUBSTR(DFNBRCH.NBRCDMACH,INSTR(DFNBRCH.NBRCDMACH,'-',1,2) + 1,INSTR(DFNBRCH.NBRCDMACH,'-',1,3)-(INSTR(DFNBRCH.NBRCDMACH,'-',1,2) + 1))=neicarr.sector_id--sector_id
+                                                                                       and SUBSTR(DFNBRCH.NBRCDMACH,INSTR(DFNBRCH.NBRCDMACH,'-',1,3) + 1,INSTR(DFNBRCH.NBRCDMACH,'-',1,4)-(INSTR(DFNBRCH.NBRCDMACH,'-',1,3) + 1))=neicarr.carrier_id--carrier_id
+                                                                                       and substr(DFNBRCH_DFNBRPARA.omcid,length(DFNBRCH_DFNBRPARA.omcid))=neicarr.bsc_id --bsc_id
+                                                                                       and SUBSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,1,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,1)-1)=neicarr.bts_id--bts_id
+                                                                                       and SUBSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,1) + 1,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,2)-(INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,1) + 1))=neicarr.local_cell_id--local_cell_id
+                                                                                       and SUBSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,2) + 1,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,3)-(INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,2) + 1))=neicarr.sector_id--sector_id
+                                                                                       and SUBSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,3) + 1,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,4)-(INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,3) + 1))=neicarr.carrier_id--carrier_id
+                                                                                       and DFNBRCH.CTYP='CDMA1X'
+                                                                                       and DFNBRCH.stamptime=trunc(sysdate-2)
+                                                                                       and DFNBRCH_DFNBRPARA.stamptime=trunc(sysdate-2)
+	--DO同频载频
+	  select case BSC.vendor when 'ZY0808' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID3001,'2011-5-19' as ID3002,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID3003,'广东' as ID3004,CITY.CITY_NAME as ID3005,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME when 'ZY0810' then MSC.MSCNAME when 'ZY0804' then MSC.MSCNAME end as ID3006, '' as ID3007,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0804' then MSC.BSCNAME      end as ID3008,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0804' then MSC.BSCNAME || '.' || BTS.BTS_ID end as ID3009,case BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID3010,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID3011,case BSC.vendor when 'ZY0808' then SECTOR.SECTOR_ID when 'ZY0804' then SECTOR.SECTOR_ID when 'ZY0810' then SECTOR.SECTOR_ID end as ID3012,carr.carr_seq as ID3013,carr.carrier_id as ID3014,SECTOR.PN as ID3015,SFNBRCH.SFRSN as ID3016, '' as ID3017,case NEIBSC.vendor when 'ZY0808' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0804' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0810' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID end as ID3018,replace(NEIADM.COUNTY_NAME, '区', '') as ID3019,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME when 'ZY0810' then NEIMSC.MSCNAME when 'ZY0804' then NEIMSC.MSCNAME end as ID3020, '' as ID3021,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0804' then          NEIMSC.BSCNAME end as ID3022,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0804' then NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID end as ID3023,case BSC.vendor when 'ZY0808' then NEISECTOR.SECTOR_ID when 'ZY0804' then NEISECTOR.SECTOR_ID when 'ZY0810' then NEISECTOR.SECTOR_ID end as ID3024,case NEIBSC.vendor when 'ZY0808' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(NEISECTOR.CHINA_NAME, ',', '，') end as ID3025,NEICARR.CARR_SEQ as ID3026,NEICARR.CARRIER_ID as ID3027,NEISECTOR.PN as ID3028,NEITZCELL.PROVINCE as ID3029,NEITZCELL.CITY_NAME as ID3030,case NEITZCELL.BORDER_TYPE when '非边界' then '0' when '省际边界' then '1' when '省内边界' then '2' when '同为省际省内边界' then '3' end as ID3031,case neitzcell.vendor when 'ZY0808' then '华为' when 'ZY0804' then '中兴' when 'ZY0810' then '朗讯' end as ID3032, '' as ID3033,SFNBRCH.CCDMACH as ID3034,SFNBRCH.NBRCDMACH as ID3035,SFNBRCH.SFRSN as ID3036, '' as ID3037, '' as ID3038, '' as ID3039, '' as ID3040, '' as ID3041, '' as ID3042, '' as ID3043,SFNBRCH_ODOSFNBRPARA.CCDMACH as ID3044,SFNBRCH_ODOSFNBRPARA.NBRCDMACH as ID3045,SFNBRCH_ODOSFNBRPARA.NSRCHWININC as ID3046,SFNBRCH_ODOSFNBRPARA.NSRCHWINSIZE as ID3047,SFNBRCH_ODOSFNBRPARA.NSRCHWINOFFSETINC as ID3048,SFNBRCH_ODOSFNBRPARA.NSRCHWINOFFSET as ID3049 from ne_carrier_c     carr,
+                                                                                           ne_cell_c        sector,
+                                                                                           ne_bts_c         bts,
+                                                                                           ne_bsc_c         bsc,
+                                                                                           cfg_bsc_map_city msc,
+                                                                                           cfg_city         city,
+                                                                                           ne_taizhang_cell tzcell,
+                                                                                           --ne_taizhang_carrier tzcarr,
+                                                                                           --para_adj         para,
+                                                                                           ne_carrier_c     neicarr,
+                                                                                           ne_cell_c        neisector,
+                                                                                           ne_bts_c         neibts,
+                                                                                           ne_bsc_c         neibsc,
+                                                                                           cfg_bsc_map_city neimsc,
+                                                                                           cfg_city         neicity,
+                                                                                           cfg_county       neiadm,
+                                                                                           ne_taizhang_cell neitzcell,
+                                                                                           --ne_taizhang_carrier neitzcarr,
+                                                                                           CLT_CM_ODTMOC_SFNBRCH_HW SFNBRCH,
+                                                                                           --CLT_CM_ODTMOC_SFNBRCH_SP_HW SFNBRCH_SFNBRPARA,此表中无EVDO数据,此表中的参数不上报
+                                                                                           CLT_CM_ODTMOC_SFNBRCH_OD_HW SFNBRCH_ODOSFNBRPARA
+                                                                                           --(select p.ne_sys_id,ROW_NUMBER() OVER(PARTITION BY p.ne_sys_id ORDER BY p.nbrseq) - 1 as sortnum
+                                                                                               --from para_adj p, ne_carrier_c c
+                                                                                              --where p.ne_sys_id = c.ne_sys_id
+                                                                                                --and p.vendor = 'ZY0808') para_sort
+                                                                                 where sector.bsc_id = tzcell.bsc_id
+                                                                                       and sector.local_cell_id = tzcell.local_cell_id
+                                                                                       and sector.sector_id = tzcell.sector_id --关联台账
+                                                                                       --and tzcell.bsc_id=tzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.local_cell_id=tzcarr.local_cell_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.sector_id=tzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and tzcell.border_type in ('省际边界', '同为省内省际边界')--边界类型
+                                                                                       and tzcell.isdo='是'--业务类型
+                                                                                       --and tzcarr.carrier_type='DO'--业务类型
+                                                                                       and carr.bustype='DO'--业务类型
+                                                                                       and carr.vendor='ZY0808'--厂家
+                                                                                       and carr.related_cell=sector.ne_sys_id--基础数据carr-cell
+                                                                                       and sector.related_bts = bts.ne_sys_id--基础数据cell-bts
+                                                                                       and bts.Related_Bsc = bsc.ne_sys_id--基础数据bts-bsc
+                                                                                       and bsc.ne_sys_id = msc.ne_bsc_id--基础数据bsc-msc
+                                                                                       and carr.city_id=city.city_id
+                                                                                       and carr.city_id = sector.city_id
+                                                                                       and sector.city_id = bts.city_id
+                                                                                       and sector.city_id = bsc.city_id
+                                                                                       and sector.city_id = msc.city_id
+                                                                                       --and carr.ne_sys_id = para.ne_sys_id(+)
+                                                                                       --and para.nei_ne_sys_id = neicarr.ne_sys_id
+                                                                                       and neicarr.related_cell=neisector.ne_sys_id
+                                                                                       and neisector.bsc_id = neitzcell.bsc_id
+                                                                                       and neisector.local_cell_id = neitzcell.local_cell_id
+                                                                                       and neisector.sector_id = neitzcell.sector_id --关联台账
+                                                                                       --and neitzcell.bsc_id=neitzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.local_cell_id=neitzcarr.local_cell_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.sector_id=neitzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and neisector.related_bts = neibts.ne_sys_id
+                                                                                       and neibts.related_bsc = neibsc.ne_sys_id
+                                                                                       and neibsc.ne_sys_id = neimsc.ne_bsc_id
+                                                                                       and neicarr.city_id=city.city_id
+                                                                                       and neicarr.city_id = neisector.city_id
+                                                                                       and neisector.city_id = neibts.city_id
+                                                                                       and neisector.city_id = neibsc.city_id
+                                                                                       and neisector.city_id = neimsc.city_id
+                                                                                       and neiadm.county_id(+) = neisector.adm_area
+                                                                                       --and para_sort.ne_sys_id=para.ne_sys_id
+                                                                                       and substr(SFNBRCH.omcid,length(SFNBRCH.omcid))=neicarr.bsc_id --bsc_id
+                                                                                       and SUBSTR(SFNBRCH.NBRCDMACH,1,INSTR(SFNBRCH.NBRCDMACH,'-',1,1)-1)=neicarr.bts_id--bts_id
+                                                                                       and SUBSTR(SFNBRCH.NBRCDMACH,INSTR(SFNBRCH.NBRCDMACH,'-',1,1) + 1,INSTR(SFNBRCH.NBRCDMACH,'-',1,2)-(INSTR(SFNBRCH.NBRCDMACH,'-',1,1) + 1))=neicarr.local_cell_id--local_cell_id
+                                                                                       and SUBSTR(SFNBRCH.NBRCDMACH,INSTR(SFNBRCH.NBRCDMACH,'-',1,2) + 1,INSTR(SFNBRCH.NBRCDMACH,'-',1,3)-(INSTR(SFNBRCH.NBRCDMACH,'-',1,2) + 1))=neicarr.sector_id--sector_id
+                                                                                       and SUBSTR(SFNBRCH.NBRCDMACH,INSTR(SFNBRCH.NBRCDMACH,'-',1,3) + 1,INSTR(SFNBRCH.NBRCDMACH,'-',1,4)-(INSTR(SFNBRCH.NBRCDMACH,'-',1,3) + 1))=neicarr.carrier_id--carrier_id
+                                                                                       --and substr(SFNBRCH_SFNBRPARA.omcid,length(SFNBRCH_SFNBRPARA.omcid))=neicarr.bsc_id --bsc_id
+                                                                                       --and SUBSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,1,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,1)-1)=neicarr.bts_id--bts_id
+                                                                                       --and SUBSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,1) + 1,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,2)-(INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,1) + 1))=neicarr.local_cell_id--local_cell_id
+                                                                                       --and SUBSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,2) + 1,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,3)-(INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,2) + 1))=neicarr.sector_id--sector_id
+                                                                                       --and SUBSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,3) + 1,INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,4)-(INSTR(SFNBRCH_SFNBRPARA.NBRCDMACH,'-',1,3) + 1))=neicarr.carrier_id--carrier_id
+                                                                                       and substr(SFNBRCH_ODOSFNBRPARA.omcid,length(SFNBRCH_ODOSFNBRPARA.omcid))=neicarr.bsc_id --bsc_id
+                                                                                       and SUBSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,1,INSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,'-',1,1)-1)=neicarr.bts_id--bts_id
+                                                                                       and SUBSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,INSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,'-',1,1) + 1,INSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,'-',1,2)-(INSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,'-',1,1) + 1))=neicarr.local_cell_id--local_cell_id
+                                                                                       and SUBSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,INSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,'-',1,2) + 1,INSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,'-',1,3)-(INSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,'-',1,2) + 1))=neicarr.sector_id--sector_id
+                                                                                       and SUBSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,INSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,'-',1,3) + 1,INSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,'-',1,4)-(INSTR(SFNBRCH_ODOSFNBRPARA.NBRCDMACH,'-',1,3) + 1))=neicarr.carrier_id--carrier_id
+                                                                                       and SFNBRCH.CTYP='EVDO'
+                                                                                       and SFNBRCH.stamptime=trunc(sysdate-2)
+                                                                                       --and SFNBRCH_SFNBRPARA.stamptime=trunc(sysdate-2)
+                                                                                       and SFNBRCH_ODOSFNBRPARA.stamptime=trunc(sysdate-2)
+	--DO异频载频
+	  select case BSC.vendor when 'ZY0808' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID4001,'2011-5-19' as ID4002,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID4003,'广东' as ID4004,CITY.CITY_NAME as ID4005,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME when 'ZY0810' then MSC.MSCNAME when 'ZY0804' then MSC.MSCNAME end as ID4006, '' as ID4007,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0804' then MSC.BSCNAME      end as ID4008,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0804' then MSC.BSCNAME || '.' || BTS.BTS_ID end as ID4009,case BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID4010,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID4011,case BSC.vendor when 'ZY0808' then SECTOR.SECTOR_ID when 'ZY0804' then SECTOR.SECTOR_ID when 'ZY0810' then SECTOR.SECTOR_ID end as ID4012,carr.carr_seq as ID4013,carr.carrier_id as ID4014,SECTOR.PN as ID4015,DFNBRCH.DFRSN as ID4016, '' as ID4017,case NEIBSC.vendor when 'ZY0808' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0804' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0810' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID end as ID4018,replace(NEIADM.COUNTY_NAME, '区', '') as ID4019,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME when 'ZY0810' then NEIMSC.MSCNAME when 'ZY0804' then NEIMSC.MSCNAME end as ID4020, '' as ID4021,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0804' then          NEIMSC.BSCNAME end as ID4022,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0804' then NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID end as ID4023,case BSC.vendor when 'ZY0808' then NEISECTOR.SECTOR_ID when 'ZY0804' then NEISECTOR.SECTOR_ID when 'ZY0810' then NEISECTOR.SECTOR_ID end as ID4024,case NEIBSC.vendor when 'ZY0808' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(NEISECTOR.CHINA_NAME, ',', '，') end as ID4025,NEICARR.CARR_SEQ as ID4026,NEICARR.CARRIER_ID as ID4027,NEISECTOR.PN as ID4028,NEITZCELL.PROVINCE as ID4029,NEITZCELL.CITY_NAME as ID4030,case NEITZCELL.BORDER_TYPE when '非边界' then '0' when '省际边界' then '1' when '省内边界' then '2' when '同为省际省内边界' then '3' end as ID4031,case neitzcell.vendor when 'ZY0808' then '华为' when 'ZY0804' then '中兴' when 'ZY0810' then '朗讯' end as ID4032, '' as ID4033,DFNBRCH.CCDMACH as ID4034,DFNBRCH.NBRCDMACH as ID4035,DFNBRCH.DFRSN as ID4036, '' as ID4037, '' as ID4038, '' as ID4039, '' as ID4040, '' as ID4041, '' as ID4042, '' as ID4043,DFNBRCH_ODODFNBRPARA.CCDMACH as ID4044,DFNBRCH_ODODFNBRPARA.NBRCDMACH as ID4045,DFNBRCH_ODODFNBRPARA.NSRCHWININC as ID4046,DFNBRCH_ODODFNBRPARA.NSRCHWINSIZE as ID4047,DFNBRCH_ODODFNBRPARA.NSRCHWINOFFSETINC as ID4048,DFNBRCH_ODODFNBRPARA.NSRCHWINOFFSET as ID4049 from ne_carrier_c     carr,
+                                                                                           ne_cell_c        sector,
+                                                                                           ne_bts_c         bts,
+                                                                                           ne_bsc_c         bsc,
+                                                                                           cfg_bsc_map_city msc,
+                                                                                           cfg_city         city,
+                                                                                           ne_taizhang_cell tzcell,
+                                                                                           --ne_taizhang_carrier tzcarr,
+                                                                                           --para_adj         para,
+                                                                                           ne_carrier_c     neicarr,
+                                                                                           ne_cell_c        neisector,
+                                                                                           ne_bts_c         neibts,
+                                                                                           ne_bsc_c         neibsc,
+                                                                                           cfg_bsc_map_city neimsc,
+                                                                                           cfg_city         neicity,
+                                                                                           cfg_county       neiadm,
+                                                                                           ne_taizhang_cell neitzcell,
+                                                                                           --ne_taizhang_carrier neitzcarr,
+                                                                                           CLT_CM_ODTMOC_DFNBRCH_HW DFNBRCH,
+                                                                                           --CLT_CM_ODTMOC_DFNBRCH_P_HW DFNBRCH_DFNBRPARA,此表无do数据,此表中的参数不上报
+                                                                                           CLT_CM_ODTMOC_DFNBRCH_OD_HW DFNBRCH_ODODFNBRPARA
+                                                                                           --(select p.ne_sys_id,ROW_NUMBER() OVER(PARTITION BY p.ne_sys_id ORDER BY p.nbrseq) - 1 as sortnum
+                                                                                               --from para_adj p, ne_carrier_c c
+                                                                                              --where p.ne_sys_id = c.ne_sys_id
+                                                                                                --and p.vendor = 'ZY0808') para_sort
+                                                                                 where sector.bsc_id = tzcell.bsc_id
+                                                                                       and sector.local_cell_id = tzcell.local_cell_id
+                                                                                       and sector.sector_id = tzcell.sector_id --关联台账
+                                                                                       --and tzcell.bsc_id=tzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.local_cell_id=tzcarr.local_cell_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.sector_id=tzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and tzcell.border_type in ('省际边界', '同为省内省际边界')--边界类型
+                                                                                       and tzcell.isdo='是'--业务类型
+                                                                                       --and tzcarr.carrier_type='DO'--业务类型
+                                                                                       and carr.bustype='DO'--业务类型
+                                                                                       and carr.vendor='ZY0808'--厂家
+                                                                                       and carr.related_cell=sector.ne_sys_id--基础数据carr-cell
+                                                                                       and sector.related_bts = bts.ne_sys_id--基础数据cell-bts
+                                                                                       and bts.Related_Bsc = bsc.ne_sys_id--基础数据bts-bsc
+                                                                                       and bsc.ne_sys_id = msc.ne_bsc_id--基础数据bsc-msc
+                                                                                       and carr.city_id=city.city_id
+                                                                                       and carr.city_id = sector.city_id
+                                                                                       and sector.city_id = bts.city_id
+                                                                                       and sector.city_id = bsc.city_id
+                                                                                       and sector.city_id = msc.city_id
+                                                                                       --and carr.ne_sys_id = para.ne_sys_id(+)
+                                                                                       --and para.nei_ne_sys_id = neicarr.ne_sys_id
+                                                                                       and neicarr.related_cell=neisector.ne_sys_id
+                                                                                       and neisector.bsc_id = neitzcell.bsc_id
+                                                                                       and neisector.local_cell_id = neitzcell.local_cell_id
+                                                                                       and neisector.sector_id = neitzcell.sector_id --关联台账
+                                                                                       --and neitzcell.bsc_id=neitzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.local_cell_id=neitzcarr.local_cell_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.sector_id=neitzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and neisector.related_bts = neibts.ne_sys_id
+                                                                                       and neibts.related_bsc = neibsc.ne_sys_id
+                                                                                       and neibsc.ne_sys_id = neimsc.ne_bsc_id
+                                                                                       and neicarr.city_id=city.city_id
+                                                                                       and neicarr.city_id = neisector.city_id
+                                                                                       and neisector.city_id = neibts.city_id
+                                                                                       and neisector.city_id = neibsc.city_id
+                                                                                       and neisector.city_id = neimsc.city_id
+                                                                                       and neiadm.county_id(+) = neisector.adm_area
+                                                                                       --and para_sort.ne_sys_id=para.ne_sys_id
+                                                                                       and substr(DFNBRCH.omcid,length(DFNBRCH.omcid))=neicarr.bsc_id --bsc_id
+                                                                                       and SUBSTR(DFNBRCH.NBRCDMACH,1,INSTR(DFNBRCH.NBRCDMACH,'-',1,1)-1)=neicarr.bts_id--bts_id
+                                                                                       and SUBSTR(DFNBRCH.NBRCDMACH,INSTR(DFNBRCH.NBRCDMACH,'-',1,1) + 1,INSTR(DFNBRCH.NBRCDMACH,'-',1,2)-(INSTR(DFNBRCH.NBRCDMACH,'-',1,1) + 1))=neicarr.local_cell_id--local_cell_id
+                                                                                       and SUBSTR(DFNBRCH.NBRCDMACH,INSTR(DFNBRCH.NBRCDMACH,'-',1,2) + 1,INSTR(DFNBRCH.NBRCDMACH,'-',1,3)-(INSTR(DFNBRCH.NBRCDMACH,'-',1,2) + 1))=neicarr.sector_id--sector_id
+                                                                                       and SUBSTR(DFNBRCH.NBRCDMACH,INSTR(DFNBRCH.NBRCDMACH,'-',1,3) + 1,INSTR(DFNBRCH.NBRCDMACH,'-',1,4)-(INSTR(DFNBRCH.NBRCDMACH,'-',1,3) + 1))=neicarr.carrier_id--carrier_id
+                                                                                       --and substr(DFNBRCH_DFNBRPARA.omcid,length(DFNBRCH_DFNBRPARA.omcid))=neicarr.bsc_id --bsc_id
+                                                                                       --and SUBSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,1,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,1)-1)=neicarr.bts_id--bts_id
+                                                                                       --and SUBSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,1) + 1,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,2)-(INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,1) + 1))=neicarr.local_cell_id--local_cell_id
+                                                                                       --and SUBSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,2) + 1,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,3)-(INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,2) + 1))=neicarr.sector_id--sector_id
+                                                                                       --and SUBSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,3) + 1,INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,4)-(INSTR(DFNBRCH_DFNBRPARA.NBRCDMACH,'-',1,3) + 1))=neicarr.carrier_id--carrier_id
+                                                                                       and substr(DFNBRCH_ODODFNBRPARA.omcid,length(DFNBRCH_ODODFNBRPARA.omcid))=neicarr.bsc_id --bsc_id
+                                                                                       and SUBSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,1,INSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,'-',1,1)-1)=neicarr.bts_id--bts_id
+                                                                                       and SUBSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,INSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,'-',1,1) + 1,INSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,'-',1,2)-(INSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,'-',1,1) + 1))=neicarr.local_cell_id--local_cell_id
+                                                                                       and SUBSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,INSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,'-',1,2) + 1,INSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,'-',1,3)-(INSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,'-',1,2) + 1))=neicarr.sector_id--sector_id
+                                                                                       and SUBSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,INSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,'-',1,3) + 1,INSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,'-',1,4)-(INSTR(DFNBRCH_ODODFNBRPARA.NBRCDMACH,'-',1,3) + 1))=neicarr.carrier_id--carrier_id
+                                                                                       and DFNBRCH.CTYP='EVDO'
+                                                                                       and DFNBRCH.stamptime=trunc(sysdate-2)
+                                                                                       --and DFNBRCH_DFNBRPARA.stamptime=trunc(sysdate-2)
+                                                                                       and DFNBRCH_ODODFNBRPARA.stamptime=trunc(sysdate-2)
+  --中兴
+    --1X扇区
+	  select case BSC.vendor when 'ZY0808' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID1001,'2011-5-19' as ID1002,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(SECTOR.CHINA_NAME, ',', '，') end as ID1003,'广东' as ID1004,CITY.CITY_NAME as ID1005,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME when 'ZY0810' then MSC.MSCNAME when 'ZY0804' then MSC.MSCNAME end as ID1006, '' as ID1007,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0804' then MSC.BSCNAME end as ID1008,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0804' then MSC.BSCNAME || '.' || BTS.BTS_ID end as ID1009,case BSC.vendor when 'ZY0808' then SECTOR.SECTOR_ID when 'ZY0804' then SECTOR.SECTOR_ID when 'ZY0810' then SECTOR.SECTOR_ID end as ID1010,SECTOR.PN as ID1011,LINKCELL.sequence_b as ID1012, '' as ID1013,case NEIBSC.vendor when 'ZY0808' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' || NEISECTOR.SECTOR_ID when 'ZY0804' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' || NEISECTOR.SECTOR_ID when 'ZY0810' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' || NEISECTOR.SECTOR_ID end as ID1014,replace(NEIADM.COUNTY_NAME, '区', '') as ID1015,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME when 'ZY0810' then NEIMSC.MSCNAME when 'ZY0804' then NEIMSC.MSCNAME end as ID1016, '' as ID1017,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0804' then NEIMSC.BSCNAME end as ID1018,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0804' then NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID end as ID1019,case NEIBSC.vendor when 'ZY0808' then NEISECTOR.SECTOR_ID when 'ZY0804' then NEISECTOR.SECTOR_ID when 'ZY0810' then NEISECTOR.SECTOR_ID end as ID1020,case NEIBSC.vendor when 'ZY0808' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(NEISECTOR.CHINA_NAME, ',', '，') end as ID1021,NEISECTOR.PN as ID1022,NEITZCELL.PROVINCE as ID1023,NEITZCELL.CITY_NAME as ID1024,case NEITZCELL.BORDER_TYPE when '非边界' then '0' when '省际边界' then '1' when '省内边界' then '2' when '同为省际省内边界' then '3' end as ID1025,case neitzcell.vendor when 'ZY0808' then '华为' when 'ZY0804' then '中兴' when 'ZY0810' then '朗讯' end as ID1026, '' as ID1027,LINKCELL.pilot_pn as ID1028,LINKCELL.ncelltype as ID1029,LINKCELL.ncellofficeid as ID1030,LINKCELL.ncellsystemid as ID1031,LINKCELL.ncellid as ID1032,LINKCELL.gncellid as ID1033,LINKCELL.ci_discriminator as ID1044,LINKCELL.lac as ID1055,LINKCELL.ci as ID1056,LINKCELL.marketid as ID1057,LINKCELL.switchnumber as ID1058,LINKCELL.p_rev as ID1059,LINKCELL.ncellmode as ID1060,LINKCELL.dla_id as ID1061,LINKCELL.ncell_bs_id as ID1062,LINKCELL.alias_b as ID1063,LINKCELL.sequence_b as ID1064 from ne_cell_c        sector,
+                                                                                           ne_bts_c         bts,
+                                                                                           ne_bsc_c         bsc,
+                                                                                           cfg_bsc_map_city msc,
+                                                                                           cfg_city         city,
+                                                                                           ne_taizhang_cell tzcell,
+                                                                                           --para_adj         para,
+                                                                                           ne_cell_c        neisector,
+                                                                                           ne_bts_c         neibts,
+                                                                                           ne_bsc_c         neibsc,
+                                                                                           cfg_bsc_map_city neimsc,
+                                                                                           cfg_city         neicity,
+                                                                                           cfg_county       neiadm,
+                                                                                           ne_taizhang_cell neitzcell,
+                                                                                           Clt_Cm_r_3g_s_Linkcell_Zte linkcell
+                                                                                           --(select p.ne_cell_id,ROW_NUMBER() OVER(PARTITION BY p.ne_cell_id ORDER BY p.nbrseq) - 1 as sortnum
+                                                                                               --from para_adj p, ne_cell_c c
+                                                                                              --where p.ne_cell_id = c.ne_sys_id
+                                                                                                --and p.vendor = 'ZY0804') para_sort
+                                                                                 where sector.bsc_id = tzcell.bsc_id
+                                                                                       and sector.bts_id = tzcell.bts_id
+                                                                                       and sector.sector_id = tzcell.sector_id --关联台账
+                                                                                       and tzcell.border_type in ('省际边界', '同为省内省际边界')
+                                                                                       and tzcell.isdo='否'
+                                                                                       and sector.vendor='ZY0804'
+                                                                                       and sector.related_bts = bts.ne_sys_id
+                                                                                       and bts.Related_Bsc = bsc.ne_sys_id
+                                                                                       and bsc.ne_sys_id = msc.ne_bsc_id
+                                                                                       and sector.city_id = city.city_id
+                                                                                       and sector.city_id = bts.city_id
+                                                                                       and sector.city_id = bsc.city_id
+                                                                                       and sector.city_id = msc.city_id
+                                                                                       --and sector.ne_sys_id = para.ne_cell_id(+)
+                                                                                       --and para.nei_ne_cell_id = neisector.ne_sys_id
+                                                                                       and neisector.bsc_id = neitzcell.bsc_id
+                                                                                       and neisector.bts_id = neitzcell.bts_id
+                                                                                       and neisector.sector_id = neitzcell.sector_id --关联台账
+                                                                                       and neisector.related_bts = neibts.ne_sys_id
+                                                                                       and neibts.related_bsc = neibsc.ne_sys_id
+                                                                                       and neibsc.ne_sys_id = neimsc.ne_bsc_id
+                                                                                       and neisector.city_id = neicity.city_id
+                                                                                       and neisector.city_id = neibts.city_id
+                                                                                       and neisector.city_id = neibsc.city_id
+                                                                                       and neisector.city_id = neimsc.city_id
+                                                                                       and neiadm.county_id(+) = neisector.adm_area
+                                                                                       and substr(linkcell.omcid,length(linkcell.omcid))=neisector.bsc_id
+                                                                                       and linkcell.system=neisector.bts_id
+                                                                                       and linkcell.cellid=neisector.sector_id
+                                                                                       --and para_sort.ne_cell_id=para.ne_cell_id
+                                                                                       and linkcell.stamptime=trunc(sysdate-2)
+	--1X载频
+	  select case BSC.vendor when 'ZY0808' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID1001,'2011-5-19' as ID1002,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID1003,'广东' as ID1004,CITY.CITY_NAME as ID1005,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME when 'ZY0810' then MSC.MSCNAME when 'ZY0804' then MSC.MSCNAME end as ID1006, '' as ID1007,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0804' then MSC.BSCNAME      end as ID1008,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0804' then MSC.BSCNAME || '.' || BTS.BTS_ID end as ID1009,case BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID1010,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID1011,case BSC.vendor when 'ZY0808' then SECTOR.SECTOR_ID when 'ZY0804' then SECTOR.SECTOR_ID when 'ZY0810' then SECTOR.SECTOR_ID end as ID1012,carr.carr_seq as ID1013,carr.carrier_id as ID1014,SECTOR.PN as ID1015,ZTE.sequence_b as ID1016, '' as ID1017,case NEIBSC.vendor when 'ZY0808' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0804' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0810' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID end as ID1018,replace(NEIADM.COUNTY_NAME, '区', '') as ID1019,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME when 'ZY0810' then NEIMSC.MSCNAME when 'ZY0804' then NEIMSC.MSCNAME end as ID1020, '' as ID1021,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0804' then          NEIMSC.BSCNAME end as ID1022,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0804' then NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID end as ID1023,case BSC.vendor when 'ZY0808' then NEISECTOR.SECTOR_ID when 'ZY0804' then NEISECTOR.SECTOR_ID when 'ZY0810' then NEISECTOR.SECTOR_ID end as ID1024,case NEIBSC.vendor when 'ZY0808' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(NEISECTOR.CHINA_NAME, ',', '，') end as ID1025,NEICARR.CARR_SEQ as ID1026,NEICARR.CARRIER_ID as ID1027,NEISECTOR.PN as ID1028,NEITZCELL.PROVINCE as ID1029,NEITZCELL.CITY_NAME as ID1030,case NEITZCELL.BORDER_TYPE when '非边界' then '0' when '省际边界' then '1' when '省内边界' then '2' when '同为省际省内边界' then '3' end as ID1031,case neitzcell.vendor when 'ZY0808' then '华为' when 'ZY0804' then '中兴' when 'ZY0810' then '朗讯' end as ID1032, '' as ID1033,ZTE.bssid as ID1034,ZTE.system as ID1035,ZTE.cellid as ID1036,ZTE.pilot_pn as ID1037,ZTE.carrierid as ID1038,ZTE.mscid as ID1039,ZTE.ci as ID1040,ZTE.officeid as ID1041,ZTE.nghbr_config as ID1042,ZTE.search_priority as ID1043,ZTE.srch_win_nghbr as ID1044,ZTE.freq_incl as ID1045,ZTE.nghbr_band as ID1046,ZTE.nghbr_freq as ID1047,ZTE.access_entry_ho as ID1048,ZTE.access_ho_allowed as ID1049,ZTE.timing_incl as ID1050,ZTE.nghbr_tx_offset as ID1051,ZTE.nghbr_tx_duration as ID1052,ZTE.nghbr_tx_period as ID1053,ZTE.add_pilot_rec_incl as ID1054,ZTE.nghbr_pilot_rec_type as ID1055,ZTE.srch_offset_nghbr as ID1056,ZTE.sequence_b as ID1057,ZTE.locked_b as ID1058,ZTE.alias_b as ID1059,ZTE.ncell_bs_id as ID1060 from ne_carrier_c     carr,
+                                                                                           ne_cell_c        sector,
+                                                                                           ne_bts_c         bts,
+                                                                                           ne_bsc_c         bsc,
+                                                                                           cfg_bsc_map_city msc,
+                                                                                           cfg_city         city,
+                                                                                           ne_taizhang_cell tzcell,
+                                                                                           --ne_taizhang_carrier tzcarr,
+                                                                                           --para_adj         para,
+                                                                                           ne_carrier_c     neicarr,
+                                                                                           ne_cell_c        neisector,
+                                                                                           ne_bts_c         neibts,
+                                                                                           ne_bsc_c         neibsc,
+                                                                                           cfg_bsc_map_city neimsc,
+                                                                                           cfg_city         neicity,
+                                                                                           cfg_county       neiadm,
+                                                                                           ne_taizhang_cell neitzcell,
+                                                                                           --ne_taizhang_carrier neitzcarr,
+                                                                                           Clt_Cm_r_3g_t_Nglistinfo_Zte zte
+                                                                                           --(select p.ne_sys_id,ROW_NUMBER() OVER(PARTITION BY p.ne_sys_id ORDER BY p.nbrseq) - 1 as sortnum
+                                                                                               --from para_adj p, ne_carrier_c c
+                                                                                              --where p.ne_sys_id = c.ne_sys_id
+                                                                                                --and p.vendor = 'ZY0804') para_sort
+                                                                                 where sector.bsc_id = tzcell.bsc_id
+                                                                                       and sector.bts_id = tzcell.bts_id
+                                                                                       and sector.sector_id = tzcell.sector_id --关联台账
+                                                                                       --and tzcell.bsc_id=tzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.bts_id=tzcarr.bts_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.sector_id=tzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and tzcell.border_type in ('省际边界', '同为省内省际边界')--边界类型
+                                                                                       and tzcell.isdo='否'--业务类型
+                                                                                       --and tzcarr.carrier_type='1X'--业务类型
+                                                                                       and carr.bustype='1X'--业务类型
+                                                                                       and carr.vendor='ZY0804'--厂家
+                                                                                       and carr.related_cell=sector.ne_sys_id--基础数据carr-cell
+                                                                                       and sector.related_bts = bts.ne_sys_id--基础数据cell-bts
+                                                                                       and bts.Related_Bsc = bsc.ne_sys_id--基础数据bts-bsc
+                                                                                       and bsc.ne_sys_id = msc.ne_bsc_id--基础数据bsc-msc
+                                                                                       and carr.city_id=city.city_id
+                                                                                       and carr.city_id = sector.city_id
+                                                                                       and sector.city_id = bts.city_id
+                                                                                       and sector.city_id = bsc.city_id
+                                                                                       and sector.city_id = msc.city_id
+                                                                                       --and carr.ne_sys_id = para.ne_sys_id(+)
+                                                                                       --and para.nei_ne_sys_id = neicarr.ne_sys_id
+                                                                                       and neicarr.related_cell=neisector.ne_sys_id
+                                                                                       and neisector.bsc_id = neitzcell.bsc_id
+                                                                                       and neisector.bts_id = neitzcell.bts_id
+                                                                                       and neisector.sector_id = neitzcell.sector_id --关联台账
+                                                                                       --and neitzcell.bsc_id=neitzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.bts_id=neitzcarr.bts_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.sector_id=neitzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and neisector.related_bts = neibts.ne_sys_id
+                                                                                       and neibts.related_bsc = neibsc.ne_sys_id
+                                                                                       and neibsc.ne_sys_id = neimsc.ne_bsc_id
+                                                                                       and neicarr.city_id=city.city_id
+                                                                                       and neicarr.city_id = neisector.city_id
+                                                                                       and neisector.city_id = neibts.city_id
+                                                                                       and neisector.city_id = neibsc.city_id
+                                                                                       and neisector.city_id = neimsc.city_id
+                                                                                       and neiadm.county_id(+) = neisector.adm_area
+                                                                                       and substr(zte.omcid,length(zte.omcid))=neicarr.bsc_id
+                                                                                       and zte.system=neicarr.bts_id
+                                                                                       and zte.cellid=neicarr.sector_id
+                                                                                       and zte.carrierid=neicarr.carr_seq                          
+                                                                                       --and para_sort.ne_sys_id=para.ne_sys_id
+                                                                                       and zte.stamptime=trunc(sysdate-2)
+	--DO载频
+	  select case BSC.vendor when 'ZY0808' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID2001,'2011-5-19' as ID2002,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID2003,'广东' as ID2004,CITY.CITY_NAME as ID2005,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME when 'ZY0810' then MSC.MSCNAME when 'ZY0804' then MSC.MSCNAME end as ID2006, '' as ID2007,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0804' then MSC.BSCNAME      end as ID2008,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0804' then MSC.BSCNAME || '.' || BTS.BTS_ID end as ID2009,case BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID2010,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then         replace(SECTOR.CHINA_NAME, ',', '，') end as ID2011,case BSC.vendor when 'ZY0808' then SECTOR.SECTOR_ID when 'ZY0804' then SECTOR.SECTOR_ID when 'ZY0810' then SECTOR.SECTOR_ID end as ID2012,carr.carr_seq as ID2013,carr.carrier_id as ID2014,SECTOR.PN as ID2015,ZTE.sequence_b as ID2016, '' as ID2017,case NEIBSC.vendor when 'ZY0808' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0804' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID when 'ZY0810' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' ||NEISECTOR.SECTOR_ID end as ID2018,replace(NEIADM.COUNTY_NAME, '区', '') as ID2019,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME when 'ZY0810' then NEIMSC.MSCNAME when 'ZY0804' then NEIMSC.MSCNAME end as ID2020, '' as ID2021,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0804' then          NEIMSC.BSCNAME end as ID2022,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0804' then NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID end as ID2023,case BSC.vendor when 'ZY0808' then NEISECTOR.SECTOR_ID when 'ZY0804' then NEISECTOR.SECTOR_ID when 'ZY0810' then NEISECTOR.SECTOR_ID end as ID2024,case NEIBSC.vendor when 'ZY0808' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(NEISECTOR.CHINA_NAME, ',', '，') end as ID2025,NEICARR.CARR_SEQ as ID2026,NEICARR.CARRIER_ID as ID2027,NEISECTOR.PN as ID2028,NEITZCELL.PROVINCE as ID2029,NEITZCELL.CITY_NAME as ID2030,case NEITZCELL.BORDER_TYPE when '非边界' then '0' when '省际边界' then '1' when '省内边界' then '2' when '同为省际省内边界' then '3' end as ID2031,case neitzcell.vendor when 'ZY0808' then '华为' when 'ZY0804' then '中兴' when 'ZY0810' then '朗讯' end as ID2032, '' as ID2033,ZTE.PILOTPN as ID2034,ZTE.SYSTEMTYPE as ID2035,ZTE.BANDCLASS as ID2036,ZTE.ChannelNumber as ID2037,ZTE.SEARCHWINDOWSIZE as ID2038,ZTE.SEARCHWINDOWOFFSET as ID2039,ZTE.BCSubnet as ID2040,ZTE.sequence_b as ID2041,ZTE.CI as ID2042 from ne_carrier_c     carr,
+                                                                                           ne_cell_c        sector,
+                                                                                           ne_bts_c         bts,
+                                                                                           ne_bsc_c         bsc,
+                                                                                           cfg_bsc_map_city msc,
+                                                                                           cfg_city         city,
+                                                                                           ne_taizhang_cell tzcell,
+                                                                                           --ne_taizhang_carrier tzcarr,
+                                                                                           --para_adj         para,
+                                                                                           ne_carrier_c     neicarr,
+                                                                                           ne_cell_c        neisector,
+                                                                                           ne_bts_c         neibts,
+                                                                                           ne_bsc_c         neibsc,
+                                                                                           cfg_bsc_map_city neimsc,
+                                                                                           cfg_city         neicity,
+                                                                                           cfg_county       neiadm,
+                                                                                           ne_taizhang_cell neitzcell,
+                                                                                           --ne_taizhang_carrier neitzcarr,
+                                                                                           CLT_CM_R_NB_CARRIER_INFO_ZTE zte
+                                                                                           --(select p.ne_sys_id,ROW_NUMBER() OVER(PARTITION BY p.ne_sys_id ORDER BY p.nbrseq) - 1 as sortnum
+                                                                                               --from para_adj p, ne_carrier_c c
+                                                                                              --where p.ne_sys_id = c.ne_sys_id
+                                                                                                --and p.vendor = 'ZY0804') para_sort
+                                                                                 where sector.bsc_id = tzcell.bsc_id
+                                                                                       and sector.bts_id = tzcell.bts_id
+                                                                                       and sector.sector_id = tzcell.sector_id --关联台账
+                                                                                       --and tzcell.bsc_id=tzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.bts_id=tzcarr.bts_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and tzcell.sector_id=tzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and tzcell.border_type in ('省际边界', '同为省内省际边界')--边界类型
+                                                                                       and tzcell.isdo='是'--业务类型
+                                                                                       --and tzcarr.carrier_type='DO'--业务类型
+                                                                                       and carr.bustype='DO'--业务类型
+                                                                                       and carr.vendor='ZY0804'--厂家
+                                                                                       and carr.related_cell=sector.ne_sys_id--基础数据carr-cell
+                                                                                       and sector.related_bts = bts.ne_sys_id--基础数据cell-bts
+                                                                                       and bts.Related_Bsc = bsc.ne_sys_id--基础数据bts-bsc
+                                                                                       and bsc.ne_sys_id = msc.ne_bsc_id--基础数据bsc-msc
+                                                                                       and carr.city_id=city.city_id
+                                                                                       and carr.city_id = sector.city_id
+                                                                                       and sector.city_id = bts.city_id
+                                                                                       and sector.city_id = bsc.city_id
+                                                                                       and sector.city_id = msc.city_id
+                                                                                       --and carr.ne_sys_id = para.ne_sys_id(+)
+                                                                                       --and para.nei_ne_sys_id = neicarr.ne_sys_id
+                                                                                       and neicarr.related_cell=neisector.ne_sys_id
+                                                                                       and neisector.bsc_id = neitzcell.bsc_id
+                                                                                       and neisector.bts_id = neitzcell.bts_id
+                                                                                       and neisector.sector_id = neitzcell.sector_id --关联台账
+                                                                                       --and neitzcell.bsc_id=neitzcarr.bsc_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.bts_id=neitzcarr.bts_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       --and neitzcell.sector_id=neitzcarr.sector_id--台账ne_taizhang_carr与ne_taizhang_cell关联
+                                                                                       and neisector.related_bts = neibts.ne_sys_id
+                                                                                       and neibts.related_bsc = neibsc.ne_sys_id
+                                                                                       and neibsc.ne_sys_id = neimsc.ne_bsc_id
+                                                                                       and neicarr.city_id=city.city_id
+                                                                                       and neicarr.city_id = neisector.city_id
+                                                                                       and neisector.city_id = neibts.city_id
+                                                                                       and neisector.city_id = neibsc.city_id
+                                                                                       and neisector.city_id = neimsc.city_id
+                                                                                       and neiadm.county_id(+) = neisector.adm_area
+                                                                                       and substr(zte.omcid,length(zte.omcid))=neicarr.bsc_id
+                                                                                       and zte.system=neicarr.bts_id
+                                                                                       and zte.cellid=neicarr.sector_id
+                                                                                       and zte.carrierid=neicarr.carr_seq
+                                                                                       --and para_sort.ne_sys_id=para.ne_sys_id
+                                                                                       and zte.stamptime=trunc(sysdate-2)
+  --朗讯  
+    --1X扇区
+	  select case BSC.vendor when 'ZY0808' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID1001,'2011-5-19' as ID1002,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(SECTOR.CHINA_NAME, ',', '，') end as ID1003,'广东' as ID1004,CITY.CITY_NAME as ID1005,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME when 'ZY0810' then MSC.MSCNAME when 'ZY0804' then MSC.MSCNAME end as ID1006, '' as ID1007,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0804' then MSC.BSCNAME end as ID1008,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0804' then MSC.BSCNAME || '.' || BTS.BTS_ID end as ID1009,case BSC.vendor when 'ZY0808' then SECTOR.SECTOR_ID when 'ZY0804' then SECTOR.SECTOR_ID when 'ZY0810' then SECTOR.SECTOR_ID end as ID1010,SECTOR.PN as ID1011,LUC.SN as ID1012, '' as ID1013,case NEIBSC.vendor when 'ZY0808' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' || NEISECTOR.SECTOR_ID when 'ZY0804' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' || NEISECTOR.SECTOR_ID when 'ZY0810' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' || NEISECTOR.SECTOR_ID end as ID1014,replace(NEIADM.COUNTY_NAME, '区', '') as ID1015,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME when 'ZY0810' then NEIMSC.MSCNAME when 'ZY0804' then NEIMSC.MSCNAME end as ID1016, '' as ID1017,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0804' then NEIMSC.BSCNAME end as ID1018,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0804' then NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID end as ID1019,case NEIBSC.vendor when 'ZY0808' then NEISECTOR.SECTOR_ID when 'ZY0804' then NEISECTOR.SECTOR_ID when 'ZY0810' then NEISECTOR.SECTOR_ID end as ID1020,case NEIBSC.vendor when 'ZY0808' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(NEISECTOR.CHINA_NAME, ',', '，') end as ID1021,NEISECTOR.PN as ID1022,NEITZCELL.PROVINCE as ID1023,NEITZCELL.CITY_NAME as ID1024,case NEITZCELL.BORDER_TYPE when '非边界' then '0' when '省际边界' then '1' when '省内边界' then '2' when '同为省际省内边界' then '3' end as ID1025,case neitzcell.vendor when 'ZY0808' then '华为' when 'ZY0804' then '中兴' when 'ZY0810' then '朗讯' end as ID1026, '' as ID1027,LUC.ncs_c as ID1028,LUC.nghbrantf as ID1029,LUC.pilot_pn as ID1030,LUC.pgn_c as ID1031,LUC.nghb_conf as ID1032,LUC.hdhandoff as ID1033,LUC.dcs_c as ID1034,LUC.ecp_c as ID1035,LUC.sid_c as ID1036 from ne_cell_c        sector,
+                                                                                           ne_bts_c         bts,
+                                                                                           ne_bsc_c         bsc,
+                                                                                           cfg_bsc_map_city msc,
+                                                                                           cfg_city         city,
+                                                                                           ne_taizhang_cell tzcell,
+                                                                                           --para_adj_luc     para,
+                                                                                           ne_cell_c        neisector,
+                                                                                           ne_bts_c         neibts,
+                                                                                           ne_bsc_c         neibsc,
+                                                                                           cfg_bsc_map_city neimsc,
+                                                                                           cfg_city         neicity,
+                                                                                           cfg_county       neiadm,
+                                                                                           ne_taizhang_cell neitzcell,    
+                                                                                           (select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C1 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF1 as nghbrantf,
+                                                                                                   NEI_PN1 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C1 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF1 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF1 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C1 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C1 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C1 as sid_c,
+                                                                                                   1 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C2 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF2 as nghbrantf,
+                                                                                                   NEI_PN2 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C2 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF2 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF2 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C2 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C2 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C2 as sid_c,
+                                                                                                   2 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2) 
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C3 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF3 as nghbrantf,
+                                                                                                   NEI_PN3 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C3 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF3 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF3 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C3 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C3 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C3 as sid_c,
+                                                                                                   3 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2) 
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C4 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF4 as nghbrantf,
+                                                                                                   NEI_PN4 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C4 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF4 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF4 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C4 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C4 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C4 as sid_c,
+                                                                                                   4 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2) 
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C5 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF5 as nghbrantf,
+                                                                                                   NEI_PN5 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C5 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF5 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF5 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C5 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C5 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C5 as sid_c,
+                                                                                                   5 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C6 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF6 as nghbrantf,
+                                                                                                   NEI_PN6 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C6 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF6 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF6 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C6 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C6 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C6 as sid_c,
+                                                                                                   6 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C7 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF7 as nghbrantf,
+                                                                                                   NEI_PN7 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C7 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF7 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF7 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C7 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C7 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C7 as sid_c,
+                                                                                                   7 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C8 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF8 as nghbrantf,
+                                                                                                   NEI_PN8 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C8 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF8 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF8 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C8 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C8 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C8 as sid_c,
+                                                                                                   8 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C9 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF9 as nghbrantf,
+                                                                                                   NEI_PN9 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C9 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF9 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF9 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C9 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C9 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C9 as sid_c,
+                                                                                                   9 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C10 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF10 as nghbrantf,
+                                                                                                   NEI_PN10 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C10 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF10 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF10 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C10 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C10 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C10 as sid_c,
+                                                                                                   10 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C11 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF11 as nghbrantf,
+                                                                                                   NEI_PN11 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C11 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF11 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF11 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C11 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C11 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C11 as sid_c,
+                                                                                                   11 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST1_NCS_C12 as ncs_c,
+                                                                                                   NEI_LIST1_NGHBRANTF12 as nghbrantf,
+                                                                                                   NEI_PN12 as pilot_pn,
+                                                                                                   NEI1_ALT1_PGN_C12 as pgn_c,
+                                                                                                   NEI_LIST1_NGHB_CONF12 as nghb_conf,
+                                                                                                   NEI1_ALT1_HDHANDOFF12 as hdhandoff,
+                                                                                                   NEI1_ALT1_DCS_C12 as dcs_c,
+                                                                                                   NEI1_ALT1_ECP_C12 as ecp_c,
+                                                                                                   NEI1_ALT1_SID_C12 as sid_c,
+                                                                                                   12 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST2_NCS_C1 as ncs_c,
+                                                                                                   NEI_LIST2_NGHBRANTF1 as nghbrantf,
+                                                                                                   NEI_PN13 as pilot_pn,
+                                                                                                   NEI1_ALT2_PGN_C1 as pgn_c,
+                                                                                                   NEI_LIST2_NGHB_CONF1 as nghb_conf,
+                                                                                                   NEI1_ALT2_HDHANDOFF1 as hdhandoff,
+                                                                                                   NEI1_ALT2_DCS_C1 as dcs_c,
+                                                                                                   NEI1_ALT2_ECP_C1 as ecp_c,
+                                                                                                   NEI1_ALT2_SID_C1 as sid_c,
+                                                                                                   13 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST2_NCS_C2 as ncs_c,
+                                                                                                   NEI_LIST2_NGHBRANTF2 as nghbrantf,
+                                                                                                   NEI_PN14 as pilot_pn,
+                                                                                                   NEI1_ALT2_PGN_C2 as pgn_c,
+                                                                                                   NEI_LIST2_NGHB_CONF2 as nghb_conf,
+                                                                                                   NEI1_ALT2_HDHANDOFF2 as hdhandoff,
+                                                                                                   NEI1_ALT2_DCS_C2 as dcs_c,
+                                                                                                   NEI1_ALT2_ECP_C2 as ecp_c,
+                                                                                                   NEI1_ALT2_SID_C2 as sid_c,
+                                                                                                   14 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST2_NCS_C3 as ncs_c,
+                                                                                                   NEI_LIST2_NGHBRANTF3 as nghbrantf,
+                                                                                                   NEI_PN15 as pilot_pn,
+                                                                                                   NEI1_ALT2_PGN_C3 as pgn_c,
+                                                                                                   NEI_LIST2_NGHB_CONF3 as nghb_conf,
+                                                                                                   NEI1_ALT2_HDHANDOFF3 as hdhandoff,
+                                                                                                   NEI1_ALT2_DCS_C3 as dcs_c,
+                                                                                                   NEI1_ALT2_ECP_C3 as ecp_c,
+                                                                                                   NEI1_ALT2_SID_C3 as sid_c,
+                                                                                                   15 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST2_NCS_C4 as ncs_c,
+                                                                                                   NEI_LIST2_NGHBRANTF4 as nghbrantf,
+                                                                                                   NEI_PN16 as pilot_pn,
+                                                                                                   NEI1_ALT2_PGN_C4 as pgn_c,
+                                                                                                   NEI_LIST2_NGHB_CONF4 as nghb_conf,
+                                                                                                   NEI1_ALT2_HDHANDOFF4 as hdhandoff,
+                                                                                                   NEI1_ALT2_DCS_C4 as dcs_c,
+                                                                                                   NEI1_ALT2_ECP_C4 as ecp_c,
+                                                                                                   NEI1_ALT2_SID_C4 as sid_c,
+                                                                                                   16 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST2_NCS_C5 as ncs_c,
+                                                                                                   NEI_LIST2_NGHBRANTF5 as nghbrantf,
+                                                                                                   NEI_PN17 as pilot_pn,
+                                                                                                   NEI1_ALT2_PGN_C5 as pgn_c,
+                                                                                                   NEI_LIST2_NGHB_CONF5 as nghb_conf,
+                                                                                                   NEI1_ALT2_HDHANDOFF5 as hdhandoff,
+                                                                                                   NEI1_ALT2_DCS_C5 as dcs_c,
+                                                                                                   NEI1_ALT2_ECP_C5 as ecp_c,
+                                                                                                   NEI1_ALT2_SID_C5 as sid_c,
+                                                                                                   17 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST2_NCS_C6 as ncs_c,
+                                                                                                   NEI_LIST2_NGHBRANTF6 as nghbrantf,
+                                                                                                   NEI_PN18 as pilot_pn,
+                                                                                                   NEI1_ALT2_PGN_C6 as pgn_c,
+                                                                                                   NEI_LIST2_NGHB_CONF6 as nghb_conf,
+                                                                                                   NEI1_ALT2_HDHANDOFF6 as hdhandoff,
+                                                                                                   NEI1_ALT2_DCS_C6 as dcs_c,
+                                                                                                   NEI1_ALT2_ECP_C6 as ecp_c,
+                                                                                                   NEI1_ALT2_SID_C6 as sid_c,
+                                                                                                   18 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST2_NCS_C7 as ncs_c,
+                                                                                                   NEI_LIST2_NGHBRANTF7 as nghbrantf,
+                                                                                                   NEI_PN19 as pilot_pn,
+                                                                                                   NEI1_ALT2_PGN_C7 as pgn_c,
+                                                                                                   NEI_LIST2_NGHB_CONF7 as nghb_conf,
+                                                                                                   NEI1_ALT2_HDHANDOFF7 as hdhandoff,
+                                                                                                   NEI1_ALT2_DCS_C7 as dcs_c,
+                                                                                                   NEI1_ALT2_ECP_C7 as ecp_c,
+                                                                                                   NEI1_ALT2_SID_C7 as sid_c,
+                                                                                                   19 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)
+                                                                                                   union all 
+                                                                                            select OMCID,
+                                                                                                   NEI_BTS,
+                                                                                                   NEI_SECTOR,
+                                                                                                   NEI_LIST2_NCS_C8 as ncs_c,
+                                                                                                   NEI_LIST2_NGHBRANTF8 as nghbrantf,
+                                                                                                   NEI_PN20 as pilot_pn,
+                                                                                                   NEI1_ALT2_PGN_C8 as pgn_c,
+                                                                                                   NEI_LIST2_NGHB_CONF8 as nghb_conf,
+                                                                                                   NEI1_ALT2_HDHANDOFF8 as hdhandoff,
+                                                                                                   NEI1_ALT2_DCS_C8 as dcs_c,
+                                                                                                   NEI1_ALT2_ECP_C8 as ecp_c,
+                                                                                                   NEI1_ALT2_SID_C8 as sid_c,
+                                                                                                   20 as sn from clt_cm_fci_luc where stamptime=trunc(sysdate-2)) luc
+                                                                                           --(select p.ne_cell_id,ROW_NUMBER() OVER(PARTITION BY p.ne_cell_id ORDER BY p.nbrseq) - 1 as sortnum
+                                                                                               --from para_adj_luc p, ne_cell_c c
+                                                                                              --where p.ne_cell_id = c.ne_sys_id
+                                                                                                --and p.vendor = 'ZY0810') para_sort
+                                                                                 where sector.bsc_id = tzcell.bsc_id
+                                                                                   and sector.bts_id = tzcell.bts_id
+                                                                                   and sector.sector_id = tzcell.sector_id --关联台账
+                                                                                   and tzcell.border_type in ('省际边界', '同为省内省际边界')
+                                                                                   and tzcell.isdo='否'
+                                                                                   and sector.vendor='ZY0810'
+                                                                                   and sector.related_bts = bts.ne_sys_id
+                                                                                   and bts.Related_Bsc = bsc.ne_sys_id
+                                                                                   and bsc.ne_sys_id = msc.ne_bsc_id
+                                                                                   and sector.city_id = city.city_id
+                                                                                   and sector.city_id = bts.city_id
+                                                                                   and sector.city_id = bsc.city_id
+                                                                                   and sector.city_id = msc.city_id
+                                                                                   --and sector.ne_sys_id = para.ne_cell_id(+)
+                                                                                   --and para.nei_ne_cell_id = neisector.ne_sys_id
+                                                                                   and neisector.bsc_id = neitzcell.bsc_id
+                                                                                   and neisector.bts_id = neitzcell.bts_id
+                                                                                   and neisector.sector_id = neitzcell.sector_id --关联台账
+                                                                                   and neisector.related_bts = neibts.ne_sys_id
+                                                                                   and neibts.related_bsc = neibsc.ne_sys_id
+                                                                                   and neibsc.ne_sys_id = neimsc.ne_bsc_id
+                                                                                   and neisector.city_id = neicity.city_id
+                                                                                   and neisector.city_id = neibts.city_id
+                                                                                   and neisector.city_id = neibsc.city_id
+                                                                                   and neisector.city_id = neimsc.city_id
+                                                                                   and neiadm.county_id(+) = neisector.adm_area    
+                                                                                   and substr(luc.omcid,length(luc.omcid))=neisector.bsc_id
+                                                                                   and luc.nei_bts=neisector.bts_id
+                                                                                   and luc.nei_sector=neisector.sector_id                                                                   
+                                                                                   --and para_sort.ne_cell_id=para.ne_cell_id
+	--DO扇区
+      select case BSC.vendor when 'ZY0808' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0804' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID when 'ZY0810' then BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID end as ID2001,'2011-5-19' as ID2002,case BSC.vendor when 'ZY0808' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(SECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(SECTOR.CHINA_NAME, ',', '，') end as ID2003,'广东' as ID2004,CITY.CITY_NAME as ID2005,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME when 'ZY0810' then MSC.MSCNAME when 'ZY0804' then MSC.MSCNAME end as ID2006, '' as ID2007,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME when 'ZY0804' then MSC.BSCNAME end as ID2008,CASE BSC.vendor when 'ZY0808' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0810' then MSC.MSCNAME || '.' || MSC.BSCNAME || '.' || BTS.BTS_ID when 'ZY0804' then MSC.BSCNAME || '.' || BTS.BTS_ID end as ID2009,case BSC.vendor when 'ZY0808' then SECTOR.SECTOR_ID when 'ZY0804' then SECTOR.SECTOR_ID when 'ZY0810' then SECTOR.SECTOR_ID end as ID2010,SECTOR.PN as ID2011,LUC.NBRID as ID2012, '' as ID2013,case NEIBSC.vendor when 'ZY0808' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' || NEISECTOR.SECTOR_ID when 'ZY0804' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' || NEISECTOR.SECTOR_ID when 'ZY0810' then NEIBSC.CHINA_NAME || '.' || NEIBTS.BTS_ID || '.' || NEISECTOR.SECTOR_ID end as ID2014,replace(NEIADM.COUNTY_NAME, '区', '') as ID2015,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME when 'ZY0810' then NEIMSC.MSCNAME when 'ZY0804' then NEIMSC.MSCNAME end as ID2016, '' as ID2017,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME when 'ZY0804' then NEIMSC.BSCNAME end as ID2018,CASE NEIBSC.vendor when 'ZY0808' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0810' then NEIMSC.MSCNAME || '.' || NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID when 'ZY0804' then NEIMSC.BSCNAME || '.' || NEIBTS.BTS_ID end as ID2019,case NEIBSC.vendor when 'ZY0808' then NEISECTOR.SECTOR_ID when 'ZY0804' then NEISECTOR.SECTOR_ID when 'ZY0810' then NEISECTOR.SECTOR_ID end as ID2020,case NEIBSC.vendor when 'ZY0808' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0804' then replace(NEISECTOR.CHINA_NAME, ',', '，') when 'ZY0810' then replace(NEISECTOR.CHINA_NAME, ',', '，') end as ID2021,NEISECTOR.PN as ID2022,NEITZCELL.PROVINCE as ID2023,NEITZCELL.CITY_NAME as ID2024,case NEITZCELL.BORDER_TYPE when '非边界' then '0' when '省际边界' then '1' when '省内边界' then '2' when '同为省际省内边界' then '3' end as ID2025,case neitzcell.vendor when 'ZY0808' then '华为' when 'ZY0804' then '中兴' when 'ZY0810' then '朗讯' end as ID2026, '' as ID2027,LUC.hdrsnid as ID2028,LUC.fmsframeid as ID2029,LUC.cellsiteid as ID2030,LUC.sectorid as ID2031,LUC.nbrid as ID2032,LUC.nbrnbrhdrcellsiteid as ID2033,LUC.nbrnbrsectorid as ID2034,LUC.nbrwithinsn as ID2035,LUC.nbrpnoff as ID2036,LUC.nbrsystemtype as ID2037,LUC.nbrbandclass as ID2038,LUC.nbrbandsubclass as ID2039,LUC.nbrchannelnumber as ID2040,LUC.nbrsearchwindowsize as ID2041,LUC.nbrsearchwindowsizecarrier as ID2042,LUC.nbrsearchwindowsizecarrier2 as ID2043,LUC.nbrsearchwindowsizecarrier3 as ID2044,LUC.nbrsearchwindowsizecarrier4 as ID2045,LUC.nbrsearchwindowsizecarrier5 as ID2046,LUC.nbrsectorasocactiveapipaddress as ID2047,LUC.nbrsectorasocbackupapipaddress as ID2048,LUC.nbrchannelnumber2 as ID2049,LUC.nbrchannelnumber3 as ID2050,LUC.nbrchannelnumber4 as ID2051,LUC.nbrchannelnumber5 as ID2052,LUC.nbrbandclass2 as ID2053,LUC.nbrbandclass3 as ID2054,LUC.nbrbandclass4 as ID2055,LUC.nbrbandclass5 as ID2056,LUC.nbrbandsubclass2 as ID2057,LUC.nbrbandsubclass3 as ID2058,LUC.nbrbandsubclass4 as ID2059,LUC.nbrbandsubclass5 as ID2060,LUC.directedifhotarget as ID2061,LUC.directedifhotarget2 as ID2062,LUC.directedifhotarget3 as ID2063,LUC.directedifhotarget4 as ID2064,LUC.directedifhotarget5 as ID2065 from ne_cell_c        sector,
+                                                                                           ne_bts_c         bts,
+                                                                                           ne_bsc_c         bsc,
+                                                                                           cfg_bsc_map_city msc,
+                                                                                           cfg_city         city,
+                                                                                           ne_taizhang_cell tzcell,
+                                                                                           --para_adj_luc     para,
+                                                                                           ne_cell_c        neisector,
+                                                                                           ne_bts_c         neibts,
+                                                                                           ne_bsc_c         neibsc,
+                                                                                           cfg_bsc_map_city neimsc,
+                                                                                           cfg_city         neicity,
+                                                                                           cfg_county       neiadm,
+                                                                                           ne_taizhang_cell neitzcell,
+                                                                                           CLT_CM_LUC_DO_NEIGHBORSECTOR luc
+                                                                                           --(select p.ne_cell_id,ROW_NUMBER() OVER(PARTITION BY p.ne_cell_id ORDER BY p.nbrseq) - 1 as sortnum
+                                                                                               --from para_adj_luc p, ne_cell_c c
+                                                                                              --where p.ne_cell_id = c.ne_sys_id
+                                                                                                --and p.vendor = 'ZY0810') para_sort
+                                                                                 where sector.bsc_id = tzcell.bsc_id
+                                                                                   and sector.bts_id = tzcell.bts_id
+                                                                                   and sector.sector_id = tzcell.sector_id --关联台账
+                                                                                   and tzcell.border_type in ('省际边界', '同为省内省际边界')
+                                                                                   and tzcell.isdo='是'
+                                                                                   and sector.vendor='ZY0810'
+                                                                                   and sector.related_bts = bts.ne_sys_id
+                                                                                   and bts.Related_Bsc = bsc.ne_sys_id
+                                                                                   and bsc.ne_sys_id = msc.ne_bsc_id
+                                                                                   and sector.city_id = city.city_id
+                                                                                   and sector.city_id = bts.city_id
+                                                                                   and sector.city_id = bsc.city_id
+                                                                                   and sector.city_id = msc.city_id
+                                                                                   --and sector.ne_sys_id = para.ne_cell_id(+)
+                                                                                   --and para.nei_ne_cell_id = neisector.ne_sys_id
+                                                                                   and neisector.bsc_id = neitzcell.bsc_id
+                                                                                   and neisector.bts_id = neitzcell.bts_id
+                                                                                   and neisector.sector_id = neitzcell.sector_id --关联台账
+                                                                                   and neisector.related_bts = neibts.ne_sys_id
+                                                                                   and neibts.related_bsc = neibsc.ne_sys_id
+                                                                                   and neibsc.ne_sys_id = neimsc.ne_bsc_id
+                                                                                   and neisector.city_id = neicity.city_id
+                                                                                   and neisector.city_id = neibts.city_id
+                                                                                   and neisector.city_id = neibsc.city_id
+                                                                                   and neisector.city_id = neimsc.city_id
+                                                                                   and neiadm.county_id(+) = neisector.adm_area
+                                                                                   and substr(luc.omcid,length(luc.omcid))=neisector.bsc_id
+                                                                                   and luc.cellsiteid=neisector.bts_id
+                                                                                   and luc.sectorid=neisector.sector_id
+                                                                                   --and para_sort.ne_cell_id=para.ne_cell_id
+                                                                                   and luc.stamptime=trunc(sysdate-2)

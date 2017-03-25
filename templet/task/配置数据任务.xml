@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@137.64.17.132:1521:NOAP1</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noap</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="${province_en}_CONF_MSC_%%Y%%M%%D.csv" templet="配置数据模板.ftl">
+				<sql>select '%%Y-%%M-%%D' as 时间戳,bb.MSCNAME as MSC标识,
+       '' as 外部网元标识,
+       '${province_cn}' as 省份名称,
+       cc.city_name as 城市列表,
+       (case bb.vendor
+         when 'ZY0808' then
+          '华为'
+         when 'ZY0810' then
+          '阿朗'
+         when 'ZY0804' then
+          '中兴'
+       end) as 厂家名称,
+       '' as 软件版本,
+       '' as 硬件版本,
+       '' as 设备名称,
+       cc.city_name||'.'||cc.msc as 设备中文名称,
+       '' as 规格型号,
+       '' as 机房位置,
+       '' as MSCID,
+       sid.sid as SID,
+       '' as NID,
+       '' as IP地址,
+       '' as 信令点编码,
+       '' as 配置信令链路数,
+       '' as 配置中继数,
+       '' as 目前管辖BSC数,
+       '' as 备注,
+       '' as 预留字段1,
+       '' as 预留字段2,
+       '' as 预留字段3,
+       '' as 预留字段4,
+       '' as 预留字段5
+  from cfg_bsc_map_city bb,(select * from (select rownum as num, a.*
+  from (select distinct b.mscname as msc, d.city_name
+          from cfg_bsc_map_city b, cfg_city d
+         where b.city_id = d.city_id
+         order by b.mscname) a) b where b.num in (select min(num) from (select rownum as num, a.*
+  from (select distinct b.mscname as msc, d.city_name
+          from cfg_bsc_map_city b, cfg_city d
+         where b.city_id = d.city_id
+         order by b.mscname) a) c group by msc)) cc,cfg_city sid 
+ where bb.rowid = any
+ (select max(rowid) from cfg_bsc_map_city group by mscname) 
+ and bb.mscname=cc.msc and bb.city_id=sid.city_id(+) 
+ order by bb.mscname</sql>
+			</mapping>
+		<mapping name="${province_en}_CONF_BSC_%%Y%%M%%D.csv" templet="配置数据模板.ftl">
+				<sql>select '%%Y-%%M-%%D' as 时间戳, case T1.VENDOR when 'ZY0808' THEN CITY.ENNAME||'.'||OMC.MSCNAME||'.'||T1.china_name when 'ZY0810' THEN CITY.ENNAME||'.'||OMC.MSCNAME|| '.'||T1.china_name whEN 'ZY0804' THEN CITY.ENNAME||'.'||OMC.MSCNAME|| '.'|| T1.china_name ELSE 'ASS' END as BSC标识, '' as 外部网元标识, '${province_cn}' as 省份, CITY.CITY_NAME  as 城市列表, OMC.MSCNAME as MSC标识, '' as MGW标识, case T1.vendor when 'ZY0808' THEN '华为' when 'ZY0810' THEN '阿朗' when 'ZY0804' THEN '中兴' end  as 厂家名称, '' as 软件版本, '' as 设备名称, CITY.CITY_NAME ||'.'||OMC.MSCNAME ||'.' || OMC.BSCNAME as 设备中文名称, '' as 规格型号, '' as 无线容量, '' as 设计无线容量, '' as 基站容量, '' as 扇区容量, '' as 设计的BHCA值, (select count(*) bts_num from ne_bts_c d where d.related_bsc = T1. ne_sys_id)  as 基站数量, '' as "1X基站数量", '' as DO基站数量, '' as 扇区数量, '' as PCF数量, '' as 机房位置, '' as 机房名称, '' as 经度, '' as 纬度, '' as 备注, '' as 预留字段1, '' as 预留字段2, '' as 预留字段3, '' as 预留字段4, '' as 预留字段5 from NE_BSC_C T1, CFG_BSC_MAP_CITY OMC, CFG_CITY CITY where OMC.NE_BSC_ID = T1.NE_SYS_ID AND T1.CITY_ID = CITY.CITY_ID order by T1.city_id, ne_sys_id</sql>
+			</mapping>
+			<mapping name="${province_en}_CONF_BTS_%%Y%%M%%D.csv" templet="BTS数据模板.ftl" before="1">
+				<sql>select '%%Y-%%M-%%D' as "时间戳", case BSC.vendor
+when 'ZY0808' then   BSC.CHINA_NAME||'.'||BTS.BTS_ID
+when 'ZY0804' then   BSC.CHINA_NAME||'.'||BTS.BTS_ID
+when 'ZY0810' then   BSC.CHINA_NAME||'.'||BTS.BTS_ID
+else 'ASS'    end as "基站标识", '' as "外部网元标识", bts.bts_id as "站号", bts.equip_name as "基站设备名称", replace(bts.china_name,',','.') as "基站中文名", '' as "基站拼音", '' as "基站别名", '${province_cn}' as "省份", CITY.CITY_NAME as "城市", replace(ADM.COUNTY_NAME,'区','')  as "行政归属", '' as "地理归属", MSC.MSCNAME as "MSC标识", '' as "MGW标识", CASE BSC.vendor
+when 'ZY0808' then CITY.ENNAME || '.' ||  MSC.MSCNAME || '.' || MSC.BSCNAME
+when 'ZY0810' then CITY.ENNAME || '.' ||  MSC.MSCNAME || '.' || MSC.BSCNAME
+when 'ZY0804' then CITY.ENNAME || '.' ||  MSC.MSCNAME || '.' || MSC.BSCNAME
+else 'MSC标识' end as "BSC标识", case BSC.vendor when 'ZY0808' THEN '华为' when 'ZY0810' THEN '阿朗' when 'ZY0804' THEN '中兴' end  as "厂家名称", case BSC.vendor
+when 'ZY0808' then  'BSC6680'
+when 'ZY0804' then  'V8'
+when 'ZY0810' then  'R32'
+else 'softVersion'    end as "软件版本", BTS.EQUIP_MODEL as "设备型号", '' as "基站等级", BTS.LAC as "LAC", '' as "REG_ZONE", '' as "BSID", '' as "NID", CITY.SID as "SID", '' as "扇区数量", '' as "1X载扇数量", '' as "DO载扇数量", '' as "1X CE数量", '' as "DO CE数量", '' as "分配ABIS口E1电路数量", 1 as "基站类型", case when (carr.bus_1x+carr.bus_do)= 2 then 1 else case when carr.bus_1x = 1 then 0 else 2 end  end  as "系统类型", '' as "延伸覆盖类型", '' as "天线方向类型", '' as "1X站型配置", '' as "DO站型配置", 1 as "工程状态", '' as "运行状态", '' as "运行状态判断时间", '' as "基站开通日期", '' as "设计院", '' as "设计期别", '' as "代维单位", '' as "维护人", '' as "维护人电话", '' as "营销区域", '' as "覆盖区域描述", '' as "共站情况", substr(replace(BTS.ADDRESS,',','.'),0,30) as "站址", '' as "带室外直放站数量", BTS.LONGITUDE  as "经度", BTS.LATITUDE     as "纬度", case  BTS.border_type when '非边界' then 0 when '省际边界' then 1 when '省内边界' then 2 when '同为省际省内边界' then 3 end as "边界基站类型", '' as "塔桅类型", '' as "机柜类型", BTS.WIRE_LOAD       as "无线容量", BTS.WIRE_LOAD_P     as "设计无线容量", '' as "最大发射功率", '' as "环境类型", BTS.ARCHITECTURE     as "建筑类型", '' as "电源", BTS.TRANSFERS       as "传输方式", '' as "传输设备", BTS.ISRELATED       as "是否级联", '' as "是否室内", '' as "厂商侧BSC编号", '' as "厂商侧SITE编号", '' as "备注", '' as "预留字段1", '' as "预留字段2", '' as "预留字段3", '' as "预留字段4", '' as "预留字段5"
+
+FROM (select BTS.*,tai.border_type from NE_BTS_C BTS,
+  (  select carr.related_bts,t.border_type from ne_carrier_c carr,ne_taizhang_bts t
+where t.bts_id=carr.bts_id
+and t.bsc_id=carr.bsc_id
+and t.city_id=carr.city_id )tai 
+where tai.related_bts(+)=bts.ne_sys_id) BTS,
+       NE_BSC_C BSC,
+       CFG_BSC_MAP_CITY MSC,
+       CFG_CITY CITY,
+       CFG_COUNTY ADM,
+       (select related_bts, sum(BUS_1X) as BUS_1X, sum(BUS_DO) as BUS_DO
+          from (select related_bts, 1 BUS_1X, 0 BUS_DO
+                  from ne_carrier_c carrier
+                 where BUSTYPE = '1X'
+                    or bustype = '0'
+                    or bustype is null
+                 group by related_bts
+                UNION ALL
+                select related_bts, 0 BUS_1X, 1 BUS_DO
+                  from ne_carrier_c carrier
+                 where BUSTYPE = 'DO'
+                    or bustype = '0'
+                    or bustype is null
+                 group by related_bts)
+         group by related_bts) carr
+ WHERE longitude is not null
+   and latitude is not null
+   and longitude &gt; 74
+   and latitude &gt; 3
+   and longitude &lt; 135
+   and latitude &lt; 53
+   AND BTS.RELATED_BSC = BSC.NE_SYS_ID
+   and BSC.NE_SYS_ID = MSC.NE_BSC_ID
+   AND BTS.CITY_ID = CITY.CITY_ID
+   AND BTS.CITY_ID = BSC.CITY_ID
+   AND BTS.CITY_ID = MSC.CITY_ID
+   and bts.ne_sys_id = carr.related_bts
+   AND ADM.COUNTY_ID(+) = BTS.ADM_AREA
+ order by city.city_id, bsc.ne_sys_id, bts.bts_id
+</sql>
+			</mapping>
+			<mapping name="${province_en}_CONF_SECTOR_%%Y%%M%%D.csv" templet="SECTOR数据模板.ftl">
+				<sql>select '%%Y-%%M-%%D' as "时间戳", case BSC.vendor
+when 'ZY0808' then  BSC.CHINA_NAME||'.'||BTS.BTS_ID||'.'||SECTOR.SECTOR_ID
+when 'ZY0804' then  BSC.CHINA_NAME||'.'||BTS.BTS_ID||'.'||SECTOR.SECTOR_ID
+when 'ZY0810' then  BSC.CHINA_NAME||'.'||BTS.BTS_ID||'.'||SECTOR.SECTOR_ID  end as "扇区标识", '' as "外部网元标识", '${province_cn}' as "省份", CITY.CITY_NAME as "城市", replace(ADM.COUNTY_NAME,'区','')  as "行政区", '' as "地理归属", case BSC.vendor
+when 'ZY0808' then BTS.BTS_ID
+when 'ZY0804' then BTS.BTS_ID
+when 'ZY0810' then BTS.BTS_ID end as "厂商侧基站标识", case BSC.vendor
+when 'ZY0808' then  SECTOR.SECTOR_ID
+when 'ZY0804' then  BTS.BTS_ID
+when 'ZY0810' then  SECTOR.SECTOR_ID end as "厂商侧扇区标识", case BSC.vendor
+when 'ZY0808' then  SECTOR.SECTOR_ID
+when 'ZY0804' then  SECTOR.SECTOR_ID
+when 'ZY0810' then  SECTOR.SECTOR_ID end as "厂商侧sector编号", case BSC.vendor
+when 'ZY0808' then  replace('0x'||to_char(BTS.BTS_ID*16+SECTOR.SECTOR_ID,'XXXXXXXX'),' ','')
+when 'ZY0804' then  to_char(SECTOR.CI)
+when 'ZY0810' then  replace('0x'||to_char(BTS.BTS_ID*16+SECTOR.SECTOR_ID,'XXXXXXXX'),' ','') end as "扇区标识_1X", case BSC.vendor
+when 'ZY0808' then  replace('0x'||to_char(BTS.BTS_ID*16+SECTOR.SECTOR_ID,'XXXXXXXX'),' ','')
+when 'ZY0804' then  to_char(SECTOR.CI)
+when 'ZY0810' then  replace('0x'||to_char(BTS.BTS_ID*16+SECTOR.SECTOR_ID,'XXXXXXXX'),' ','') end as "扇区标识_DO", case BSC.vendor
+when 'ZY0808' then  replace(SECTOR.CHINA_NAME,',','，')
+when 'ZY0804' then  replace(SECTOR.CHINA_NAME,',','，')
+when 'ZY0810' then  replace(SECTOR.CHINA_NAME,',','，') end as "扇区中文名", SECTOR.LONGITUDE as "经度", SECTOR.LATITUDE as "纬度", SECTOR.PN as "PN", DECODE(SECTOR.SITE_TYPE,'1','标准小区','2','微蜂窝','3','RRU',SECTOR.SITE_TYPE) as "扇区类型", DECODE(SECTOR.ISINDOOR,0,'否',1,'是') as "是否室内", DECODE(SECTOR.SITE_TYPE,'3','是','否') as "是否RRU扇区", '' as "是否为多RRU共PN扇区", SECTOR.ISCELLSPLIT as "是否功分扇区", SECTOR.WIRE_LOAD_P as "设计无线容量", 
+CASE BSC.vendor
+when 'ZY0808' then CITY.ENNAME||'.'||MSC.MSCNAME
+when 'ZY0810' then CITY.ENNAME||'.'||MSC.MSCNAME
+when 'ZY0804' then CITY.ENNAME||'.'||MSC.MSCNAME end as "MSC标识", '' as "MGW标识", CASE BSC.vendor
+when 'ZY0808' then CITY.ENNAME||'.'||MSC.MSCNAME||'.'||MSC.BSCNAME
+when 'ZY0810' then CITY.ENNAME||'.'||MSC.MSCNAME||'.'||MSC.BSCNAME
+when 'ZY0804' then CITY.ENNAME||'.'||MSC.MSCNAME||'.'||MSC.BSCNAME end as "BSC标识", CASE BSC.vendor
+when 'ZY0808' then CITY.ENNAME||'.'||MSC.BSCNAME||'.'||BTS.BTS_ID
+when 'ZY0810' then CITY.ENNAME||'.'||MSC.BSCNAME||'.'||BTS.BTS_ID
+when 'ZY0804' then CITY.ENNAME||'.'||MSC.BSCNAME||'.'||BTS.BTS_ID end as "BTS标识", SECTOR.LAC as "LAC", SECTOR.PROJECT_STATE as "工程状态", SECTOR.LONGITUDE as "天线经度", SECTOR.LATITUDE as "天线纬度", SECTOR.ANT_FRAME_HIGH as "天线海拔高度", SECTOR.ANT_HIGH as "天线总挂高", SECTOR.ANT_AZIMUTH as "天线方向角", SECTOR.ANT_ANGLE as "天线俯仰角", SECTOR.ANT_ELECTRON_ANGLE as "电子下倾角", SECTOR.ANT_ENGINE_ANGLE as "机械倾角", SECTOR.ISELECADJUST as "天线是否可以电调", SECTOR.ANT_NUM as "天线数量", SECTOR.HORIZONTAL as "天线水平3db波瓣宽度", SECTOR.VERTICAL as "天线垂直3db波瓣宽度", SECTOR.ISCELLSPLIT as "是否扇区分裂", case BSC.vendor when 'ZY0808' THEN '华为' when 'ZY0810' THEN '阿朗' when 'ZY0804' THEN '中兴' end  as "所属厂家", case BSC.vendor
+when 'ZY0808' then 'BSC6680'
+when 'ZY0804' then 'V8'
+when 'ZY0810' then 'R32' end as "软件版本", DECODE(SECTOR.ISDO,0,SECTOR.CARRIER_NUM,1,NULL) as "1X载扇数量", DECODE(BTS.ISDO,0,BTS.TCH_COUNT,1,NULL) as "1X信道板数量", '' as "1X信道配置数", DECODE(BTS.ISDO,0,BTS.SITE_MODEL,1,NULL) as "1X站型配置", BTS.SITE_TYPE as "系统类型", DECODE(SECTOR.ISDO,0,'否',1,'是') as "是否DO扇区", DECODE(SECTOR.ISDO,1,SECTOR.CARRIER_NUM,0,NULL) as "DO载扇数量", DECODE(BTS.ISDO,1,BTS.TCH_COUNT,0,NULL) as "DO信道板配置数量", '' as "DO信道配置数", DECODE(BTS.ISDO,1,BTS.SITE_MODEL,0,NULL) as "DO站型配置", SECTOR.BORDERSECTOR as "是否多载波边界", case  sector.border_type when '非边界' then 0 when '省际边界' then 1 when '省内边界' then 2 when '同为省际省内边界' then 3 end as "边界扇区类型", sector.nbr_province_name as "接壤省份名称", sector.nbr_city_name as "接壤城市名称", DECODE(SECTOR.FAKEPILOT,NULL,'否','是') as "是否使用伪导频", SECTOR.FAKEPILOT as "伪导频频点", SECTOR.ISTOWER as "是否安装塔顶放大器", SECTOR.ISAMPLIFIER as "是否安装基站放大器", '' as "环境类型", '' as "环境描述", '' as "场景类型1", '' as "场景类型2", '' as "场景类型3", '' as "场景描述", BTS.ARCHITECTURE as "建筑类型", BTS.ADDRESS as "地址", '' as "备注", '' as "预留1", '' as "预留2", '' as "预留3", '' as "预留4", '' as "预留5"
+  from (select tai.border_type,tai.nbr_province_name,tai.nbr_city_name,ne.*
+          from ne_cell_c ne,
+               ne_taizhang_cell tai
+         where ne.city_id = tai.city_id(+)
+           and ne.bsc_id = tai.bsc_id(+)
+           and ne.Bts_Id = tai.bts_id(+)
+           and ne.sector_id = tai.sector_id(+)) sector,
+       ne_bts_c         bts,
+       ne_bsc_c         bsc,
+       cfg_bsc_map_city msc,
+       cfg_city         city,
+       cfg_county       adm
+ where sector.related_bts = bts.ne_sys_id
+   and BTS.RELATED_BSC = BSC.NE_SYS_ID
+   and BSC.NE_SYS_ID = MSC.NE_BSC_ID
+   and sector.city_id = city.city_id
+   and sector.city_id = bts.city_id
+   and sector.city_id = bsc.city_id
+   and sector.city_id = msc.city_id
+   and adm.COUNTY_ID(+) = sector.ADM_AREA
+ order by city.city_id, bsc.ne_sys_id, bts.bts_id, sector.sector_id</sql>
+			</mapping>
+			<mapping name="${province_en}_CONF_WLANHP_%%Y%%M%%D.csv" templet="WLANHP数据模板.ftl">
+				<sql>select '%%Y-%%M-%%D' as "时间戳", HOT.HOTMARK as "热点标识",
+       '${province_cn}' as "省份名称",
+       CITY.CITY_NAME as "城市名称",
+       HOT.HOTNAME as "热点名称",
+       HOT.HOTADDR as "热点地址",
+       HOT.LONGITUDE as "热点经度",
+       HOT.LATITUDE as "热点纬度",
+       HOT.HOTUSEAPNUM as "热点使用的AP数量",
+       HOT.HOTUSEACNUM as "热点使用的AC数量",
+       (select distinct fullname from (select case a.vendor
+         when 'ZY0808' then
+          b.enname || '_' || a.omc_name || '.' || a.bsc_name || '.' || a.bts || '.' ||
+          a.cell
+         when 'ZY0804' then
+          a.bsc_name || '.' || a.bts || '.' || a.cell
+         when 'ZY0810' then
+          b.enname || '_' || a.omc_name || '.' || a.bsc_name || '.' || a.bts || '.' ||
+          a.cell
+       end as fullname,
+       a.ne_cell_id
+  from cfg_map_dev_to_ne a, cfg_city b
+ where a.city_id = b.city_id) aa where aa.ne_cell_id=to_char(HOT.CELLIDONE))
+        as "覆盖区关联EVDO扇区信息1",
+      (select distinct fullname from (select case a.vendor
+         when 'ZY0808' then
+          b.enname || '_' || a.omc_name || '.' || a.bsc_name || '.' || a.bts || '.' ||
+          a.cell
+         when 'ZY0804' then
+          a.bsc_name || '.' || a.bts || '.' || a.cell
+         when 'ZY0810' then
+          b.enname || '_' || a.omc_name || '.' || a.bsc_name || '.' || a.bts || '.' ||
+          a.cell
+       end as fullname,
+       a.ne_cell_id
+  from cfg_map_dev_to_ne a, cfg_city b
+ where a.city_id = b.city_id) aa where aa.ne_cell_id=to_char(HOT.CELLIDTWO)) as "覆盖区关联EVDO扇区信息2",
+      (select distinct fullname from (select case a.vendor
+         when 'ZY0808' then
+          b.enname || '_' || a.omc_name || '.' || a.bsc_name || '.' || a.bts || '.' ||
+          a.cell
+         when 'ZY0804' then
+          a.bsc_name || '.' || a.bts || '.' || a.cell
+         when 'ZY0810' then
+          b.enname || '_' || a.omc_name || '.' || a.bsc_name || '.' || a.bts || '.' ||
+          a.cell
+       end as fullname,
+       a.ne_cell_id
+  from cfg_map_dev_to_ne a, cfg_city b
+ where a.city_id = b.city_id) aa where aa.ne_cell_id=to_char(HOT.CELLIDTHREE)) as "覆盖区关联EVDO扇区信息3",
+       '' as "预留字段1",
+       '' as "预留字段2",
+       '' as "预留字段3",
+       '' as "预留字段4",
+       '' as "预留字段5"
+  from ne_uway_hotdatacollect hot, cfg_city city
+ where hot.city_id = city.city_id
+   and HOT.HOTMARK is not null
+</sql>
+			</mapping>
+			<mapping name="${province_en}_CONF_BLINDPOINT_%%Y%%M%%D.csv" templet="配置数据模板.ftl">
+				<sql>
+select '%%Y-%%M-%%D' as "时间戳", BLIND.BLINDID as "盲点标识", '${province_cn}' as "省份名称", CITY.CITY_NAME as "城市名称", BLIND.BLINDADDRESS as "盲点详细地点", BLIND.SERIAL_ID as "盲点序号", BLIND.CREATETIME as "加入日期", BLIND.BLINDAREAID as "盲区编号", BLIND.BLINDNAME as "盲区名称", BLIND.BLINDPROPERTYCITY as "盲点所属县市", BLIND.BLINDPROPERTYCITYTOWN as "盲点所属乡镇", BLIND.BLINDADDNAME as "盲点地点别名", BLIND.MARKBUILD as "标志性建筑", BLIND.BLINDLEVEL as "盲点级别", BLIND.LONGITUDE as "盲点经度", BLIND.LATITUDE as "盲点纬度", BLIND.AREATYPE as "盲点区域类型", BLIND.BLINDINOROUT as "盲点室内外分布", BLIND.IS1XBLIND as "是否1x盲区", BLIND.ISDOCELL as "是否DO盲区", BLIND.FORMREASON as "形成原因", BLIND.RADIUS as "影响半径", BLIND.SETPLAN as "解决方案", BLIND.ISHASPLAN as "是否有规划", BLIND.PLANSITE as "规划站名", BLIND.PLANSITELONGITUDE as "规划站经度", BLIND.PLANSITELATITUDE as "规划站纬度", BLIND.PLANADDRESS as "规划详细地址", BLIND.PLANINDOROUT as "规划站室内外分布", BLIND.EQUIPMENTTYPE as "规划站设备类型", BLIND.ONEXDEPLOY as "1X配置", BLIND.DODEPLOY as "DO配置", BLIND.BUILDREASON as "建站理由简述", BLIND.PUTONLIST as "列入几期规划", BLIND.PLANBUILDTIME as "计划建站时间", BLIND.FILLINMAN as "填报人", TO_CHAR(BLIND.FILLTIME,'YYYY-MM-DD HH24:MI:SS') as "填报时间", BLIND.RESOLVE as "解决进度", TO_CHAR(BLIND.SETTIME,'YYYY-MM-DD HH24:MI:SS') as "解决时间", BLIND.LASTSETPLAN as "最终解决方案", '' as "预留字段1", '' as "预留字段2", '' as "预留字段3", '' as "预留字段4", '' as "预留字段5" 
+  from ne_uway_blindinfor blind, cfg_city city where blind.city_id = city.city_id</sql>
+			</mapping>
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">10.252.0.204</property>
+		<property name="port">21</property>
+		<property name="username">sxftp</property>
+		<property name="password">fzs%Jxop</property>
+		<property name="path">/CONF/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--?????-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>

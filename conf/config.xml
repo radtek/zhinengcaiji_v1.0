@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nbi_cfg name="1">
+	<system>
+		<pid></pid>
+		<version>
+			<edition>1.0</edition>
+			<releaseTime>2010-08-31 10:10:00</releaseTime>
+		</version>
+		<model>1</model> <!--1: 省接口数据上报 2: BSA状态同步    4. 透视数据上报-->
+		<taskscanperiod>5</taskscanperiod><!--上报任务扫描时间周期(单位:秒) -->
+		<rtaskscanperiod>10</rtaskscanperiod><!--补报任务扫描时间周期(单位:秒) -->
+		<currentpath>/D/testfile/</currentpath>
+		<taskpoolsize>10</taskpoolsize>
+		<rtasksort>1</rtasksort><!-- 1：升序 0:降序 -->
+		<rtaskmaxaction>30</rtaskmaxaction><!--补报最大任务个数 -->
+		<maxreporttime>60</maxreporttime><!--最大上报时间数，如果超过此时间就强行退出,单位：分钟 -->
+		<ftpservercharset>iso-8859-1</ftpservercharset><!-- FTP服务器字符集 -->
+		<dellocalfile>true</dellocalfile>
+		<datacheck>false</datacheck><!-- 数据核查模块开启 true: 开启 false: 不开启 -->
+		<tablelog>true</tablelog><!-- 日志表记录模块开启 true: 开启 false: 不开启 -->
+		<ftpThreads>5</ftpThreads>
+		<resolveThreads>5</resolveThreads>
+	</system>
+	<db>
+		<name>NBI_DB_POOL</name>
+		<dbpooltype>3</dbpooltype>
+		<type>javax.sql.DataSource</type>
+		<driverClassName>oracle.jdbc.driver.OracleDriver</driverClassName>
+
+		<!-- 
+		<url>jdbc:oracle:thin:@192.168.15.223:1521:ora10</url>
+		<service>cnoap_241</service>
+		<user>noapjs</user>
+		<password>uwaysoft2009</password>
+		 -->
+		 
+		<!-- test10 -->
+		<!-- 
+		<url>jdbc:oracle:thin:@192.168.15.223:1521:TEST10</url>
+		<service>TEST10</service>
+		<user>test_cnoap</user>
+		<password>test_cnoap</password>
+		-->
+		
+		
+        <!-- 数据库安全测试 -->
+	    <url>jdbc:oracle:thin:@192.168.15.223:1521:ora11</url>
+		<user>wcdma</user>
+		<password>uwaysoft2010</password>
+		<dbNum>888</dbNum>
+		<connType>jdbc</connType>
+
+
+		<!-- liangww add 2011-09-26 for test(complainItemDaoTest) <url>jdbc:oracle:thin:@192.168.0.180:1521:gnoap</url> 
+			<service>orcldb</service> <user>gdnoap</user> <password>gdnoap</password> -->
+
+		<maxActive>10</maxActive>
+		<maxIdle>5</maxIdle>
+		<maxWait>10000</maxWait>
+		<validationQuery>select sysdate from dual</validationQuery>
+	</db>
+	<checkDB>
+		<name>NBI_DB_POOL</name>
+		<dbpooltype>3</dbpooltype>
+		<type>javax.sql.DataSource</type>
+		<driverClassName>oracle.jdbc.driver.OracleDriver</driverClassName>
+        <!-- 数据库安全测试 -->
+	    <url>jdbc:oracle:thin:@192.168.15.223:1521:ora11</url>
+		<user>wcdma</user>
+		<password>uwaysoft2010</password>
+		<dbNum>888</dbNum>
+		<connType>jdbc</connType>
+		<maxActive>10</maxActive>
+		<maxIdle>5</maxIdle>
+		<maxWait>10000</maxWait>
+		<validationQuery>select sysdate from dual</validationQuery>
+	 </checkDB>
+	<other>
+		<winrarpath>C:\Program Files\WinRAR\WinRAR.exe</winrarpath>
+		<bsasnapcell>C:\Documents and
+			Settings\Administrator\桌面\snapcell1\snapcell\bsa维护工具1.0.3_build1\bsa维护工具1.0.3_build1\snapCell.exe
+		</bsasnapcell>
+		<snapcelldatadir>C:\Documents and
+			Settings\Administrator\桌面\snapcell1\snapcell\数据样例\
+		</snapcelldatadir>
+		<tedb_global>C:\Documents and
+			Settings\Administrator\桌面\snapcell1\snapcell\heightdb\TEDB_global\
+		</tedb_global>
+	</other>
+
+
+	<webserver>
+
+		<serveraddress>http://10.254.200.180:9999/facade/services/SheetFacadeService?wsdl
+		</serveraddress>
+		<!-- <serveraddress>http://localhost:8080/axis/services/SheetFacadeService?wsdl</serveraddress> -->
+		<obtainsheetperiod>30</obtainsheetperiod>
+		<submitdealsheetperiod>120</submitdealsheetperiod>
+
+		<dtserviceurl>http://192.168.15.103:8088/nbi/services/DTService?wsdl
+		</dtserviceurl>
+
+	</webserver>
+
+	<interface>
+		<sms>
+		 	<!-- 是否打开SMC告警 true：打开 false：关闭 -->
+			<isOpenSMC>true</isOpenSMC>
+			<!-- 发送邮件告警的WS接口，根据现场的SMC系统配置,在SmcService.xml中查看 -->
+			<smsserviceurl>http://192.168.15.73:8081/services/SmcService?wsdl
+			</smsserviceurl>
+			<!-- 告警信息接受者的邮箱 -->
+			<email>tiancl@uway.cn</email>
+			<!-- 告警新接受者的电话 -->
+			<phone>18036666782</phone>
+			<!-- 发送方式 1短信 2邮件 -->
+			<sendWay>1</sendWay>
+			<!-- SMC告警系统的用户 -->
+			<username>1</username>
+			<!-- SMC告警系统的用户的密码md5加密 -->
+			<password>c4ca4238a0b923820dcc509a6f75849b</password>
+			<!-- 消息级别等级，越小越紧急,参照外围系统参数 -->
+			<level>1</level>
+			<!-- ype值定义如下：
+				1:一般短消息发送  
+				2: 快递短消息发送 -->
+			<type>2</type>
+			<!-- 业务类型编码,参照外围系统参数 -->
+			<srcId>1</srcId>
+			<!-- 告警邮件标题 -->
+			<title>NBI采集告警</title>
+		</sms>
+		<bsa>
+			<reloaddeducetimer>6</reloaddeducetimer>
+		</bsa>
+	</interface>
+
+	<web>
+		<port>8088</port>
+		<webapp>Web</webapp>
+		<webcontext>nbi</webcontext>
+	</web>
+    <package>
+    	<!-- 文件名称中的时间取值 start:取任务中配置的时间 end：取文件打包后的时间 -->
+    	<fileTime>start</fileTime>
+    	<!-- 压缩后的文件超过多少M后进行分包 -->
+    	<maxFileSize>0</maxFileSize>
+    	<!-- 生成数据文件后，文件的保存天数，文件目录需要带时间 如：20160520 -->
+    	<saveTime>0</saveTime>
+    	<!-- 压缩率 -->
+    	<compressRatio>1</compressRatio>
+    	<!-- 是否生成核查日志 -->
+    	<isCheckListLog>false</isCheckListLog>
+    	<!-- 文件采集是否启动自动补采，在开启任务下发接口时，该配置值为false -->
+    	<autoRTask>false</autoRTask>
+    	<!-- 河南OSS2.0的补采任务与正常任务采集生成的文件名称不同,补采时需要删除前面生成的文件(特殊处理) true:相同 false：不同 -->
+    	<sameFileName>true</sameFileName>
+    	<fCompile><![CDATA[\_\d+\_\d+\_\d+\_\d\_\d+]]></fCompile>
+    	<!-- 最大补采次数 -->
+    	<maxCounter>3</maxCounter>
+    	<!-- cba生成xml时的字符集 -->
+    	<cbaEncoding>UTF-8</cbaEncoding>
+    	<!-- 延迟采集数据时间，单位分钟 -->
+    	<delyTime>0</delyTime>   	
+    	<!-- 数据库采集时，时间格式模板 -->
+    	<dateFormat>yyyyMMdd</dateFormat>
+    </package>
+    <WS>
+        <!-- 是否开启任务下发的WS接口 -->
+    	<isOpenWS>false</isOpenWS>
+    	<!-- 任务下发的WS接口,现场修改IP与端口号 -->
+    	<address><![CDATA[http://192.168.15.73:8787/issuedWebservice]]></address>
+    </WS>
+</nbi_cfg>

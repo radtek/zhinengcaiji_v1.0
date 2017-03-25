@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<!-- 从数据库表中获取数据，便于产生csv文件 -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10
+		</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noapjs</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+
+	<to id="1">
+		<resolve dsid="1">
+
+
+<mapping name="${province_en}_VERIFICATION_REPORT_%%Y%%M%%D%%H%%m%%S.csv"  templet="电信数据核查模板VERIFICATION_REPORT_四期.ftl" >
+
+				
+				<sql>
+
+SELECT 
+T.PRO_NAME  AS  "省份",
+T.ASKREPORTFILE AS "要求上报文件",
+T.ACTUALREPORTFILE AS "实际上报文件",
+T.REPORT_PERSON AS "上报人",
+TO_CHAR(T.REPORT_DATE,'YYYY-MM-DD HH24:MI:SS') AS "上报时间",
+T.REPORT_TYPE AS "上报类型" 
+FROM MOD_VERIFICATION_REPORT T					
+
+				</sql>
+				
+
+			</mapping>
+
+
+		
+			<mapping
+				name="${province_en}_VERIFICATIONFILL_ACK__%%Y%%M%%D%%H%%m%%S.csv"
+				templet="电信数据核查模板VERIFICATION_RECEIPT_四期.ftl" >
+
+				
+				<sql>
+
+SELECT T.PRO_NAME AS "省份",
+T.VER_NO AS "核查单号",
+T.RECEIPT_PERSON AS "回执人",
+TO_CHAR(T.RECEIPT_DATE,'YYYY-MM-DD HH24:MI:SS') AS "回执时间"
+FROM MOD_VERIFICATIONFILL_ACK  T
+
+				</sql>
+				
+
+			</mapping>
+
+
+
+	<mapping
+				name="${province_en}_VERIFICATIONFILL_EXPLAIN_%%Y%%M%%D%%H%%m%%S.csv"
+				templet="电信数据核查模板VERIFICATION_EXPLAIN_四期.ftl" >
+
+				
+				<sql>
+
+SELECT 
+T.PRO_NAME AS "省份",
+T.VER_NO AS "核查单号",
+T.EXPLAIN_PERSON AS "解释人",
+TO_CHAR(T.EXPLAIN_DATE,'YYYY-MM-DD HH24:MI:SS') AS "解释原因时间",
+T.EXPLAIN_DECSCRIPTION AS "解释原因"
+ FROM MOD_VERIFICATIONFILL_EXPLAIN  T
+
+				</sql>
+				
+
+			</mapping>
+
+
+
+		</resolve>
+	</to>
+
+
+	<ti id="1" after="1">
+		<property name="ftpip">127.0.0.1</property>
+		<property name="port">21</property>
+		<property name="username">test</property>
+		<property name="password">test</property>
+		<property name="path">/VERIFICATION/</property>
+		<property name="encode">UTF-8</property>
+	</ti>
+
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" />
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

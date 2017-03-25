@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noapjs</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="重庆联通基础数据_GSM_%%Y.%%M.%%D.csv.zip" templet="重庆联通基础数据_GSM.ftl">
+				<sql>
+				select 
+				t2.CHINA_NAME,
+				t1.CHINA_NAME,
+				
+				t1.LAC,
+       t1.CELL_NUM,
+       t1.CI,
+       CASE
+         WHEN t1.CELL_FRES = 1 THEN
+          '900M'
+         WHEN t1.CELL_FRES = 2 THEN
+          '1800M'
+         ELSE
+          ''
+       END AS CELL_FRES,
+       t1.CI,
+       t1.BCCH,
+       t1.BSIC,
+       t1.TCHLIST,
+       t1.LONGITUDE,
+       t1. LATITUDE,
+       t1.ALTITUDE,
+       t2. site_add,
+       decode(t1.COVERTYPE,
+              '1',
+              '密集城区',
+              '2',
+              '城区',
+              '3',
+              '郊区',
+              '4',
+              '乡村',
+              '5',
+              '其他') COVERTYPE,
+       t1.COV_AREA,
+       t1.SITEROOM,
+       
+       CASE
+         WHEN t1.VENDOR = 'ZY0808' THEN
+          '华为'
+         WHEN t1.VENDOR = 'ZY0804' THEN
+          '中兴'
+         ELSE
+          ''
+       END AS VENDOR,
+       
+       t1.EQUIP_TYPE,
+       t1.NEWCONF,
+       t1.TANK_TYPE,
+       t1.CARRIER_TYPE,
+       t1.POLE_TYPE,
+       t1.CARRIER_NUM,
+       t1.CARRIER_USER_NUM,
+       t1.TRX_MAX_PWR,
+       t1.SDCCH_COUNT,
+       t1.TCH_COUNT,
+       t1.SDCCH_USER_COUNT,
+       t1.ANT_AZIMUTH,
+       t1.ANT_MACHANGLE,
+       t1.ANT_ELECTANGLE,
+       t1.ANT_PITCHANGLE,
+       t1.ANT_EQUIPMODULE,
+       t1.ANT_TYPE,
+       t1.ANT_POLARIZE,
+       t1.ANT_HIGH,
+       t1.ANT_PLUS,
+       t1.LEVEL_POWER,
+       t1.APEAK_POWER,
+       t1. DESIGN_TIME,
+       t1. ANT_COUNT,
+       t1.ANT_ADJUST_RANGE,
+       t1.FEEDER_TYPE,
+       t1.TXFEEDER_LENGTH,
+       t1. GONG_ANT,
+       t1.GONG_FEEDER,
+       t1.GONG_PLANFORM,
+       t1.HOPPING_MODE,
+       t1.RA,
+       
+       CASE
+         WHEN t1.IS_OPEN_GPRS = 1 THEN
+          '开通'
+         WHEN t1.IS_OPEN_GPRS = 0 THEN
+          '未开通'
+         ELSE
+          ''
+       END AS IS_OPEN_GPRS,
+       
+       CASE
+         WHEN t1.ISMOVEBYELECT = 1 THEN
+          '开通'
+         WHEN t1.ISMOVEBYELECT = 0 THEN
+          '未开通'
+         ELSE
+          ''
+       END AS ISMOVEBYELECT,
+       
+       CASE
+         WHEN t1.OPEN_FULL_EHRACT = '1' THEN
+          '开通'
+         WHEN t1.OPEN_FULL_EHRACT = '0' THEN
+          '未开通'
+         ELSE
+          ''
+       END AS OPEN_FULL_EHRACT,
+       
+       t1.MEASUREID,
+       
+       CASE
+         WHEN t1.MR_BOOLEAN = 1 THEN
+          '是'
+         WHEN t1.MR_BOOLEAN = 0 THEN
+          '否'
+         ELSE
+          ''
+       END AS MR_BOOLEAN,
+       
+       t1.CITY_AREA,
+       
+       CASE
+         WHEN t1.ISSHAREANT = 1 THEN
+          '是'
+         WHEN t1.ISSHAREANT = 0 THEN
+          '否'
+         ELSE
+          ''
+       END AS ISSHAREANT,
+       
+       t1.ZFZ_NUM,
+       
+       CASE
+         WHEN t1.PROJECT_STATE = 0 THEN
+          '规划'
+         WHEN t1.PROJECT_STATE = 1 THEN
+          '建设'
+         WHEN t1.PROJECT_STATE = 2 THEN
+          '取消'
+         WHEN t1.PROJECT_STATE = 3 THEN
+          '暂缓'
+         WHEN t1.PROJECT_STATE = 4 THEN
+          '正常'
+         WHEN t1.PROJECT_STATE = 5 THEN
+          '告警'
+         WHEN t1.PROJECT_STATE = 6 THEN
+          '短期退服'
+         WHEN t1.PROJECT_STATE = 7 THEN
+          '长期退服'
+         ELSE
+          ''
+       END AS PROJECT_STATE,
+       
+       CASE
+         WHEN t1.STATE = 1 THEN
+          '正常运行'
+         WHEN t1.STATE = 2 THEN
+          '规划'
+         WHEN t1.STATE = 3 THEN
+          '存在影响服务质量'
+         WHEN t1.STATE = 4 THEN
+          '短期退服'
+         WHEN t1.STATE = 5 THEN
+          '长期退服'
+         WHEN t1.STATE = 6 THEN
+          '不确定'
+         ELSE
+          ''
+       END AS STATE,
+       
+       CASE
+         WHEN t1.CELL_STATE = 1 THEN
+          '现网运行状态'
+         WHEN t1.CELL_STATE = 2 THEN
+          '新增网元工程状态'
+         WHEN t1.CELL_STATE = 3 THEN
+          '搬迁工程状态'
+         WHEN t1.CELL_STATE = 4 THEN
+          '替换工程状态'
+         WHEN t1.CELL_STATE = 5 THEN
+          '维护工程状态'
+         WHEN t1.CELL_STATE = 6 THEN
+          '退服状态'
+         WHEN t1.CELL_STATE = 7 THEN
+          '搬迁退服状态'
+         WHEN t1.CELL_STATE = 8 THEN
+          '替换退服状态'
+         WHEN t1.CELL_STATE = 9 THEN
+          '暂时关闭状态'
+         ELSE
+          ''
+       END AS CELL_STATE,
+       
+       t1.GONG_INFO,
+       t1.SITE_ID,
+       to_char(t1.LAST_UPD_TIME, 'yyyy-MM-DD HH24:MI:SS') LAST_UPD_TIME,
+       t1.RELATED_MSC,
+       t1.RELATED_BSC,
+       t1.RELATED_BTS,
+       
+       CASE
+         WHEN t1.VENDOR = 'ZY0808' THEN
+          '华为'
+         WHEN t1.VENDOR = 'ZY0804' THEN
+          '中兴'
+         ELSE
+          ''
+       END AS VENDOR2,
+       
+       t1.SDCCH_COUNT,
+       t1.TCH_COUNT,
+       t1.CITY_AREA
+  from NE_CELL_G t1, ne_bts_g t2
+ where t1.related_bts = t2.ne_sys_id
+  
+				
+					</sql>
+			</mapping>
+		
+		</resolve>
+	</to>
+	
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">10.0.140.77</property>
+		<property name="port">21</property>
+		<property name="username">KFXT</property>
+		<property name="password">KFXT</property>
+		<property name="path">/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+        
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--?????-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>

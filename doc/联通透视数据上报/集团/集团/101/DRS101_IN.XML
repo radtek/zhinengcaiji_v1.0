@@ -1,0 +1,35 @@
+<rnop_service_input_para>
+	<service_instance>
+		<service_id>DRS101</service_id>
+		<version>R1</version>
+		<service_name>文件周期上报要求</service_name>
+		<service_desc>总部系统向省级系统设置数据文件周期上报的要求</service_desc>
+		<service_content>
+			<DRS101service_content>
+				<serCaller>总部</serCaller>
+				<domainType>GSM无线接入网</domainType>
+				<fileType>基础统计数据</fileType>
+				<reportInterva>日</reportInterva>
+				<startTime>2011-01-01</startTime>
+				<endTime>2013-12-31</endTime>
+				<filter>
+					<objectLevel>CELL</objectLevel>
+					<objectList>
+						<objectID>NULL</objectID>
+					</objectList>
+				</filter>
+				<filter>
+					<objectLevel>MSCServer</objectLevel>
+					<objectList>
+						<objectID>MSCServer1</objectID>
+						<objectID>MSCServer2</objectID>
+						<objectID>MSCServer3</objectID>
+					</objectList>
+				</filter>
+				<ftpAddr>ftp://220.23.50.100/</ftpAddr>
+				<ftpname>chinaunicom</ftpname>
+				<password>chinaunicom</password>
+			</DRS101service_content>
+		</service_content>
+	</service_instance>
+</rnop_service_input_para>

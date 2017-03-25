@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+        <include>
+			<property name="mapping">mapping.xml</property>
+			<property name="loop">false</property>
+        </include>
+
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="118">
+	<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:test10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">test_cnoap</property>
+		<property name="password">test_cnoap</property>
+	</ds>
+	 
+		<ds id="2" type="201">
+			<property name="ftpip">192.168.15.202</property>
+		<property name="port">21</property>
+		<property name="username">ftpuser</property>
+		<property name="password">!QAZxsw2#EDC</property>
+		<property name="encode">utf-8</property><!--可以配置通配符 -->
+	
+	</ds>
+	
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="${province_en}_WOINFOMODIFY_${workOrderID}_%%Y%%M%%D%%H%%m%%S.csv" templet="特殊工单之新增工单上报.ftl"  addHead="true"     >
+				<sql>
+				<![CDATA[
+			     select * from VRPT_WOINFOMODIFY where 工单调整方案有变化的时间>to_date('%%Y-%%M-%%D %%H:%%m:00','yyyy-mm-dd hh24:mi:ss')- 1 / 24  and  工单调整方案有变化的时间 <= to_date('%%Y-%%M-%%D %%H:%%m:00','yyyy-mm-dd hh24:mi:ss')
+				
+				]]>
+		    </sql>
+		    </mapping>
+		    
+		   <mapping name="${province_en}_WOFILEMODIFY_${workOrderID}_%%Y%%M%%D%%H%%m%%S.csv" templet="特殊工单之新增工单上报附件列表.ftl"  addHead="true"     >
+			
+				<sql>
+				<![CDATA[
+			   select 工单编号,附件上传人,上传附件时间,附件格式,附件名称 from VRPT_WOFILEMODIFY where 工单编号='%%workOrderID'
+				]]>
+		        </sql>
+		    </mapping>
+		    
+		    <mapping name="${province_en}_WOINFOMODIFY_${workOrderID}_%%Y%%M%%D%%H%%m%%S.tar.gz" templet="在线问题收集数据.ftl"  isrelated="1"   >
+			 
+			  <filepara>
+			  	<![CDATA[
+	              SELECT a.ftp_path || '//' || NVL(A.ATTACHMENT_NAME, '暂无附件.txt') AS attachment_name  
+  FROM MOD_WORKORDER O,
+       MOD_JOBPLAN_ITEM I,
+       CFG_JOBPLAN P,
+       MOD_ATTACHMENT A,
+       (SELECT DISTINCT PROVINCE_NAME, PROVINCE_NO FROM CFG_PROVINCE_CITY) C
+ WHERE I.JOBPLAN_ID = P.ID
+   AND O.JOBITEM_ID = I.ID
+   AND C.PROVINCE_NAME = I.PROVINCE_NAME
+   AND O.ID = A.FUNCTION_DEF_ID2(+)
+   AND A.FUNCTION_DEF_ID1 != 1
+   AND A.FUNCTION_TYPE(+) = 7
+   and a.id in ( select 附件ID  from VRPT_WOFILENEW where 工单编号='%%workOrderID')
+               	]]>
+            </filepara>
+				
+				<ftpsource  name ="${attachment_name}"  ftp_dsid="2">
+			       	<property name="file">/${attachment_name}</property>
+			   </ftpsource> 
+			 
+		    </mapping>
+		</resolve>
+	</to>
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.123</property>
+		<property name="port">21</property>
+		<property name="username">admin</property>
+		<property name="password">admin</property>
+		<property name="path">/workorder/</property><!--可以配置通配符 -->
+		<property name="encode">utf-8</property><!--可以配置通配符 -->
+		
+	</ti>
+
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="2" /><!--ftp文件方式 -->
+	</t>
+	 
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="2">
+		<property name="ids">1</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+		<!-- before ,after ,exception -->
+		<trigger id="1" >
+	  </trigger>
+</config>

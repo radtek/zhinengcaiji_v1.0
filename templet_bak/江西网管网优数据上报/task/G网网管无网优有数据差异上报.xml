@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">gnoap</property>
+		<property name="password">uwaysoft</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="G_小区_网优有_网管无统计_%%Y%%M%%D.CSV" templet="G网网管无网优有数据差异上报-cell.ftl" >
+				<sql>
+				select distinct substr(to_char(hq.hq_id), 1, 3) as 省份,
+                cell.mr_boolean as 是否采集MR,
+                cell.LAC || '_' || cell.CI as 小区标识,
+                replace(replace(nvl(cell.china_name,
+                                    cell.LAC || '_' || cell.CI),
+                                ',',
+                                '_'),
+                        '|',
+                        '_') as 小区名称,
+                hq.city_id as 所属城市标识,
+                decode(cell.COVERTYPE,
+                       '密集城区',
+                       1,
+                       '1',
+                       1,
+                       '城区',
+                       2,
+                       '2',
+                       2,
+                       '郊区',
+                       3,
+                       '3',
+                       3,
+                       '乡村',
+                       4,
+                       '4',
+                       4,
+                       5) as 所属城市区域,
+                cell.ADMIN_REGIONS as 所属行政区域类型,
+                --cell.COVERTYPE as 所属城市区域, 
+                
+                cell.RELATED_BTS as 所属BTS标识,
+                decode(cell.vendor,
+                       'ZY0800',
+                       4,
+                       'ZY0801',
+                       5,
+                       'ZY0803',
+                       6,
+                       'ZY0804',
+                       2,
+                       'ZY0806',
+                       4,
+                       'ZY0807',
+                       7,
+                       'ZY0808',
+                       1,
+                       'ZY0809',
+                       3,
+                       0) as 厂商标识,
+                decode(cell.site_type,
+                       1,
+                       1,
+                       2,
+                       2,
+                       3,
+                       2,
+                       4,
+                       2,
+                       5,
+                       2,
+                       6,
+                       1,
+                       1) 基站类型,
+                cell.LAC as 位置区码,
+                cell.CI as 小区码,
+                nvl((case
+                      when cell.bcch &lt; 400 then
+                       1
+                      else
+                       2
+                    end),
+                    1) as 频点类型,
+                nvl(cell.ANT_HIGH, 35) as 天线挂高,
+                nvl(cell.ANT_AZIMUTH,
+                    (case
+                      when cell.cell_num = 1 then
+                       0
+                      when cell.cell_num = 2 then
+                       120
+                      else
+                       240
+                    end)) 天线方向角,
+                nvl(cell.ANT_ELECTANGLE, 0) as 电子下倾角,
+                nvl(cell.ANT_MACHANGLE, 0) 机械倾角,
+                decode(trunc(cell.CARRIER_NUM),
+                       0,
+                       1,
+                       null,
+                       1,
+                       trunc(cell.CARRIER_NUM)) as 配置载频数,
+                decode(trunc(cell.CARRIER_USER_NUM),
+                       0,
+                       1,
+                       null,
+                       1,
+                       trunc(cell.CARRIER_USER_NUM)) as 可用载频数,
+                decode(cell.sdcch_count,
+                       0,
+                       8,
+                       null,
+                       8,
+                       trunc(cell.sdcch_count, 0)) as SDCCH配置信道数,
+                
+                cell.CELL_STATE as 运行状态,
+                cell.LONGITUDE as 经度,
+                cell.LATITUDE as 纬度,
+                replace(replace(nvl(cell.ant_equipmodule, '无'), ',', '-'),
+                        '|',
+                        '-') 天线型号,
+                nvl(cell.zfz_num, 0) as 带室外直放站数量,
+                cell.trx_max_pwr as 载频最大发射功率,
+                decode(cell.cov_area,
+                       '室外',
+                       1,
+                       '室内',
+                       2,
+                       '同时覆盖室内和室外',
+                       3) as "小区覆盖类型"
+
+  from ne_cell_g cell, cfg_city_map_hq_id hq
+ where cell.city_id = hq.city_id
+   and not exists
+ (select 1
+          from (select *
+                  from clt_ne_g_cell t
+                 where STAMPTIME = (select max(STAMPTIME) from clt_ne_g_cell)) clt
+         where cell.lac = clt.lac
+           and cell.ci = clt.ci)
+				</sql>
+			</mapping>
+			<mapping name="G_基站_网优有_网管无统计_%%Y%%M%%D.CSV" templet="G网网管无网优有数据差异上报-bts.ftl" >
+				<sql>
+				select substr(to_char(hq.hq_id), 1, 3) 省份,
+       nvl(hq.hq_id, BTS.city_id) 所属城市标识,
+       decode(BTS.vendor,
+              'ZY0800',
+              4,
+              'ZY0801',
+              5,
+              'ZY0803',
+              6,
+              'ZY0804',
+              2,
+              'ZY0806',
+              4,
+              'ZY0807',
+              7,
+              'ZY0808',
+              1,
+              'ZY0809',
+              3,
+              0) 厂商标识,
+       hq.prov_enname || 'OMC' || omc.engle_name as 所属OMC标识,
+       BTS.RELATED_MSC 所属MSC标识,
+       BTS.RELATED_BSC 所属BSC标识,
+       BTS.NE_SYS_ID BTS标识,
+       EXT_OID BTS唯一标识DN,
+       replace(BTS.CHINA_NAME, ',', 'NULL') BTS中文名称,
+       BTS.FIXEDASSETS_ID 固定资产编号,
+       BTS.LAC 位置区码,
+       CI_LIST 小区标识列表,
+       decode(omc.vendor,
+              'ZY0800',
+              decode(omc.version, 'B8', 1, 'B9', 2, 'B10', 3, 4),
+              'ZY0801',
+              decode(omc.version, 'R10', 1, 2),
+              'ZY0803',
+              1,
+              'ZY0804',
+              decode(omc.version, 'V2', 1, 2),
+              'ZY0806',
+              decode(omc.version, 'B8', 1, 'B9', 2, 'V10', 3, 4),
+              'ZY0807',
+              1,
+              'ZY0808',
+              decode(omc.version, 'V3R8', 1, 2),
+              'ZY0809',
+              decode(omc.version, 'RC60', 1, 'RC80', 2, 3),
+              0) 版本标识,
+       decode(bts.site_type, 1, 0, 2, 1, 3, 1, 4, 1, 5, 1, 6, 0, 0) 基站类型,
+       ANTENNA_TYPE 天线方向类型,
+       WORKING_FREQ 工作频率,
+       BTS.CARRIER_NUM 配置载频数,
+       CARRIER_USED 开通载频数,
+       CARRIER_AVAILABLE 可用载频数,
+       TRX_1_CELL_NUM 单载频小区数量,
+       TRX_2_CELL_NUM 双载频小区数量,
+       TRX_3_CELL_NUM 三载频小区数量,
+       TRX_4_CELL_NUM 四载频及以上小区数量,
+       TCH_NUM TCH配置数,
+       SDCCH_NUM SDCCH配置数,
+       PDCH_NUM 静态PDCH配置数,
+       SITE_STATE 基站状态,
+       bts.ADMIN_REGIONS
+  from ne_bts_g BTS, ne_omc_g omc, cfg_city_map_hq_id hq
+ WHERE BTS.RELATED_MSC = omc.OMC_ID
+   AND BTS.city_id = hq.city_id
+   AND BTS.city_id = omc.city_id
+   and not exists
+ (select 1
+          from (select *
+                  from clt_ne_g_bts t
+                 where STAMPTIME = (select max(STAMPTIME) from clt_ne_g_bts)) clt
+         where bts.EXT_OID = clt.NE_DN)
+				</sql>
+			</mapping>
+			<mapping name="G_BSC_网优有_网管无统计_%%Y%%M%%D.CSV" templet="G网网管无网优有数据差异上报-bsc.ftl" >
+				<sql> 
+				select distinct hq.prov_code as 省份,
+                hq.prov_enname || 'OMC' || omc.engle_name || '_' ||
+                hq.en_name || 'BSC' ||
+                to_number(substr(bsc.ne_sys_id, 7, 3)) as BSC标识,
+                bsc.china_name as BSC中文名称,
+                map.bsc_state as BSC当前状态, --bsc.ans_code as 应答编号,
+                hq.hq_id 所属城市标识,
+                hq.en_name || map.mscname as 所属MSC标识,
+                hq.prov_enname || 'OMC' || omc.engle_name as 所属OMC标识,
+                decode(omc.vendor,
+                       'ZY0800',
+                       4,
+                       'ZY0801',
+                       5,
+                       'ZY0803',
+                       6,
+                       'ZY0804',
+                       2,
+                       'ZY0806',
+                       4,
+                       'ZY0807',
+                       7,
+                       'ZY0808',
+                       1,
+                       'ZY0809',
+                       3,
+                       0) as 厂商标识,
+                decode(omc.vendor,
+                       'ZY0800',
+                       decode(omc.version, 'B8', 1, 'B9', 2, 'B10', 3, 4),
+                       'ZY0801',
+                       decode(omc.version, 'R10', 1, 2),
+                       'ZY0803',
+                       1,
+                       'ZY0804',
+                       decode(omc.version, 'V2', 1, 2),
+                       'ZY0806',
+                       decode(omc.version, 'B8', 1, 'B9', 2, 'V10', 3, 4),
+                       'ZY0807',
+                       1,
+                       'ZY0808',
+                       decode(omc.version, 'V3R8', 1, 2),
+                       'ZY0809',
+                       decode(omc.version, 'RC60', 1, 'RC80', 2, 3),
+                       0) as 版本标识,
+                sum(nvl(chan.rate, 0)) 配置无线容量,
+                count(distinct cell.related_bts) 基站配置数量,
+                count(cell.ne_sys_id) 小区配置数量,
+                sum(decode(cell.site_type, 2, 1, 0)) 微蜂窝个数,
+                sum(nvl(cell.zfz_num, 0)) 直放站数量,
+                sum(decode(trunc(cell.CARRIER_NUM),
+                           0,
+                           1,
+                           null,
+                           1,
+                           trunc(cell.CARRIER_NUM))) as 载频数量,
+                sum(decode(trunc(cell.CARRIER_USER_NUM),
+                           0,
+                           1,
+                           null,
+                           1,
+                           1,
+                           1,
+                           0)) 单载频小区数量, --为零的情况为1,或为空的 情况也为1
+                sum(decode(trunc(cell.CARRIER_USER_NUM), 2, 1, 0)) 双载频小区数量,
+                sum(decode(trunc(cell.CARRIER_USER_NUM), 3, 1, 0)) 三载频小区数量,
+                sum(case
+                      when trunc(cell.CARRIER_USER_NUM) >= 4 then
+                       1
+                      else
+                       0
+                    end) as 四载频及以上小区数量,
+                sum(decode(trunc(cell.carrier_user_num),
+                           0,
+                           1,
+                           null,
+                           1,
+                           trunc(cell.carrier_user_num))) as 开通载频数,
+                sum(decode(cell.tch_count,
+                           0,
+                           6,
+                           null,
+                           6,
+                           trunc(cell.tch_count, 0))) TCH配置数,
+                sum(decode(cell.sdcch_count,
+                           0,
+                           8,
+                           null,
+                           8,
+                           trunc(cell.sdcch_count, 0))) as SDCCH配置数,
+                max(bsc.ext_oid) as BSC唯一标识DN,
+                max(bsc.fixedassets_id) as 固定资产编号
+
+  from ne_bsc_g           bsc,
+       cfg_bsc_map_city   map,
+       cfg_map_dev_to_ne  mapne,
+       ne_omc_g           omc,
+       ne_cell_g          cell,
+       cfg_city_map_hq_id hq,
+       cfg_channel_eire   chan
+ where cell.ne_sys_id = mapne.ne_cell_id
+   and cell.related_bsc = bsc.ne_sys_id
+   and cell.related_bsc = map.ne_bsc_id
+   and cell.related_msc = omc.omc_id
+   and map.city_id = hq.city_id
+   and cell.city_id = omc.city_id
+      -- and bsc.ext_oid is not null
+      -- and map.bsc_state is not null
+   and chan.channel(+) = floor(cell.tch_count)
+      --and cell.stamptime = bsc.stamptime
+      --and cell.stamptime = to_date('%%Y%%M%%D','yyyymmdd')
+      --and cell.stamptime = mapne.stamptime
+    --and mapne.ISUPLOAD = 1
+   and not exists
+ (select 1
+          from (select *
+                  from CLT_NE_G_BSC t
+                 where STAMPTIME = (select max(STAMPTIME) from CLT_NE_G_BSC)) clt
+         where bsc.EXT_OID = clt.NE_DN)
+ group by omc.engle_name,
+          bsc.ans_code,
+          hq.prov_enname,
+          hq.prov_code,
+          bsc.china_name,
+          cell.related_bsc,
+          cell.related_msc,
+          bsc.ne_sys_id,
+          hq.hq_id,
+          hq.en_name,
+          bsc.BSC_PARA_ID,
+          omc.vendor,
+          omc.version,
+          map.mscname,
+          map.bsc_state
+				</sql>
+			</mapping>
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.123</property>
+		<property name="port">21</property>
+		<property name="username">admin</property>
+		<property name="password">admin</property>
+		<property name="path">/networkmag/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

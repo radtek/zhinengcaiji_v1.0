@@ -1,0 +1,380 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="600">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">gnoap</property>
+		<property name="password">uwaysoft</property>
+	</ds>
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="重庆联通基础数据_GSM_%%Y.%%M.%%D.xlsx" templet="重庆联通基础数据_GSM" >
+				<sql>
+SELECT (SELECT C.COUNTY_NAME
+          FROM CFG_COUNTY C
+         WHERE N.ADM_AREA = C.COUNTY_ID) "行政区",
+       N.BTS_NAME "基站名称",
+       N.BSC_NAME "基站所属BSC名称",
+       CHINA_NAME "小区名称",
+       N.CI "小区LAC",
+       N.LAC "小区CI",
+       LONGITUDE "基站经度",
+       LATITUDE "基站纬度",
+       PROVINCE_NAME "省份",
+       ALTITUDE "基站海拔高度",
+       SITE_ADD "基站所处位置具体地址",
+       DECODE(COVERTYPE,
+              '1',
+              '密集城区',
+              '2',
+              '城区',
+              '3',
+              '郊区',
+              '4',
+              '乡村',
+              '5',
+              '其他',
+              COVERTYPE) "覆盖区域类型",
+       COV_AREA 覆盖范围,
+       DECODE(SITE_TYPE,
+              '1',
+              '宏基站',
+              '2',
+              '微蜂窝',
+              '3',
+              '小基站',
+              '4',
+              '微微蜂窝',
+              '5',
+              '微基站',
+              '6',
+              '一体化基站',
+              '不确定') "基站设备类型",
+       EQUIP_TYPE "基站设备型号",
+       TANK_TYPE "机柜类型",
+       (SELECT CITY_NAME FROM CFG_CITY Y WHERE Y.CITY_ID = N.CITY_ID) "城市",
+       CARRIER_TYPE "载波类型",
+       POLE_TYPE "塔桅类型",
+       ANT_AZIMUTH "天线方位角",
+       ANT_MACHANGLE "天线机械下倾角",
+       ANT_ELECTANGLE "天线电子下倾角",
+       ANT_TYPE "天线类型",
+       ANT_HIGH "天线挂高",
+       GONG_ANT "共用天线",
+       GONG_FEEDER "共用馈线",
+       GONG_PLANFORM "共用平台",
+       DECODE(ISSHAREANT, '1', '是', '否') "是否RRU小区",
+       DECODE(PROJECT_STATE,
+              '1',
+              '开通',
+              '2',
+              '取消',
+              '3',
+              '暂缓',
+              4,
+              '已拆除',
+              5,
+              '建设',
+              6,
+              '规划',
+              '不确定') "工程进展",
+       DECODE(CELL_STATE,
+              '1',
+              '现网运行',
+              '2',
+              '新增网元工程',
+              '3',
+              '搬迁工程',
+              '4',
+              '替换工程',
+              '5',
+              '维护工程',
+              '6',
+              '退服',
+              '7',
+              '搬迁退服',
+              '8',
+              '替换退服',
+              '9',
+              '暂时关闭') "网管运行状态",
+       CELL_NUM 小区序号,
+       DECODE(CELL_FRES, '1', 900, 1800) "小区频段",
+       N.LAC || '_' || N.CI "小区标识",
+       BCCH "小区BCCH频点",
+       BSIC "小区BSIC",
+       TCHLIST "小区TCH频点",
+       DECODE(N.VENDOR,
+              'ZY0801',
+              '爱立信',
+              'ZY0804',
+              '中兴',
+              'ZY0806',
+              '贝尔',
+              'ZY0807',
+              '诺基亚',
+              'ZY0808',
+              '华为',
+              'ZY0809',
+              '西门子',
+              '') "基站设备厂商",
+       NEWCONF "基站站型配置",
+       CARRIER_NUM "配置载频数",
+       CARRIER_USER_NUM "可用载频数",
+       TRX_MAX_PWR "载频最大发射功率",
+       TCH_COUNT "配置控制信道数",
+       SDCCH_COUNT "配置业务信道数",
+       SDCCH_USER_COUNT "SDCCH可用数",
+       ANT_FYANGLE "天线俯仰角",
+       DECODE(IS_HOPPING_SWITCH, 1, '跳频', '不跳频') "跳频模式",
+       DECODE(EHRACT, '1', '开通', '未开通') "是否开通半速率",
+       DECODE(IS_OPEN_GPRS, '1', '开通', '未开通') "GPRS开通情况",
+       DECODE(ISMOVEBYELECT, '1', '开通', '未开通') "EDGE开通情况",
+       DECODE(OPEN_FULL_EHRACT, '1', '开通', '未开通') "增强全速率开通情况",
+       ZFZ_NUM "带室外直放站数量",
+       GONG_INFO "共站属性",
+       GONG_FEEDER "共天馈属性",
+       NULL "共站名称",
+       NULL "共天馈小区",
+       CASE
+         WHEN NEI_CI_1 IS NOT NULL THEN
+          NEI_LAC_1 || '_' || NEI_CI_1
+       END "2G邻区01",
+       CASE
+         WHEN NEI_CI_2 IS NOT NULL THEN
+          NEI_LAC_2 || '_' || NEI_CI_2
+       END "2G邻区02",
+       CASE
+         WHEN NEI_CI_3 IS NOT NULL THEN
+          NEI_LAC_3 || '_' || NEI_CI_3
+       END "2G邻区03",
+       CASE
+         WHEN NEI_CI_4 IS NOT NULL THEN
+          NEI_LAC_4 || '_' || NEI_CI_4
+       END "2G邻区04",
+       CASE
+         WHEN NEI_CI_5 IS NOT NULL THEN
+          NEI_LAC_5 || '_' || NEI_CI_5
+       END "2G邻区05",
+       CASE
+         WHEN NEI_CI_6 IS NOT NULL THEN
+          NEI_LAC_6 || '_' || NEI_CI_6
+       END "2G邻区06",
+       CASE
+         WHEN NEI_CI_7 IS NOT NULL THEN
+          NEI_LAC_7 || '_' || NEI_CI_7
+       END "2G邻区07",
+       CASE
+         WHEN NEI_CI_8 IS NOT NULL THEN
+          NEI_LAC_8 || '_' || NEI_CI_8
+       END "2G邻区08",
+       CASE
+         WHEN NEI_CI_9 IS NOT NULL THEN
+          NEI_LAC_9 || '_' || NEI_CI_9
+       END "2G邻区09",
+       CASE
+         WHEN NEI_CI_10 IS NOT NULL THEN
+          NEI_LAC_10 || '_' || NEI_CI_10
+       END "2G邻区10",
+       CASE
+         WHEN NEI_CI_11 IS NOT NULL THEN
+          NEI_LAC_11 || '_' || NEI_CI_11
+       END "2G邻区11",
+       CASE
+         WHEN NEI_CI_12 IS NOT NULL THEN
+          NEI_LAC_12 || '_' || NEI_CI_12
+       END "2G邻区12",
+       CASE
+         WHEN NEI_CI_13 IS NOT NULL THEN
+          NEI_LAC_13 || '_' || NEI_CI_13
+       END "2G邻区13",
+       CASE
+         WHEN NEI_CI_14 IS NOT NULL THEN
+          NEI_LAC_14 || '_' || NEI_CI_14
+       END "2G邻区14",
+       CASE
+         WHEN NEI_CI_15 IS NOT NULL THEN
+          NEI_LAC_15 || '_' || NEI_CI_15
+       END "2G邻区15",
+       CASE
+         WHEN NEI_CI_16 IS NOT NULL THEN
+          NEI_LAC_16 || '_' || NEI_CI_16
+       END "2G邻区16",
+       CASE
+         WHEN NEI_CI_17 IS NOT NULL THEN
+          NEI_LAC_17 || '_' || NEI_CI_17
+       END "2G邻区17",
+       CASE
+         WHEN NEI_CI_18 IS NOT NULL THEN
+          NEI_LAC_18 || '_' || NEI_CI_18
+       END "2G邻区18",
+       CASE
+         WHEN NEI_CI_19 IS NOT NULL THEN
+          NEI_LAC_19 || '_' || NEI_CI_19
+       END "2G邻区19",
+       CASE
+         WHEN NEI_CI_20 IS NOT NULL THEN
+          NEI_LAC_20 || '_' || NEI_CI_20
+       END "2G邻区20",
+       CASE
+         WHEN NEI_CI_21 IS NOT NULL THEN
+          NEI_LAC_21 || '_' || NEI_CI_21
+       END "2G邻区21",
+       CASE
+         WHEN NEI_CI_22 IS NOT NULL THEN
+          NEI_LAC_22 || '_' || NEI_CI_22
+       END "2G邻区22",
+       CASE
+         WHEN NEI_CI_23 IS NOT NULL THEN
+          NEI_LAC_23 || '_' || NEI_CI_23
+       END "2G邻区23",
+       CASE
+         WHEN NEI_CI_24 IS NOT NULL THEN
+          NEI_LAC_24 || '_' || NEI_CI_24
+       END "2G邻区24",
+       CASE
+         WHEN NEI_CI_25 IS NOT NULL THEN
+          NEI_LAC_25 || '_' || NEI_CI_25
+       END "2G邻区25",
+       CASE
+         WHEN NEI_CI_26 IS NOT NULL THEN
+          NEI_LAC_26 || '_' || NEI_CI_26
+       END "2G邻区26",
+       CASE
+         WHEN NEI_CI_27 IS NOT NULL THEN
+          NEI_LAC_27 || '_' || NEI_CI_27
+       END "2G邻区27",
+       CASE
+         WHEN NEI_CI_28 IS NOT NULL THEN
+          NEI_LAC_28 || '_' || NEI_CI_28
+       END "2G邻区28",
+       CASE
+         WHEN NEI_CI_29 IS NOT NULL THEN
+          NEI_LAC_29 || '_' || NEI_CI_29
+       END "2G邻区29",
+       CASE
+         WHEN NEI_CI_30 IS NOT NULL THEN
+          NEI_LAC_30 || '_' || NEI_CI_30
+       END "2G邻区30",
+       CASE
+         WHEN NEI_CI_31 IS NOT NULL THEN
+          NEI_LAC_31 || '_' || NEI_CI_31
+       END "2G邻区31",
+       CASE
+         WHEN NEI_CI_32 IS NOT NULL THEN
+          NEI_LAC_32 || '_' || NEI_CI_32
+       END "2G邻区32",
+       WCDMA."3G邻区1",
+       WCDMA."3G邻区2",
+       WCDMA."3G邻区3",
+       WCDMA."3G邻区4",
+       WCDMA."3G邻区5",
+       WCDMA."3G邻区6",
+       WCDMA."3G邻区7",
+       WCDMA."3G邻区8",
+       WCDMA."3G邻区9",
+       WCDMA."3G邻区10",
+       WCDMA."3G邻区11",
+       WCDMA."3G邻区12",
+       WCDMA."3G邻区13",
+       WCDMA."3G邻区14",
+       WCDMA."3G邻区15",
+       WCDMA."3G邻区16",
+       WCDMA."3G邻区17",
+       WCDMA."3G邻区18",
+       WCDMA."3G邻区19",
+       WCDMA."3G邻区20",
+       WCDMA."3G邻区21",
+       WCDMA."3G邻区22",
+       WCDMA."3G邻区23",
+       WCDMA."3G邻区24",
+       WCDMA."3G邻区25",
+       WCDMA."3G邻区26",
+       WCDMA."3G邻区27",
+       WCDMA."3G邻区28",
+       WCDMA."3G邻区29",
+       WCDMA."3G邻区30",
+       WCDMA."3G邻区31",
+       WCDMA."3G邻区32"
+  FROM NE_CELL_G N,
+       PARA_ADJ_COL_G T,
+       (SELECT NE_SYS_ID,
+               MAX(DECODE(ROW_NUMBER, 1, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区1",
+               MAX(DECODE(ROW_NUMBER, 2, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区2",
+               MAX(DECODE(ROW_NUMBER, 3, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区3",
+               MAX(DECODE(ROW_NUMBER, 4, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区4",
+               MAX(DECODE(ROW_NUMBER, 5, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区5",
+               MAX(DECODE(ROW_NUMBER, 6, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区6",
+               MAX(DECODE(ROW_NUMBER, 7, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区7",
+               MAX(DECODE(ROW_NUMBER, 8, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区8",
+               MAX(DECODE(ROW_NUMBER, 9, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区9",
+               MAX(DECODE(ROW_NUMBER, 10, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区10",
+               MAX(DECODE(ROW_NUMBER, 11, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区11",
+               MAX(DECODE(ROW_NUMBER, 12, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区12",
+               MAX(DECODE(ROW_NUMBER, 13, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区13",
+               MAX(DECODE(ROW_NUMBER, 14, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区14",
+               MAX(DECODE(ROW_NUMBER, 15, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区15",
+               MAX(DECODE(ROW_NUMBER, 16, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区16",
+               MAX(DECODE(ROW_NUMBER, 17, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区17",
+               MAX(DECODE(ROW_NUMBER, 18, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区18",
+               MAX(DECODE(ROW_NUMBER, 19, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区19",
+               MAX(DECODE(ROW_NUMBER, 20, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区20",
+               MAX(DECODE(ROW_NUMBER, 21, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区21",
+               MAX(DECODE(ROW_NUMBER, 22, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区22",
+               MAX(DECODE(ROW_NUMBER, 23, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区23",
+               MAX(DECODE(ROW_NUMBER, 24, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区24",
+               MAX(DECODE(ROW_NUMBER, 25, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区25",
+               MAX(DECODE(ROW_NUMBER, 26, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区26",
+               MAX(DECODE(ROW_NUMBER, 27, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区27",
+               MAX(DECODE(ROW_NUMBER, 28, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区28",
+               MAX(DECODE(ROW_NUMBER, 29, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区29",
+               MAX(DECODE(ROW_NUMBER, 30, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区30",
+               MAX(DECODE(ROW_NUMBER, 31, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区31",
+               MAX(DECODE(ROW_NUMBER, 32, NEI_LAC || '_' || NEI_CI, NULL)) "3G邻区32"
+          FROM (SELECT NE_SYS_ID,
+                       NEI_LAC,
+                       NEI_CI,
+                       ROW_NUMBER() OVER(PARTITION BY NE_SYS_ID ORDER BY 1 ASC) ROW_NUMBER
+                  FROM PARA_ADJ_G_3G P
+                 WHERE NEI_CI IS NOT NULL
+                 GROUP BY NE_SYS_ID, NEI_LAC, NEI_CI)
+         GROUP BY NE_SYS_ID) WCDMA
+ WHERE T.NE_SYS_ID(+) = N.NE_SYS_ID
+   AND WCDMA.NE_SYS_ID(+) = N.NE_SYS_ID
+
+
+					</sql>
+					<!-- 生成excel文件时，excel字段的样式设置，index表示该字段在excel中的列号，从1开始（这个一定要填对，不然没法对齐），filed表示字段名，type表示该字段的类型（整形，小数，时间等），sytle表示样式 -->
+				    <excel sheet="CELL" version="2007">
+				    </excel>
+			</mapping>
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.94</property>
+		<property name="port">21</property>
+		<property name="username">admin</property>
+		<property name="password">admin</property>
+		<property name="path">/chongqing/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--?????-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>

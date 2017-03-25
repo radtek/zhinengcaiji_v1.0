@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bsa>
+	<syncmodes>
+		<syncmode id="PLAN">BSA数据计划同步PLAN.xml</syncmode>
+		<syncmode id="AUTO">BSA数据自动全量同步AUTO.xml</syncmode>
+	    <syncmode id="FULL">BSA数据自动全量同步AUTO.xml</syncmode>
+		<syncmode id="ADD">BSA数据立即同步ADD.xml</syncmode>
+		<syncmode id="INS">BSA数据立即同步INS.xml</syncmode>
+	</syncmodes>
+</bsa>

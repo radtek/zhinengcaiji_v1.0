@@ -1,0 +1,829 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+			<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@132.228.39.97:1521:NOAP1</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noap</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<!--华为载扇1X省接口-->
+    <mapping name="${province_en}_CARR_HW_1X_%%Y%%M%%D.csv" templet="华为载扇1X省接口_三期.ftl"   >  
+				<sql>
+				  SELECT DISTINCT  '%%Y-%%M-%%D'   start_time_curr, MDTN.NE_CARR_ID,
+                CS.PROVINCENAME,
+                MDTN.CITY_NAME,
+                MDTN.NE_MSC_ID,
+                NULL,
+                MDTN.NE_BSC_ID,
+                MDTN.NE_BTS_ID,
+                MDTN.NE_CELL_ID,
+                MDTN.CELL_NAME,
+                MDTN.CARR_SEQ,
+                PLTCHGAIN          CDMA1XCH_PLTCH_PLTCHGAIN,
+                PCHGAIN            PCH_PCHGAIN,
+                SYNCHGAIN          SYNCH_SYNCHGAIN,
+                MAXCELLR           CBTSSECTORCARRIER_C_M, --CBTSSECTORCARRIER_CBTSCDMA1XSECTORPARA_MAXCELLR
+                ACHLOWTHR          CDMA1XCH_ALDCTRL_ACHLOWTHR,
+                TOTALZN            CDMA1XCH_SPM_TOTALZN,
+                ZNTMR              CDMA1XCH_SPM_ZNTMR,
+                MSID               CDMA1XCH_SPM_MSID,
+                MNID               CDMA1XCH_SPM_MNID,
+                MAXTSPRDIDX        CDMA1XCH_SPM_MAXTSPRDIDX,
+                HOMEREG            CDMA1XCH_SPM_HOMEREG,
+                FORSIDREG          CDMA1XCH_SPM_FORSIDREG,
+                FORNIDREG          CDMA1XCH_SPM_FORNIDREG,
+                PWRUP              CDMA1XCH_SPM_PWRUP,
+                PWRDWN             CDMA1XCH_SPM_PWRDWN,
+                PRMREG             CDMA1XCH_SPM_PRMREG,
+                REGPRD             CDMA1XCH_SPM_REGPRD,
+                REGDIST            CDMA1XCH_SPM_REGDIST,
+                NULL               CDMA1XCH_ESPM_BCIDX, --BCIDX NOT EXIST IN CLT_CM_CDMA1XCH_SPM_HW  , 
+                ADDNUM             PCH_ADDNUM,
+                PLTPL              CDMA1XCH_PLTPL,
+                CPH.ACHNUM         PCH_ACHNUM,
+                MAXLEN             PCH_ACH_MAXLEN,
+                PAMLEN             PCH_ACH_PAMLEN,
+                NOMPWR             PCH_APM_NOMPWR,
+                INITPWR            PCH_APM_INITPWR,
+                PWRCSTEP           PCH_APM_PWRCSTEP,
+                NUMSTEP            PCH_APM_NUMSTEP,
+                PRBPNRAN           PCH_APM_PRBPNRAN,
+                PRBBKOFF           PCH_APM_PRBBKOFF,
+                BKOFF              PCH_APM_BKOFF,
+                MAXREQSEQ          PCH_APM_MAXREQSEQ,
+                MAXRSPSEQ          PCH_APM_MAXRSPSEQ,
+                TXGAIN             CDMA1XCH_TXGAIN,
+                SCTGAIN            CDMA1XCH_SCTGAIN,
+                FWDVCFCHFER1       CDMA1XCH_FER_FWDVCFCHFER1,
+                FWDDATFCHFER1      CDMA1XCH_FER_FWDDATFCHFER1,
+                IS95SCHGAIN1       CDMA1XCH_FFASTPC_IS95SCHGAIN1,
+                IS95SCHGAIN2       CDMA1XCH_FFASTPC_IS95SCHGAIN2,
+                IS95SCHGAIN3       CDMA1XCH_FFASTPC_IS95SCHGAIN3,
+                IS2KSCHGAIN1       CDMA1XCH_FFASTPC_IS2KSCHGAIN1,
+                IS2KSCHGAIN2       CDMA1XCH_FFASTPC_IS2KSCHGAIN2,
+                IS2KSCHGAIN3       CDMA1XCH_FFASTPC_IS2KSCHGAIN3,
+                VINITFCH           CDMA1XCH_FFASTPC_VINITFCH,
+                CCCH.VMAXFCH       CDMA1XCH_FFASTPC_VMAXFCH,
+                CCCH.VMINFCH       CDMA1XCH_FFASTPC_VMINFCH,
+                DINITFCH           CDMA1XCH_FFASTPC_DINITFCH,
+                CCCH.DMAXFCH       CDMA1XCH_FFASTPC_DMAXFCH,
+                CCCH.DMINFCH       CDMA1XCH_FFASTPC_DMINFCH,
+                CCCH.MAXDCCH       CDMA1XCH_FFASTPC_MAXDCCH,
+                CCCH.MINDCCH       CDMA1XCH_FFASTPC_MINDCCH,
+                SCHMAX             CDMA1XCH_FFASTPC_SCHMAX,
+                SCHMIN             CDMA1XCH_FFASTPC_SCHMIN,
+                V6VUFPCM           CDMA1XCH_FFASTPC_V6VUFPCM,
+                V6DUFPCM           CDMA1XCH_FFASTPC_V6DUFPCM,
+                V7VUFPCM           CDMA1XCH_FFASTPC_V7VUFPCM,
+                V7DUFPCM           CDMA1XCH_FFASTPC_V7DUFPCM,
+                FPCTHRS            CDMA1XCH_FFASTPC_FPCTHRS,
+                PWRRPTTHRS         CDMA1XCH_FSLOWPC_PWRRPTTHRS,
+                PWRRPTFRMNUM       CDMA1XCH_FSLOWPC_PWRRPTFRMNUM,
+                PWRRPTDL           CDMA1XCH_FSLOWPC_PWRRPTDL,
+                REVSPDMDLOADCTRLSW CDMA1XCH_R_R, --对CDMA1XCH_RLDCTRL_REVSPDMDLOADCTRLSW的简写
+                REVPWRCSTEP        CDMA1XCH_RCLPC_REVPWRCSTEP,
+                VFCHRLGAINADJ      CDMA1XCH_RCLPC_VFCHRLGAINADJ,
+                DFCHRLGAINADJ      CDMA1XCH_RCLPC_DFCHRLGAINADJ,
+                RLGAINSCHPLT1X     CDMA1XCH_RCLPC_RLGAINSCHPLT1X,
+                RLGAINSCHPLT2X     CDMA1XCH_RCLPC_RLGAINSCHPLT2X,
+                RLGAINSCHPLT4X     CDMA1XCH_RCLPC_RLGAINSCHPLT4X,
+                RLGAINSCHPLT8X     CDMA1XCH_RCLPC_RLGAINSCHPLT8X,
+                RLGAINSCHPLT16X    CDMA1XCH_RCLPC_RLGAINSCHPLT16X,
+                RLGAINSCHPLT32X    CDMA1XCH_RCLPC_RLGAINSCHPLT32X,
+                REVPWRCTRLDELAY    CDMA1XCH_RCLPC_REVPWRCTRLDELAY,
+                SRCHWINA           CDMA1XCH_HO_SRCHWINA,
+                SRCHWINN           CDMA1XCH_HO_SRCHWINN,
+                SRCHWINR           CDMA1XCH_HO_SRCHWINR,
+                NBRMAXAGE          CDMA1XCH_HO_NBRMAXAGE,
+                TADD               CDMA1XCH_HO_TADD,
+                TDROP              CDMA1XCH_HO_TDROP,
+                TTDROP             CDMA1XCH_HO_TTDROP,
+                ADDINTERC          CDMA1XCH_HO_ADDINTERC,
+                DROPINTERC         CDMA1XCH_HO_DROPINTERC,
+                SOFTSLOPE          CDMA1XCH_HO_SOFTSLOPE,
+                TCMP               CDMA1XCH_HO_TCMP,
+                PNINC              CDMA1XCH_HO_PNINC,
+                ACCTMO             PCH_APM_ACCTMO,
+                R1XDRT             CDMA1XCH_SCH_R1XDRT,
+                R2XDRT             CDMA1XCH_SCH_R2XDRT,
+                R4XDRT             CDMA1XCH_SCH_R4XDRT,
+                R8XDRT             CDMA1XCH_SCH_R8XDRT,
+                R16XDRT            CDMA1XCH_SCH_R16XDRT,
+                R32XDRT            CDMA1XCH_SCH_R32XDRT,
+                FWDMINDRT          CDMA1XCH_SCH_FWDMINDRT,
+                FWDMAXDRT          CDMA1XCH_SCH_FWDMAXDRT,
+                OBNDCLS            CDMA1XCH_OBNDCLS,
+                RCDATASCHSW        CDMA1XCH_CHINF_RCDATASCHSW,
+                CCGH.BNDCLS        CDMA1XCH_GSRDM_BNDCLS,
+                CCEH.BNDCLS        CDMA1XCH_EGSRDM_BNDCLS,
+                CCSGH.BNDCLS       CDMA1XCH_SRCFG_BNDCLS,
+                AUTODWNCDMACH      CDMA1XCH_AUTODWNCDMACH -- ,
+  FROM (SELECT DISTINCT OMCID, CN, SCTID, CRRID, PLTCHGAIN
+          FROM CLT_CM_CDMA1XCH_PLTCH_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCPH,
+       (SELECT DISTINCT PCHGAIN, OMCID, CN, SCTID, CRRID, ACHNUM, ADDNUM
+          FROM CLT_CM_PCH_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CPH,
+       (SELECT DISTINCT SYNCHGAIN, OMCID, SCTID, CRRID, CN
+          FROM CLT_CM_SYNCH_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CYH,
+       (SELECT DISTINCT MAXCELLR, OMCID, LOCALSECTORID, BTSID, CRRID
+          FROM CLT_CM_HW_CBTSSECTORCARRIER_1X
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CHCX,
+       (SELECT DISTINCT ACHLOWTHR, OMCID, SCTID, CRRID, CN
+          FROM CLT_CM_CDMA1XCH_ALDCTRL_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCAH,
+       (SELECT DISTINCT TOTALZN,
+                        ZNTMR,
+                        MSID,
+                        MNID,
+                        MAXTSPRDIDX,
+                        HOMEREG,
+                        FORSIDREG,
+                        FORNIDREG,
+                        PWRUP,
+                        PWRDWN,
+                        PRMREG,
+                        REGPRD,
+                        REGDIST,
+                        NULL BCIDX,
+                        OMCID,
+                        SCTID,
+                        CN,
+                        CRRID
+          FROM CLT_CM_CDMA1XCH_SPM_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCSH,
+       (SELECT DISTINCT OMCID,
+                        SCTID,
+                        CN,
+                        CRRID,
+                        PLTPL,
+                        AUTODWNCDMACH,
+                        OBNDCLS,
+                        SCTGAIN,
+                        TXGAIN
+        
+          FROM CLT_CM_CDMA1XCH_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCH,
+       (SELECT DISTINCT MAXLEN, PAMLEN, OMCID, CN, SCTID, CRRID
+          FROM CLT_CM_PCH_ACH_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CPAH,
+       (SELECT DISTINCT NOMPWR,
+                        INITPWR,
+                        PWRCSTEP,
+                        NUMSTEP,
+                        PRBPNRAN,
+                        PRBBKOFF,
+                        BKOFF,
+                        MAXREQSEQ,
+                        MAXRSPSEQ,
+                        OMCID,
+                        CN,
+                        SCTID,
+                        CRRID,
+                        ACCTMO
+          FROM CLT_CM_PCH_APM_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CPPH,
+       (SELECT DISTINCT OMCID, SCTID, CN, CRRID, FWDVCFCHFER1, FWDDATFCHFER1
+          FROM CLT_CM_CDMA1XCH_FER_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCFH,
+       (SELECT DISTINCT OMCID,
+                        CN,
+                        SCTID,
+                        CRRID,
+                        IS95SCHGAIN1,
+                        IS95SCHGAIN2,
+                        IS95SCHGAIN3,
+                        IS2KSCHGAIN1,
+                        IS2KSCHGAIN2,
+                        IS2KSCHGAIN3,
+                        VINITFCH,
+                        VMAXFCH,
+                        VMINFCH,
+                        DINITFCH,
+                        DMAXFCH,
+                        DMINFCH,
+                        MAXDCCH,
+                        MINDCCH,
+                        SCHMAX,
+                        SCHMIN,
+                        V6VUFPCM,
+                        V6DUFPCM,
+                        V7VUFPCM,
+                        V7DUFPCM,
+                        FPCTHRS
+          FROM CLT_CM_CDMA1XCH_FFASTPC_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCCH,
+       (SELECT DISTINCT OMCID,
+                        SCTID,
+                        CN,
+                        CRRID,
+                        PWRRPTTHRS,
+                        PWRRPTFRMNUM,
+                        PWRRPTDL
+          FROM CLT_CM_CDMA1XCH_FSLOWPC_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCFCH,
+       (SELECT DISTINCT OMCID, SCTID, CN, CRRID, REVSPDMDLOADCTRLSW
+          FROM CLT_CM_CDMA1XCH_RLDCTRL_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCRH,
+       (SELECT DISTINCT OMCID,
+                        SCTID,
+                        CRRID,
+                        CN,
+                        REVPWRCSTEP,
+                        VFCHRLGAINADJ,
+                        DFCHRLGAINADJ,
+                        RLGAINSCHPLT1X,
+                        RLGAINSCHPLT2X,
+                        RLGAINSCHPLT4X,
+                        RLGAINSCHPLT8X,
+                        RLGAINSCHPLT16X,
+                        RLGAINSCHPLT32X,
+                        REVPWRCTRLDELAY
+          FROM CLT_CM_CDMA1XCH_RCLPC_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCRCH,
+       (SELECT DISTINCT OMCID,
+                        SCTID,
+                        CRRID,
+                        CN,
+                        SRCHWINA,
+                        SRCHWINN,
+                        SRCHWINR,
+                        NBRMAXAGE,
+                        TADD,
+                        TDROP,
+                        TTDROP,
+                        ADDINTERC,
+                        DROPINTERC,
+                        SOFTSLOPE,
+                        TCMP,
+                        PNINC
+          FROM CLT_CM_CDMA1XCH_HO_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCHH,
+       (SELECT DISTINCT OMCID,
+                        SCTID,
+                        CRRID,
+                        CN,
+                        R1XDRT,
+                        R2XDRT,
+                        R4XDRT,
+                        R8XDRT,
+                        R16XDRT,
+                        R32XDRT,
+                        FWDMINDRT,
+                        FWDMAXDRT
+          FROM CLT_CM_CDMA1XCH_SCH_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCSHH,
+       (SELECT DISTINCT OMCID, SCTID, CRRID, CN, RCDATASCHSW
+          FROM CLT_CM_CDMA1XCH_CHINF_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCCFH,
+       (SELECT DISTINCT OMCID, SCTID, CRRID, CN, BNDCLS
+          FROM CLT_CM_CDMA1XCH_GSRDM_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCGH,
+       (SELECT DISTINCT OMCID, SCTID, CN, CRRID, BNDCLS
+          FROM CLT_CM_CDMA1XCH_EGSRDM_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCEH,
+       (SELECT DISTINCT OMCID, SCTID, CRRID, CN, BNDCLS
+          FROM CLT_CM_CDMA1XCH_SRCFG_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCSGH,
+       CFG_MAP_DEV_TO_NE MDTN,
+       CFG_CITY_SID CS
+ WHERE MDTN.CITY_ID || MDTN.BSC = CCPH.OMCID(+)
+   AND MDTN.BTS = CCPH.CN(+)
+   AND MDTN.CELL = CCPH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCPH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CPH.OMCID(+)
+   AND MDTN.BTS = CPH.CN(+)
+   AND MDTN.CELL = CPH.SCTID(+)
+   AND MDTN.CARR_SEQ = CPH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CYH.OMCID(+)
+   AND MDTN.BTS = CYH.CN(+)
+   AND MDTN.CELL = CYH.SCTID(+)
+   AND MDTN.CARR_SEQ = CYH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CHCX.OMCID(+)
+   AND MDTN.LOCALBTS = CHCX.BTSID(+)
+   AND MDTN.CELL = CHCX.LOCALSECTORID(+)
+   AND MDTN.CARR_SEQ = CHCX.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCAH.OMCID(+)
+   AND MDTN.BTS = CCAH.CN(+)
+   AND MDTN.CELL = CCAH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCAH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCSH.OMCID(+)
+   AND MDTN.BTS = CCSH.CN(+)
+   AND MDTN.CELL = CCSH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCSH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCH.OMCID(+)
+   AND MDTN.BTS = CCH.CN(+)
+   AND MDTN.CELL = CCH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CPAH.OMCID(+)
+   AND MDTN.BTS = CPAH.CN(+)
+   AND MDTN.CELL = CPAH.SCTID(+)
+   AND MDTN.CARR_SEQ = CPAH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CPPH.OMCID(+)
+   AND MDTN.BTS = CPPH.CN(+)
+   AND MDTN.CELL = CPPH.SCTID(+)
+   AND MDTN.CARR_SEQ = CPPH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCFH.OMCID(+)
+   AND MDTN.BTS = CCFH.CN(+)
+   AND MDTN.CELL = CCFH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCFH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCCH.OMCID(+)
+   AND MDTN.BTS = CCCH.CN(+)
+   AND MDTN.CELL = CCCH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCCH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCFCH.OMCID(+)
+   AND MDTN.BTS = CCFCH.CN(+)
+   AND MDTN.CELL = CCFCH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCFCH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCRH.OMCID(+)
+   AND MDTN.BTS = CCRH.CN(+)
+   AND MDTN.CELL = CCRH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCRH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCRCH.OMCID(+)
+   AND MDTN.BTS = CCRCH.CN(+)
+   AND MDTN.CELL = CCRCH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCRCH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCHH.OMCID(+)
+   AND MDTN.BTS = CCHH.CN(+)
+   AND MDTN.CELL = CCHH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCHH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCSHH.OMCID(+)
+   AND MDTN.BTS = CCSHH.CN(+)
+   AND MDTN.CELL = CCSHH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCSHH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCCFH.OMCID(+)
+   AND MDTN.BTS = CCCFH.CN(+)
+   AND MDTN.CELL = CCCFH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCCFH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCGH.OMCID(+)
+   AND MDTN.BTS = CCGH.CN(+)
+   AND MDTN.CELL = CCGH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCGH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCEH.OMCID(+)
+   AND MDTN.BTS = CCEH.CN(+)
+   AND MDTN.CELL = CCEH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCEH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCSGH.OMCID(+)
+   AND MDTN.BTS = CCSGH.CN(+)
+   AND MDTN.CELL = CCSGH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCSGH.CRRID(+)
+   AND MDTN.VENDOR = 'ZY0808'
+   AND MDTN.BUSTYPE = '1X'
+   AND MDTN.CITY_ID = CS.CITYID(+)
+				</sql>
+			</mapping>
+		     <!--华为载扇DO省接口-->
+    <mapping name="${province_en}_CARR_HW_DO_%%Y%%M%%D.csv" templet="华为载扇DO省接口_三期.ftl"   >  
+				<sql>
+					  SELECT DISTINCT  '%%Y-%%M-%%D'   start_time_curr, MDTN.NE_CARR_ID,
+                CS.PROVINCENAME,
+                MDTN.CITY_NAME,
+                MDTN.NE_MSC_ID,
+                NULL,
+                MDTN.NE_BSC_ID,
+                MDTN.NE_BTS_ID,
+                MDTN.NE_CELL_ID,
+                MDTN.CELL_NAME,
+                MDTN.CARR_SEQ,
+                CAPSULEOFFSET    CDMADOCH_DOCCHP_CAPSULEOFFSET,
+                CCHRATE          CDMADOCH_DOCCHP_CCHRATE,
+                PLTPL            CDMADOCH_PLTPL,
+                ACYCLEDURATION   CDMADOCH_DOAPM_ACYCLEDURATION,
+                PRBNUMSTEP       CDMADOCH_DOAPM_PRBNUMSTEP,
+                PRBLEN           CDMADOCH_DOAPM_PRBLEN,
+                CAPSULELENMAX    CDMADOCH_DOAPM_CAPSULELENMAX,
+                SECTORACCMAXRATE CDMADOCH_D_S, --对CDMADOCH_DOAPM_SECTORACCMAXRATE 缩写  
+                MAXCELLR         CBTSSECTORCARRIER_C_M, --对CBTSSECTORCARRIER_CBTSCDMADOSECTORPARA_MAXCELLR 缩写
+                TXGAIN           CDMADOCH_TXGAIN,
+                SCTGAIN          CDMADOCH_SCTGAIN,
+                OLOOPADJUST      CDMADOCH_DOAPM_OLOOPADJUST,
+                PRBINIADJUST     CDMADOCH_DOAPM_PRBINIADJUST,
+                PWRSTEP          CDMADOCH_DOAPM_PWRSTEP,
+                MINPCT           CDMADOCH_DORPCP_MINPCT,
+                MAXPCT           CDMADOCH_DORPCP_MAXPCT,
+                INITPCT          CDMADOCH_DORPCP_INITPCT,
+                NORMALGFRAMED    CDMADOCH_DORPCP_NORMALGFRAMED,
+                NODATAMAXINC     CDMADOCH_DORPCP_NODATAMAXINC,
+                DOAREVPER        CDMADOCH_DOARPCP_DOAREVPER,
+                SOFTSLOPE        CDMADOCH_DOCNP_SOFTSLOPE,
+                ADDINTERCEPT     CDMADOCH_DOCNP_ADDINTERCEPT,
+                DROPINTERCEPT    CDMADOCH_DOCNP_DROPINTERCEPT,
+                NBRMAXAGE        CDMADOCH_DOCNP_NBRMAXAGE,
+                DIFFCHNBRMAXAGE  CDMADOCH_DOCNP_DIFFCHNBRMAXAGE,
+                SRCHWINA         CDMADOCH_DOCNP_SRCHWINA,
+                SRCHWINN         CDMADOCH_DOCNP_SRCHWINN,
+                SRCHWINR         CDMADOCH_DOCNP_SRCHWINR,
+                OBNDCLS          CDMADOCH_OBNDCLS,
+                AUTODWNCDMACH    CDMADOCH_AUTODWNCDMACH,
+                RABOFFSET        CDMADOCH_DOSP_RABOFFSET
+  FROM CFG_MAP_DEV_TO_NE MDTN,
+       (SELECT DISTINCT OMCID, SCTID, CN, CRRID, CAPSULEOFFSET, CCHRATE
+          FROM CLT_CM_HW_DOCCHP
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CHD,
+       (SELECT DISTINCT OMCID,
+                        SCTID,
+                        CN,
+                        CRRID,
+                        PLTPL,
+                        TXGAIN,
+                        SCTGAIN,
+                        AUTODWNCDMACH,
+                        OBNDCLS
+          FROM CLT_CM_CDMADOCH_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCH,
+       (SELECT DISTINCT OMCID,
+                        SCTID,
+                        CRRID,
+                        CN,
+                        ACYCLEDURATION,
+                        PRBNUMSTEP,
+                        PRBLEN,
+                        CAPSULELENMAX,
+                        SECTORACCMAXRATE,
+                        OLOOPADJUST,
+                        PRBINIADJUST,
+                        PWRSTEP
+          FROM CLT_CM_HW_DOAPM
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CHDM,
+       (SELECT DISTINCT OMCID, LOCALSECTORID, BTSID, CRRID, MAXCELLR
+          FROM CLT_CM_HW_CBTSSECTORCARRIER_DO
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CHCD,
+       (SELECT DISTINCT OMCID,
+                        SCTID,
+                        CN,
+                        CRRID,
+                        MINPCT,
+                        MAXPCT,
+                        INITPCT,
+                        NORMALGFRAMED,
+                        NODATAMAXINC
+          FROM CLT_CM_HW_DORPCP
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CHDP,
+       (SELECT DISTINCT OMCID, SCTID, CRRID, CN, DOAREVPER
+          FROM CLT_CM_HW_DOARPCP
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CHDPP,
+       (SELECT DISTINCT OMCID,
+                        SCTID,
+                        CRRID,
+                        CN,
+                        SOFTSLOPE,
+                        ADDINTERCEPT,
+                        DROPINTERCEPT,
+                        NBRMAXAGE,
+                        DIFFCHNBRMAXAGE,
+                        SRCHWINA,
+                        SRCHWINN,
+                        SRCHWINR
+          FROM CLT_CM_HW_DOCNP
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CHWDP,
+       (SELECT DISTINCT OMCID, SCTID, CRRID, CN, RABOFFSET
+          FROM CLT_CM_CDMADOCH_DOSP_HW
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CCDH,
+         CFG_CITY_SID CS
+ WHERE MDTN.CITY_ID || MDTN.BSC = CHD.OMCID(+)
+   AND MDTN.BTS = CHD.CN(+)
+   AND MDTN.CELL = CHD.SCTID(+)
+   AND MDTN.CARR_SEQ = CHD.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCH.OMCID(+)
+   AND MDTN.BTS = CCH.CN(+)
+   AND MDTN.CELL = CCH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCH.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CHDM.OMCID(+)
+   AND MDTN.BTS = CHDM.CN(+)
+   AND MDTN.CELL = CHDM.SCTID(+)
+   AND MDTN.CARR_SEQ = CHDM.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CHCD.OMCID(+)
+   AND MDTN.BTS = CHCD.BTSID(+)
+   AND MDTN.CELL = CHCD.LOCALSECTORID(+)
+   AND MDTN.CARR_SEQ = CHCD.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CHDP.OMCID(+)
+   AND MDTN.BTS = CHDP.CN(+)
+   AND MDTN.CELL = CHDP.SCTID(+)
+   AND MDTN.CARR_SEQ = CHDP.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CHDPP.OMCID(+)
+   AND MDTN.BTS = CHDPP.CN(+)
+   AND MDTN.CELL = CHDP.SCTID(+)
+   AND MDTN.CARR_SEQ = CHDPP.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CHWDP.OMCID(+)
+   AND MDTN.BTS = CHWDP.CN(+)
+   AND MDTN.CELL = CHWDP.SCTID(+)
+   AND MDTN.CARR_SEQ = CHWDP.CRRID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CCDH.OMCID(+)
+   AND MDTN.BTS = CCDH.CN(+)
+   AND MDTN.CELL = CCDH.SCTID(+)
+   AND MDTN.CARR_SEQ = CCDH.CRRID(+)
+   AND MDTN.VENDOR = 'ZY0808'
+   AND MDTN.BUSTYPE = 'DO'
+   AND MDTN.CITY_ID= CS.CITYID(+)
+					</sql>
+			</mapping>
+			<!--中兴载扇1X省接口-->
+    <mapping name="${province_en}_CARR_ZTE_1X_%%Y%%M%%D.csv" templet="中兴载扇1X省接口_三期.ftl" >
+				<sql>
+					  SELECT DISTINCT  '%%Y-%%M-%%D'   start_time_curr, MDTN.NE_CARR_ID,
+                CS.PROVINCENAME,
+                MDTN.CITY_NAME,
+                MDTN.NE_MSC_ID,
+                NULL,
+                MDTN.NE_BSC_ID,
+                MDTN.NE_BTS_ID,
+                MDTN.NE_CELL_ID,
+                MDTN.CELL_NAME,
+                MDTN.CARR_SEQ,
+
+                INIT_PWR              INIT_PWR,
+                PWR_STEP              PWR_STEP,
+                NUM_STEP              NUM_STEP,
+                MAX_CAP_SZ            MAX_CAP_SZ,
+                PAM_SZ                PAM_SZ,
+                PROBE_PN_RAN          PROBE_PN_RAN,
+                ACC_TMO               ACC_TMO,
+                PROBE_BKOFF           PROBE_BKOFF,
+                BKOFF                 BKOFF,
+                MAX_REQ_SEQ           MAX_REQ_SEQ,
+                MAX_RSP_SEQ           MAX_RSP_SEQ,
+                NOM_PWR               NOM_PWR,
+                FPC_MODE              FPC_MODE,
+                FPC_MODE_SCH          FPC_MODE_SCH,
+                FPC_PRI_CHAN          FPC_PRI_CHAN,
+                FPC_FCH_FER_VOICE     FPC_FCH_FER_VOICE,
+                FPC_FCH_FER_DATA      FPC_FCH_FER_DATA,
+                FPCFCHMINSETPVOICE    FPCFCHMINSETPVOICE,
+                FPCFCHMINSETPDATA     FPCFCHMINSETPDATA,
+                FPCFCHMAXSETPVOICE    FPCFCHMAXSETPVOICE,
+                FPCFCHMAXSETPDATA     FPCFCHMAXSETPDATA,
+                FPC_DCCH_FER          FPC_DCCH_FER,
+                FPC_DCCH_MAX_SETPT    FPC_DCCH_MAX_SETPT,
+                FPC_SEC_CHAN          FPC_SEC_CHAN,
+                FPCFCHINITSETPVOICE   FPCFCHINITSETPVOICE,
+                FPCFCHINITSETPDATA    FPCFCHINITSETPDATA,
+                RLGAIN_ADJ            RLGAIN_ADJ,
+                REV_FCH_GATING_MODE   REV_FCH_GATING_MODE,
+                FPC_SCH_INIT_SETPT    FPC_SCH_INIT_SETPT,
+                FPC_SCH_MIN_SETPT     FPC_SCH_MIN_SETPT,
+                FPC_SCH_MAX_SETPT     FPC_SCH_MAX_SETPT,
+                FPC_SETPT_THRESH_SCH  FPC_SETPT_THRESH_SCH,
+                FPC_SCH_FER32X        FPC_SCH_FER32X,
+                FPC_SCH_FER16X        FPC_SCH_FER16X,
+                FPC_SCH_FER8X         FPC_SCH_FER8X,
+                FPC_SCH_FER4X         FPC_SCH_FER4X,
+                FPC_SCH_FER2X         FPC_SCH_FER2X,
+                FPC_SCH_INIT_SETPT_OP FPC_SCH_INIT_SETPT_OP,
+                REVDTXDURATION        REVDTXDURATION,
+                CPZ.FWDSCHRCPREF      FWDSCHRCPREF,
+                FWDCODINGTYPE         FWDCODINGTYPE,
+                FWDSCHMAXRATE         FWDSCHMAXRATE,
+                REVSCHRCPREF          REVSCHRCPREF,
+                REVCODINGTYPE         REVCODINGTYPE,
+                REVSCHMAXRATE         REVSCHMAXRATE
+  FROM CFG_MAP_DEV_TO_NE MDTN,
+       (SELECT DISTINCT OMCID,
+                        SYSTEM,
+                        CELLID,
+                        CARRIERID,
+                        INIT_PWR,
+                        PWR_STEP,
+                        NUM_STEP,
+                        MAX_CAP_SZ,
+                        PAM_SZ,
+                        PROBE_PN_RAN,
+                        ACC_TMO,
+                        PROBE_BKOFF,
+                        BKOFF,
+                        MAX_REQ_SEQ,
+                        MAX_RSP_SEQ
+          FROM CLT_CM_R_3G_T_ACCESS_PARA_ZTE
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) APZ,
+       (SELECT DISTINCT OMCID, SYSTEM, CELLID, CARRIERID, NOM_PWR
+          FROM CLT_CM_R_3G_T_CARRIER_ZTE
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) TCZ,
+       (SELECT DISTINCT OMCID,
+                        SYSTEM,
+                        CELLID,
+                        CARRIERID,
+                        FPC_MODE,
+                        FPC_MODE_SCH,
+                        FPC_PRI_CHAN,
+                        FPC_FCH_FER_VOICE,
+                        FPC_FCH_FER_DATA,
+                        FPCFCHMINSETPVOICE,
+                        FPCFCHMINSETPDATA,
+                        FPCFCHMAXSETPVOICE,
+                        FPCFCHMAXSETPDATA,
+                        FPC_DCCH_FER,
+                        FPC_DCCH_MAX_SETPT,
+                        FPC_SEC_CHAN,
+                        FPCFCHINITSETPVOICE,
+                        FPCFCHINITSETPDATA,
+                        RLGAIN_ADJ,
+                        REV_FCH_GATING_MODE,
+                        FPC_SCH_INIT_SETPT,
+                        FPC_SCH_MIN_SETPT,
+                        FPC_SCH_MAX_SETPT,
+                        FPC_SETPT_THRESH_SCH,
+                        FPC_SCH_FER32X,
+                        FPC_SCH_FER16X,
+                        FPC_SCH_FER8X,
+                        FPC_SCH_FER4X,
+                        FPC_SCH_FER2X,
+                        FPC_SCH_INIT_SETPT_OP
+          FROM CLT_CM_ZTE_R_3G_T_PC_MSG
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) TPM,
+       (SELECT DISTINCT OMCID,
+                        SYSTEM,
+                        CELLID,
+                        CARRIERID,
+                        REVDTXDURATION,
+                        FWDSCHRCPREF,
+                        FWDCODINGTYPE,
+                        FWDSCHMAXRATE,
+                        REVSCHRCPREF,
+                        REVCODINGTYPE,
+                        REVSCHMAXRATE
+          FROM CLT_CM_R_3G_T_CH_PARA_ZTE
+         WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CPZ,
+         CFG_CITY_SID CS
+ WHERE MDTN.CITY_ID || MDTN.BSC = APZ.OMCID(+)
+   AND MDTN.BTS = APZ.SYSTEM(+)
+   AND MDTN.CELL = APZ.CELLID(+)
+   AND MDTN.CARR_SEQ = APZ.CARRIERID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = TCZ.OMCID(+)
+   AND MDTN.BTS = TCZ.SYSTEM(+)
+   AND MDTN.CELL = TCZ.CELLID(+)
+   AND MDTN.CARR_SEQ = TCZ.CARRIERID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = TPM.OMCID(+)
+   AND MDTN.BTS = TPM.SYSTEM(+)
+   AND MDTN.CELL = TPM.CELLID(+)
+   AND MDTN.CARR_SEQ = TPM.CARRIERID(+)
+   AND MDTN.CITY_ID || MDTN.BSC = CPZ.OMCID(+)
+   AND MDTN.BTS = CPZ.SYSTEM(+)
+   AND MDTN.CELL = CPZ.CELLID(+)
+   AND MDTN.CARR_SEQ = CPZ.CARRIERID(+)
+   AND MDTN.VENDOR = 'ZY0804'
+   AND MDTN.BUSTYPE = '1X'
+   AND MDTN.CITY_ID = CS.CITYID(+)
+					</sql>
+			</mapping>
+			<!--中兴载扇DO省接口-->
+    <mapping name="${province_en}_CARR_ZTE_DO_%%Y%%M%%D.csv" templet="中兴载扇DO省接口_三期.ftl"   >  
+				<sql>   SELECT DISTINCT  '%%Y-%%M-%%D'   start_time_curr, MDTN.NE_CARR_ID,
+                  CS.PROVINCENAME,
+                  MDTN.CITY_NAME,
+                  MDTN.NE_MSC_ID,
+                  NULL,
+                  MDTN.NE_BSC_ID,
+                  MDTN.NE_BTS_ID,
+                  MDTN.NE_CELL_ID,
+                  MDTN.CELL_NAME,
+                  MDTN.CARR_SEQ,
+
+                  OLCONTROLMINDORM,
+                  RABLENGTH,
+                  SYNCCAPSULEOFFSET,
+                  CONTROLCHANNELRATE,
+                  PROBENUMSTEP,
+                  ACHDURATIONFOR6800,
+                  SECTORACCESSMAXRATE,
+                  OPENLOOPADJUST,
+                  POWERSTEP,
+                  RABOFFSET,
+                  RABTHRESHOLD68_ROT
+          FROM CFG_MAP_DEV_TO_NE MDTN,
+         (SELECT DISTINCT OMCID,
+                          SYSTEM,
+                          CELLID,
+                          CARRIERID,
+                          OLCONTROLMINDORM
+            FROM CLT_CM_R_H_T_OVLD_PARA_ZTE
+           WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) OPZ,
+         (SELECT DISTINCT OMCID,
+                          SYSTEM,
+                          CELLID,
+                          CARRIERID,
+                          RABLENGTH,
+                          RABOFFSET,
+                          RABTHRESHOLD68_ROT
+            FROM CLT_CM_R_H_T_CARRIER_STATE_ZTE
+           WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CSZ,
+         (SELECT DISTINCT OMCID,
+                          SYSTEM,
+                          CELLID,
+                          CARRIERID,
+                          SYNCCAPSULEOFFSET,
+                          CONTROLCHANNELRATE
+            FROM CLT_CM_R_H_T_CCH_PARA_ZTE
+           WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) CPZ,
+         (SELECT DISTINCT OMCID,
+                          SYSTEM,
+                          CELLID,
+                          CARRIERID,
+                          PROBENUMSTEP,
+                          ACHDURATIONFOR6800,
+                          SECTORACCESSMAXRATE,
+                          OPENLOOPADJUST,
+                          POWERSTEP
+            FROM CLT_CM_R_H_T_ACC_PARA_ZTE
+           WHERE STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')) APZ,
+                 CFG_CITY_SID CS
+         WHERE MDTN.CITY_ID || MDTN.BSC = OPZ.OMCID(+)
+           AND MDTN.BTS = OPZ.SYSTEM(+)
+           AND MDTN.CELL = OPZ.CELLID(+)
+           AND MDTN.CARR_SEQ = OPZ.CARRIERID(+)
+           AND MDTN.CITY_ID || MDTN.BSC = CSZ.OMCID(+)
+           AND MDTN.BTS = CSZ.SYSTEM(+)
+           AND MDTN.CELL = CSZ.CELLID(+)
+           AND MDTN.CARR_SEQ = CSZ.CARRIERID(+)
+           AND MDTN.CITY_ID || MDTN.BSC = CPZ.OMCID(+)
+           AND MDTN.BTS = CPZ.SYSTEM(+)
+           AND MDTN.CELL = CPZ.CELLID(+)
+           AND MDTN.CARR_SEQ = CPZ.CARRIERID(+)
+           AND MDTN.CITY_ID || MDTN.BSC = APZ.OMCID(+)
+           AND MDTN.BTS = APZ.SYSTEM(+)
+           AND MDTN.CELL = APZ.CELLID(+)
+           AND MDTN.CARR_SEQ = APZ.CARRIERID(+)
+           AND MDTN.VENDOR = 'ZY0804'
+           AND MDTN.BUSTYPE = 'DO'
+           AND MDTN.CITY_ID = CS.CITYID(+)
+					</sql>
+			</mapping>
+			
+						<!--阿朗载扇1X-->
+    <mapping name="${province_en}_CARR_ALU_1X_%%Y%%M%%D.csv" templet="阿朗载扇1X_三期.ftl"   >  
+				<sql>
+					  SELECT DISTINCT  '%%Y-%%M-%%D'   start_time_curr, MDTN.NE_CARR_ID,
+                CS.PROVINCENAME,
+                MDTN.CITY_NAME,
+                MDTN.NE_MSC_ID,
+                NULL,
+                MDTN.NE_BSC_ID,
+                MDTN.NE_BTS_ID,
+                MDTN.NE_CELL_ID,
+                MDTN.CELL_NAME,
+                MDTN.CARR_SEQ,
+                LE.BCAST_INDEX
+       FROM CLT_CM_LUC_ECP LE,CFG_MAP_DEV_TO_NE MDTN,CFG_CITY_SID CS
+      WHERE LE.OMCID=MDTN.OMC
+        AND MDTN.CITY_ID = CS.CITYID
+        AND LE.STAMPTIME TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')
+				</sql>
+			</mapping>
+		     <!--阿朗载扇DO-->
+    <mapping name="${province_en}_CARR_ALU_DO_%%Y%%M%%D.csv" templet="阿朗载扇DO_三期.ftl"   >  
+				<sql>
+					  SELECT DISTINCT  '%%Y-%%M-%%D'   start_time_curr, MDTN.NE_CARR_ID,
+                  CS.PROVINCENAME,
+                  MDTN.CITY_NAME,
+                  MDTN.NE_MSC_ID,
+                  NULL,
+                  MDTN.NE_BSC_ID,
+                  MDTN.NE_BTS_ID,
+                  MDTN.NE_CELL_ID,
+                  MDTN.CELL_NAME,
+                  MDTN.CARR_SEQ,
+                  PREAMBLELENGTHSLOTS,
+                  SECTORACCESSMAXRATE
+      FROM CLT_CM_LUC_DO_SECTORCARRIER LDS ,CFG_MAP_DEV_TO_NE MDTN,CFG_CITY_SID CS
+	    WHERE MDTN.OMC = LDS.OMCID
+       AND MDTN.BTS = LDS.CELLSITEID
+       AND MDTN.CELL = LDS.SECTORID
+       AND MDTN.CARR_SEQ = LDS.CARRIERID
+       AND MDTN.CITY_ID = CS.CITYID
+       AND LDS.STAMPTIME = TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS')
+					</sql>
+			</mapping>
+					
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	   <ti id="1" after="1">
+		<property name="ftpip">132.228.39.154</property>
+		<property name="port">21</property>
+		<property name="username">FTPUser</property>
+		<property name="password">Js!QAZ7</property>
+		<property name="path">/PARA/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--?????-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>

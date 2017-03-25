@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+
+	<ds id="2" type="200">
+		<!--可以有多个路径-->
+		<property name="path1">D:\UwaySoft\nbi\upload\work\</property>
+	</ds>
+	
+	<!--transfer object 传输对象 -->
+
+	<to id="2">
+		<resolve dsid="2">
+			
+		</resolve>
+	</to>
+
+
+
+	
+	
+	<!--transfer interface 传输接口  local path:ftp -->
+	<ti id="1" after="1">
+		<!-- file -->
+		<property name="ftpip">10.252.0.204</property>
+		<property name="port">21</property>
+		<property name="username">sxftp</property>
+		<property name="password">fzs%Jxop</property>
+		<property name="path">/WORK/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+	</ti>
+		
+	<t>	
+		<action id="2" toid="2" tiid="1" strategyid="1"/><!--本地文件方式-->
+
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

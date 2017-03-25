@@ -1,0 +1,32 @@
+-- Create table
+create table LOG_NOSS_REPORT_INSERT
+(
+  SERVICE_ID   VARCHAR2(50),
+  VERSION      VARCHAR2(50),
+  SERVICE_NAME VARCHAR2(50),
+  SERVICE_DESC VARCHAR2(50),
+  TYPE         VARCHAR2(50),
+  RESULT       VARCHAR2(20),
+  INSERT_TIME  DATE,
+  ERRORCODE    VARCHAR2(20),
+  ERRORREASON  VARCHAR2(1000)
+);
+-- Add comments to the columns 
+comment on column LOG_NOSS_REPORT_INSERT.SERVICE_ID
+  is '业务编号';
+comment on column LOG_NOSS_REPORT_INSERT.VERSION
+  is '版本';
+comment on column LOG_NOSS_REPORT_INSERT.SERVICE_NAME
+  is '业务名称';
+comment on column LOG_NOSS_REPORT_INSERT.SERVICE_DESC
+  is '业务描述';
+comment on column LOG_NOSS_REPORT_INSERT.TYPE
+  is '业务类型';
+comment on column LOG_NOSS_REPORT_INSERT.RESULT
+  is '输出结果  SUCCESS';
+comment on column LOG_NOSS_REPORT_INSERT.INSERT_TIME
+  is '入库时间';
+comment on column LOG_NOSS_REPORT_INSERT.ERRORCODE
+  is '错误代码';
+comment on column LOG_NOSS_REPORT_INSERT.ERRORREASON
+  is '出现错误原因';

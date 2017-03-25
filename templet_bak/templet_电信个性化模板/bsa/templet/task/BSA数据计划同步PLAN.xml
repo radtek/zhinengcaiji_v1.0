@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10
+		</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noapjs</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 
+	case 
+	when Antenna_Loc_Accu=0 then 0
+	else Antenna_Loc_Accu
+	end   
+	-->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="REQ_ADD_%%Y%%M%%D%%H%%m_${province_code}${index}.csv.zip" templet="BSA数据计划同步PLAN.ftl"   >
+			    <sql>select sync_sql from CFG_BSA_SYNC_UPLOAD_SQL where synctype='PLAN' and data_type='ADD' and sql_type=1</sql>
+			</mapping>
+			
+			<mapping name="REQ_MOD_%%Y%%M%%D%%H%%m_${province_code}${index}.csv.zip" templet="BSA数据计划同步PLAN.ftl"   >
+			    <sql>SELECT SYNC_SQL FROM CFG_BSA_SYNC_UPLOAD_SQL WHERE SYNCTYPE='PLAN' AND DATA_TYPE='MOD' AND SQL_TYPE=1</sql>
+			</mapping>
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+	<property name="ftpip">192.168.15.94</property>
+		<property name="port">21</property>
+		<property name="username">admin</property>
+		<property name="password">admin</property>
+		<property name="path">/upload/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="2" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: --><!-- before ,after ,exception -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<strategy id="2">
+		<property name="ids">1</property>
+	</strategy>
+	<trigger id="1" class="">
+		<property name="sql"> 
+		select sync_sql from CFG_BSA_SYNC_UPLOAD_SQL where synctype='PLAN' and sql_type=2
+		</property>
+	</trigger>
+</config>

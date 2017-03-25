@@ -1,0 +1,876 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">cnoap_s</property>
+		<property name="password">cnoap_s</property>
+	</ds>
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+
+			<mapping name="${province_en}_CDL_SECTOR_1X_%%Y%%M%%D.csv" templet="重庆个性化话单数据SECTOR上报后台1X.ftl">
+
+				<sql>
+
+SELECT T1."时间",T1."时段",T1."厂家",T1."BSC号",T1."基站号",T1."厂商侧 CELLID",T1."扇区号",T1."扇区名称",
+       T1.STRENGTH1 as  "Ec/Io接入区间[-9,0)次数",
+       T1.STRENGTH2 as "Ec/Io接入区间[-12,-9)次数",
+       T1.STRENGTH3 as "Ec/Io接入区间[-∞,-12)次数",
+       DECODE(T1.ALLNUM, 0, 0, ROUND(T1.STRENGTH1 * 100 / T1.ALLNUM, 2)) AS "Ec/Io接入区间[-9,0)比例",
+       DECODE(T1.ALLNUM, 0, 0, ROUND(T1.STRENGTH2 * 100 / T1.ALLNUM, 2)) AS "Ec/Io接入区间[-12,-9)比例",
+       DECODE(T1.ALLNUM, 0, 0, ROUND(T1.STRENGTH3 * 100 / T1.ALLNUM, 2)) AS "Ec/Io接入区间[-∞,-12)比例", 
+       T2.STRENGTH1 as  "Ec/Io释放区间[-9,0)次数",
+       T2.STRENGTH2 as "Ec/Io释放区间[-12,-9)次数",
+       T2.STRENGTH3 as "Ec/Io释放区间[-∞,-12)次数",
+       DECODE(T2.ALLNUM, 0, 0, ROUND(T2.STRENGTH1 * 100 / T2.ALLNUM, 2)) AS "Ec/Io释放区间[-9,0)比例",
+       DECODE(T2.ALLNUM, 0, 0, ROUND(T2.STRENGTH2 * 100 / T2.ALLNUM, 2)) AS "Ec/Io释放区间[-12,-9)比例",
+       DECODE(T2.ALLNUM, 0, 0, ROUND(T2.STRENGTH3 * 100 / T2.ALLNUM, 2)) AS "Ec/Io释放区间[-∞,-12)比例"
+  FROM 
+(select T0.START_TIME,T0.NE_CELL_ID,to_char(T0.START_TIME,'YYYY-MM-DD') AS "时间",
+                  to_char(T0.START_TIME,'HH24') AS "时段",
+                  CASE NE.VENDOR WHEN 'ZY0808' THEN '华为' WHEN 'ZY0804' then '中兴' when 'ZY0810' then '阿朗' else '' end "厂家",
+                  NE.BSC AS "BSC号",
+                  NE.BTS AS "基站号",
+                  NE.LOCALBTS AS "厂商侧 CELLID",
+                  NE.CELL AS "扇区号",
+                  NE.CELL_NAME AS "扇区名称",
+               SUM(T_0UP_ECIO_0_N31_NUM) ALLNUM,
+               SUM(T_0_0P25_ECIO_N8_N9_NUM + T_0P25_0P5_ECIO_N8_N9_NUM +
+                   T_0P5_0P75_ECIO_N8_N9_NUM + T_0P75_1_ECIO_N8_N9_NUM +
+                   T_1_1P25_ECIO_N8_N9_NUM + T_1P25_1P5_ECIO_N8_N9_NUM +
+                   T_1P5_1P75_ECIO_N8_N9_NUM + T_1P75_2_ECIO_N8_N9_NUM +
+                   T_2_3_ECIO_N8_N9_NUM + T_3_4_ECIO_N8_N9_NUM +
+                   T_4UP_ECIO_N8_N9_NUM + T_0_0P25_ECIO_N7_N8_NUM +
+                   T_0P25_0P5_ECIO_N7_N8_NUM + T_0P5_0P75_ECIO_N7_N8_NUM +
+                   T_0P75_1_ECIO_N7_N8_NUM + T_1_1P25_ECIO_N7_N8_NUM +
+                   T_1P25_1P5_ECIO_N7_N8_NUM + T_1P5_1P75_ECIO_N7_N8_NUM +
+                   T_1P75_2_ECIO_N7_N8_NUM + T_2_3_ECIO_N7_N8_NUM +
+                   T_3_4_ECIO_N7_N8_NUM + T_4UP_ECIO_N7_N8_NUM +
+                   T_0_0P25_ECIO_N6_N7_NUM + T_0P25_0P5_ECIO_N6_N7_NUM +
+                   T_0P5_0P75_ECIO_N6_N7_NUM + T_0P75_1_ECIO_N6_N7_NUM +
+                   T_1_1P25_ECIO_N6_N7_NUM + T_1P25_1P5_ECIO_N6_N7_NUM +
+                   T_1P5_1P75_ECIO_N6_N7_NUM + T_1P75_2_ECIO_N6_N7_NUM +
+                   T_2_3_ECIO_N6_N7_NUM + T_3_4_ECIO_N6_N7_NUM +
+                   T_4UP_ECIO_N6_N7_NUM + T_0_0P25_ECIO_N5_N6_NUM +
+                   T_0P25_0P5_ECIO_N5_N6_NUM + T_0P5_0P75_ECIO_N5_N6_NUM +
+                   T_0P75_1_ECIO_N5_N6_NUM + T_1_1P25_ECIO_N5_N6_NUM +
+                   T_1P25_1P5_ECIO_N5_N6_NUM + T_1P5_1P75_ECIO_N5_N6_NUM +
+                   T_1P75_2_ECIO_N5_N6_NUM + T_2_3_ECIO_N5_N6_NUM +
+                   T_3_4_ECIO_N5_N6_NUM + T_4UP_ECIO_N5_N6_NUM +
+                   T_0_0P25_ECIO_N4_N5_NUM + T_0P25_0P5_ECIO_N4_N5_NUM +
+                   T_0P5_0P75_ECIO_N4_N5_NUM + T_0P75_1_ECIO_N4_N5_NUM +
+                   T_1_1P25_ECIO_N4_N5_NUM + T_1P25_1P5_ECIO_N4_N5_NUM +
+                   T_1P5_1P75_ECIO_N4_N5_NUM + T_1P75_2_ECIO_N4_N5_NUM +
+                   T_2_3_ECIO_N4_N5_NUM + T_3_4_ECIO_N4_N5_NUM +
+                   T_4UP_ECIO_N4_N5_NUM + T_0_0P25_ECIO_N3_N4_NUM +
+                   T_0P25_0P5_ECIO_N3_N4_NUM + T_0P5_0P75_ECIO_N3_N4_NUM +
+                   T_0P75_1_ECIO_N3_N4_NUM + T_1_1P25_ECIO_N3_N4_NUM +
+                   T_1P25_1P5_ECIO_N3_N4_NUM + T_1P5_1P75_ECIO_N3_N4_NUM +
+                   T_1P75_2_ECIO_N3_N4_NUM + T_2_3_ECIO_N3_N4_NUM +
+                   T_3_4_ECIO_N3_N4_NUM + T_4UP_ECIO_N3_N4_NUM +
+                   T_0_0P25_ECIO_N2_N3_NUM + T_0P25_0P5_ECIO_N2_N3_NUM +
+                   T_0P5_0P75_ECIO_N2_N3_NUM + T_0P75_1_ECIO_N2_N3_NUM +
+                   T_1_1P25_ECIO_N2_N3_NUM + T_1P25_1P5_ECIO_N2_N3_NUM +
+                   T_1P5_1P75_ECIO_N2_N3_NUM + T_1P75_2_ECIO_N2_N3_NUM +
+                   T_2_3_ECIO_N2_N3_NUM + T_3_4_ECIO_N2_N3_NUM +
+                   T_4UP_ECIO_N2_N3_NUM + T_0_0P25_ECIO_N1_N2_NUM +
+                   T_0P25_0P5_ECIO_N1_N2_NUM + T_0P5_0P75_ECIO_N1_N2_NUM +
+                   T_0P75_1_ECIO_N1_N2_NUM + T_1_1P25_ECIO_N1_N2_NUM +
+                   T_1P25_1P5_ECIO_N1_N2_NUM + T_1P5_1P75_ECIO_N1_N2_NUM +
+                   T_1P75_2_ECIO_N1_N2_NUM + T_2_3_ECIO_N1_N2_NUM +
+                   T_3_4_ECIO_N1_N2_NUM + T_4UP_ECIO_N1_N2_NUM +
+                   T_0_0P25_ECIO_0_N1_NUM + T_0P25_0P5_ECIO_0_N1_NUM +
+                   T_0P5_0P75_ECIO_0_N1_NUM + T_0P75_1_ECIO_0_N1_NUM +
+                   T_1_1P25_ECIO_0_N1_NUM + T_1P25_1P5_ECIO_0_N1_NUM +
+                   T_1P5_1P75_ECIO_0_N1_NUM + T_1P75_2_ECIO_0_N1_NUM +
+                   T_2_3_ECIO_0_N1_NUM + T_3_4_ECIO_0_N1_NUM +
+                   T_4UP_ECIO_0_N1_NUM) AS STRENGTH1,
+               SUM(T_0_0P25_ECIO_N11_N12_NUM + T_0P25_0P5_ECIO_N11_N12_NUM +
+                   T_0P5_0P75_ECIO_N11_N12_NUM + T_0P75_1_ECIO_N11_N12_NUM +
+                   T_1_1P25_ECIO_N11_N12_NUM + T_1P25_1P5_ECIO_N11_N12_NUM +
+                   T_1P5_1P75_ECIO_N11_N12_NUM + T_1P75_2_ECIO_N11_N12_NUM +
+                   T_2_3_ECIO_N11_N12_NUM + T_3_4_ECIO_N11_N12_NUM +
+                   T_4UP_ECIO_N11_N12_NUM + T_0_0P25_ECIO_N10_N11_NUM +
+                   T_0P25_0P5_ECIO_N10_N11_NUM + T_0P5_0P75_ECIO_N10_N11_NUM +
+                   T_0P75_1_ECIO_N10_N11_NUM + T_1_1P25_ECIO_N10_N11_NUM +
+                   T_1P25_1P5_ECIO_N10_N11_NUM + T_1P5_1P75_ECIO_N10_N11_NUM +
+                   T_1P75_2_ECIO_N10_N11_NUM + T_2_3_ECIO_N10_N11_NUM +
+                   T_3_4_ECIO_N10_N11_NUM + T_4UP_ECIO_N10_N11_NUM +
+                   T_0_0P25_ECIO_N9_N10_NUM + T_0P25_0P5_ECIO_N9_N10_NUM +
+                   T_0P5_0P75_ECIO_N9_N10_NUM + T_0P75_1_ECIO_N9_N10_NUM +
+                   T_1_1P25_ECIO_N9_N10_NUM + T_1P25_1P5_ECIO_N9_N10_NUM +
+                   T_1P5_1P75_ECIO_N9_N10_NUM + T_1P75_2_ECIO_N9_N10_NUM +
+                   T_2_3_ECIO_N9_N10_NUM + T_3_4_ECIO_N9_N10_NUM +
+                   T_4UP_ECIO_N9_N10_NUM) AS STRENGTH2,
+               SUM(0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 +
+                   T_0_0P25_ECIO_N30_N31_NUM + T_0P25_0P5_ECIO_N30_N31_NUM +
+                   T_0P5_0P75_ECIO_N30_N31_NUM + T_0P75_1_ECIO_N30_N31_NUM +
+                   T_1_1P25_ECIO_N30_N31_NUM + T_1P25_1P5_ECIO_N30_N31_NUM +
+                   T_1P5_1P75_ECIO_N30_N31_NUM + T_1P75_2_ECIO_N30_N31_NUM +
+                   T_2_3_ECIO_N30_N31_NUM + T_3_4_ECIO_N30_N31_NUM +
+                   T_4UP_ECIO_N30_N31_NUM + T_0_0P25_ECIO_N29_N30_NUM +
+                   T_0P25_0P5_ECIO_N29_N30_NUM + T_0P5_0P75_ECIO_N29_N30_NUM +
+                   T_0P75_1_ECIO_N29_N30_NUM + T_1_1P25_ECIO_N29_N30_NUM +
+                   T_1P25_1P5_ECIO_N29_N30_NUM + T_1P5_1P75_ECIO_N29_N30_NUM +
+                   T_1P75_2_ECIO_N29_N30_NUM + T_2_3_ECIO_N29_N30_NUM +
+                   T_3_4_ECIO_N29_N30_NUM + T_4UP_ECIO_N29_N30_NUM +
+                   T_0_0P25_ECIO_N28_N29_NUM + T_0P25_0P5_ECIO_N28_N29_NUM +
+                   T_0P5_0P75_ECIO_N28_N29_NUM + T_0P75_1_ECIO_N28_N29_NUM +
+                   T_1_1P25_ECIO_N28_N29_NUM + T_1P25_1P5_ECIO_N28_N29_NUM +
+                   T_1P5_1P75_ECIO_N28_N29_NUM + T_1P75_2_ECIO_N28_N29_NUM +
+                   T_2_3_ECIO_N28_N29_NUM + T_3_4_ECIO_N28_N29_NUM +
+                   T_4UP_ECIO_N28_N29_NUM + T_0_0P25_ECIO_N27_N28_NUM +
+                   T_0P25_0P5_ECIO_N27_N28_NUM + T_0P5_0P75_ECIO_N27_N28_NUM +
+                   T_0P75_1_ECIO_N27_N28_NUM + T_1_1P25_ECIO_N27_N28_NUM +
+                   T_1P25_1P5_ECIO_N27_N28_NUM + T_1P5_1P75_ECIO_N27_N28_NUM +
+                   T_1P75_2_ECIO_N27_N28_NUM + T_2_3_ECIO_N27_N28_NUM +
+                   T_3_4_ECIO_N27_N28_NUM + T_4UP_ECIO_N27_N28_NUM +
+                   T_0_0P25_ECIO_N26_N27_NUM + T_0P25_0P5_ECIO_N26_N27_NUM +
+                   T_0P5_0P75_ECIO_N26_N27_NUM + T_0P75_1_ECIO_N26_N27_NUM +
+                   T_1_1P25_ECIO_N26_N27_NUM + T_1P25_1P5_ECIO_N26_N27_NUM +
+                   T_1P5_1P75_ECIO_N26_N27_NUM + T_1P75_2_ECIO_N26_N27_NUM +
+                   T_2_3_ECIO_N26_N27_NUM + T_3_4_ECIO_N26_N27_NUM +
+                   T_4UP_ECIO_N26_N27_NUM + T_0_0P25_ECIO_N25_N26_NUM +
+                   T_0P25_0P5_ECIO_N25_N26_NUM + T_0P5_0P75_ECIO_N25_N26_NUM +
+                   T_0P75_1_ECIO_N25_N26_NUM + T_1_1P25_ECIO_N25_N26_NUM +
+                   T_1P25_1P5_ECIO_N25_N26_NUM + T_1P5_1P75_ECIO_N25_N26_NUM +
+                   T_1P75_2_ECIO_N25_N26_NUM + T_2_3_ECIO_N25_N26_NUM +
+                   T_3_4_ECIO_N25_N26_NUM + T_4UP_ECIO_N25_N26_NUM +
+                   T_0_0P25_ECIO_N24_N25_NUM + T_0P25_0P5_ECIO_N24_N25_NUM +
+                   T_0P5_0P75_ECIO_N24_N25_NUM + T_0P75_1_ECIO_N24_N25_NUM +
+                   T_1_1P25_ECIO_N24_N25_NUM + T_1P25_1P5_ECIO_N24_N25_NUM +
+                   T_1P5_1P75_ECIO_N24_N25_NUM + T_1P75_2_ECIO_N24_N25_NUM +
+                   T_2_3_ECIO_N24_N25_NUM + T_3_4_ECIO_N24_N25_NUM +
+                   T_4UP_ECIO_N24_N25_NUM + T_0_0P25_ECIO_N23_N24_NUM +
+                   T_0P25_0P5_ECIO_N23_N24_NUM + T_0P5_0P75_ECIO_N23_N24_NUM +
+                   T_0P75_1_ECIO_N23_N24_NUM + T_1_1P25_ECIO_N23_N24_NUM +
+                   T_1P25_1P5_ECIO_N23_N24_NUM + T_1P5_1P75_ECIO_N23_N24_NUM +
+                   T_1P75_2_ECIO_N23_N24_NUM + T_2_3_ECIO_N23_N24_NUM +
+                   T_3_4_ECIO_N23_N24_NUM + T_4UP_ECIO_N23_N24_NUM +
+                   T_0_0P25_ECIO_N22_N23_NUM + T_0P25_0P5_ECIO_N22_N23_NUM +
+                   T_0P5_0P75_ECIO_N22_N23_NUM + T_0P75_1_ECIO_N22_N23_NUM +
+                   T_1_1P25_ECIO_N22_N23_NUM + T_1P25_1P5_ECIO_N22_N23_NUM +
+                   T_1P5_1P75_ECIO_N22_N23_NUM + T_1P75_2_ECIO_N22_N23_NUM +
+                   T_2_3_ECIO_N22_N23_NUM + T_3_4_ECIO_N22_N23_NUM +
+                   T_4UP_ECIO_N22_N23_NUM + T_0_0P25_ECIO_N21_N22_NUM +
+                   T_0P25_0P5_ECIO_N21_N22_NUM + T_0P5_0P75_ECIO_N21_N22_NUM +
+                   T_0P75_1_ECIO_N21_N22_NUM + T_1_1P25_ECIO_N21_N22_NUM +
+                   T_1P25_1P5_ECIO_N21_N22_NUM + T_1P5_1P75_ECIO_N21_N22_NUM +
+                   T_1P75_2_ECIO_N21_N22_NUM + T_2_3_ECIO_N21_N22_NUM +
+                   T_3_4_ECIO_N21_N22_NUM + T_4UP_ECIO_N21_N22_NUM +
+                   T_0_0P25_ECIO_N20_N21_NUM + T_0P25_0P5_ECIO_N20_N21_NUM +
+                   T_0P5_0P75_ECIO_N20_N21_NUM + T_0P75_1_ECIO_N20_N21_NUM +
+                   T_1_1P25_ECIO_N20_N21_NUM + T_1P25_1P5_ECIO_N20_N21_NUM +
+                   T_1P5_1P75_ECIO_N20_N21_NUM + T_1P75_2_ECIO_N20_N21_NUM +
+                   T_2_3_ECIO_N20_N21_NUM + T_3_4_ECIO_N20_N21_NUM +
+                   T_4UP_ECIO_N20_N21_NUM + T_0_0P25_ECIO_N19_N20_NUM +
+                   T_0P25_0P5_ECIO_N19_N20_NUM + T_0P5_0P75_ECIO_N19_N20_NUM +
+                   T_0P75_1_ECIO_N19_N20_NUM + T_1_1P25_ECIO_N19_N20_NUM +
+                   T_1P25_1P5_ECIO_N19_N20_NUM + T_1P5_1P75_ECIO_N19_N20_NUM +
+                   T_1P75_2_ECIO_N19_N20_NUM + T_2_3_ECIO_N19_N20_NUM +
+                   T_3_4_ECIO_N19_N20_NUM + T_4UP_ECIO_N19_N20_NUM +
+                   T_0_0P25_ECIO_N18_N19_NUM + T_0P25_0P5_ECIO_N18_N19_NUM +
+                   T_0P5_0P75_ECIO_N18_N19_NUM + T_0P75_1_ECIO_N18_N19_NUM +
+                   T_1_1P25_ECIO_N18_N19_NUM + T_1P25_1P5_ECIO_N18_N19_NUM +
+                   T_1P5_1P75_ECIO_N18_N19_NUM + T_1P75_2_ECIO_N18_N19_NUM +
+                   T_2_3_ECIO_N18_N19_NUM + T_3_4_ECIO_N18_N19_NUM +
+                   T_4UP_ECIO_N18_N19_NUM + T_0_0P25_ECIO_N17_N18_NUM +
+                   T_0P25_0P5_ECIO_N17_N18_NUM + T_0P5_0P75_ECIO_N17_N18_NUM +
+                   T_0P75_1_ECIO_N17_N18_NUM + T_1_1P25_ECIO_N17_N18_NUM +
+                   T_1P25_1P5_ECIO_N17_N18_NUM + T_1P5_1P75_ECIO_N17_N18_NUM +
+                   T_1P75_2_ECIO_N17_N18_NUM + T_2_3_ECIO_N17_N18_NUM +
+                   T_3_4_ECIO_N17_N18_NUM + T_4UP_ECIO_N17_N18_NUM +
+                   T_0_0P25_ECIO_N16_N17_NUM + T_0P25_0P5_ECIO_N16_N17_NUM +
+                   T_0P5_0P75_ECIO_N16_N17_NUM + T_0P75_1_ECIO_N16_N17_NUM +
+                   T_1_1P25_ECIO_N16_N17_NUM + T_1P25_1P5_ECIO_N16_N17_NUM +
+                   T_1P5_1P75_ECIO_N16_N17_NUM + T_1P75_2_ECIO_N16_N17_NUM +
+                   T_2_3_ECIO_N16_N17_NUM + T_3_4_ECIO_N16_N17_NUM +
+                   T_4UP_ECIO_N16_N17_NUM + T_0_0P25_ECIO_N15_N16_NUM +
+                   T_0P25_0P5_ECIO_N15_N16_NUM + T_0P5_0P75_ECIO_N15_N16_NUM +
+                   T_0P75_1_ECIO_N15_N16_NUM + T_1_1P25_ECIO_N15_N16_NUM +
+                   T_1P25_1P5_ECIO_N15_N16_NUM + T_1P5_1P75_ECIO_N15_N16_NUM +
+                   T_1P75_2_ECIO_N15_N16_NUM + T_2_3_ECIO_N15_N16_NUM +
+                   T_3_4_ECIO_N15_N16_NUM + T_4UP_ECIO_N15_N16_NUM +
+                   T_0_0P25_ECIO_N14_N15_NUM + T_0P25_0P5_ECIO_N14_N15_NUM +
+                   T_0P5_0P75_ECIO_N14_N15_NUM + T_0P75_1_ECIO_N14_N15_NUM +
+                   T_1_1P25_ECIO_N14_N15_NUM + T_1P25_1P5_ECIO_N14_N15_NUM +
+                   T_1P5_1P75_ECIO_N14_N15_NUM + T_1P75_2_ECIO_N14_N15_NUM +
+                   T_2_3_ECIO_N14_N15_NUM + T_3_4_ECIO_N14_N15_NUM +
+                   T_4UP_ECIO_N14_N15_NUM + T_0_0P25_ECIO_N13_N14_NUM +
+                   T_0P25_0P5_ECIO_N13_N14_NUM + T_0P5_0P75_ECIO_N13_N14_NUM +
+                   T_0P75_1_ECIO_N13_N14_NUM + T_1_1P25_ECIO_N13_N14_NUM +
+                   T_1P25_1P5_ECIO_N13_N14_NUM + T_1P5_1P75_ECIO_N13_N14_NUM +
+                   T_1P75_2_ECIO_N13_N14_NUM + T_2_3_ECIO_N13_N14_NUM +
+                   T_3_4_ECIO_N13_N14_NUM + T_4UP_ECIO_N13_N14_NUM +
+                   T_0_0P25_ECIO_N12_N13_NUM + T_0P25_0P5_ECIO_N12_N13_NUM +
+                   T_0P5_0P75_ECIO_N12_N13_NUM + T_0P75_1_ECIO_N12_N13_NUM +
+                   T_1_1P25_ECIO_N12_N13_NUM + T_1P25_1P5_ECIO_N12_N13_NUM +
+                   T_1P5_1P75_ECIO_N12_N13_NUM + T_1P75_2_ECIO_N12_N13_NUM +
+                   T_2_3_ECIO_N12_N13_NUM + T_3_4_ECIO_N12_N13_NUM +
+                   T_4UP_ECIO_N12_N13_NUM) AS STRENGTH3  
+          FROM MOD_COVER2_CARR_H T0,cfg_map_dev_to_ne NE
+         WHERE T0.ne_carr_id = ne.ne_carr_id
+           AND T0.CARR IN (78, 100, 119, 150, 160, 201, 242, 283, 1013, 1019)
+           AND T0.SERVICE_OPTION = 0
+           AND T0.STATISTIC_METHOD = 1
+           AND T0.START_TIME &gt;= TO_DATE('%%Y-%%M-%%D 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+           AND T0.START_TIME &lt; TO_DATE('%%Y-%%M-%%D 00:00:00', 'YYYY-MM-DD HH24:MI:SS') + 1
+         GROUP BY T0.start_time,NE.VENDOR,NE.BSC,NE.BTS,NE.LOCALBTS,NE.CELL,NE.CELL_NAME,T0.NE_CELL_ID ) T1,
+         (select T0.START_TIME,T0.NE_CELL_ID,
+                 to_char(T0.START_TIME,'YYYY-MM-DD') AS "时间",
+                  to_char(T0.START_TIME,'HH24') AS "时段",
+                  CASE NE.VENDOR WHEN 'ZY0808' THEN '华为' WHEN 'ZY0804' then '中兴' when 'ZY0810' then '阿朗' else '' end "厂家",
+                  NE.BSC AS "BSC号",
+                  NE.BTS AS "基站号",
+                  NE.LOCALBTS AS "厂商侧 CELLID",
+                  NE.CELL AS "扇区号",
+                  NE.CELL_NAME AS "扇区名称",
+               SUM(T_0UP_ECIO_0_N31_NUM) ALLNUM,
+               SUM(T_0_0P25_ECIO_N8_N9_NUM + T_0P25_0P5_ECIO_N8_N9_NUM +
+                   T_0P5_0P75_ECIO_N8_N9_NUM + T_0P75_1_ECIO_N8_N9_NUM +
+                   T_1_1P25_ECIO_N8_N9_NUM + T_1P25_1P5_ECIO_N8_N9_NUM +
+                   T_1P5_1P75_ECIO_N8_N9_NUM + T_1P75_2_ECIO_N8_N9_NUM +
+                   T_2_3_ECIO_N8_N9_NUM + T_3_4_ECIO_N8_N9_NUM +
+                   T_4UP_ECIO_N8_N9_NUM + T_0_0P25_ECIO_N7_N8_NUM +
+                   T_0P25_0P5_ECIO_N7_N8_NUM + T_0P5_0P75_ECIO_N7_N8_NUM +
+                   T_0P75_1_ECIO_N7_N8_NUM + T_1_1P25_ECIO_N7_N8_NUM +
+                   T_1P25_1P5_ECIO_N7_N8_NUM + T_1P5_1P75_ECIO_N7_N8_NUM +
+                   T_1P75_2_ECIO_N7_N8_NUM + T_2_3_ECIO_N7_N8_NUM +
+                   T_3_4_ECIO_N7_N8_NUM + T_4UP_ECIO_N7_N8_NUM +
+                   T_0_0P25_ECIO_N6_N7_NUM + T_0P25_0P5_ECIO_N6_N7_NUM +
+                   T_0P5_0P75_ECIO_N6_N7_NUM + T_0P75_1_ECIO_N6_N7_NUM +
+                   T_1_1P25_ECIO_N6_N7_NUM + T_1P25_1P5_ECIO_N6_N7_NUM +
+                   T_1P5_1P75_ECIO_N6_N7_NUM + T_1P75_2_ECIO_N6_N7_NUM +
+                   T_2_3_ECIO_N6_N7_NUM + T_3_4_ECIO_N6_N7_NUM +
+                   T_4UP_ECIO_N6_N7_NUM + T_0_0P25_ECIO_N5_N6_NUM +
+                   T_0P25_0P5_ECIO_N5_N6_NUM + T_0P5_0P75_ECIO_N5_N6_NUM +
+                   T_0P75_1_ECIO_N5_N6_NUM + T_1_1P25_ECIO_N5_N6_NUM +
+                   T_1P25_1P5_ECIO_N5_N6_NUM + T_1P5_1P75_ECIO_N5_N6_NUM +
+                   T_1P75_2_ECIO_N5_N6_NUM + T_2_3_ECIO_N5_N6_NUM +
+                   T_3_4_ECIO_N5_N6_NUM + T_4UP_ECIO_N5_N6_NUM +
+                   T_0_0P25_ECIO_N4_N5_NUM + T_0P25_0P5_ECIO_N4_N5_NUM +
+                   T_0P5_0P75_ECIO_N4_N5_NUM + T_0P75_1_ECIO_N4_N5_NUM +
+                   T_1_1P25_ECIO_N4_N5_NUM + T_1P25_1P5_ECIO_N4_N5_NUM +
+                   T_1P5_1P75_ECIO_N4_N5_NUM + T_1P75_2_ECIO_N4_N5_NUM +
+                   T_2_3_ECIO_N4_N5_NUM + T_3_4_ECIO_N4_N5_NUM +
+                   T_4UP_ECIO_N4_N5_NUM + T_0_0P25_ECIO_N3_N4_NUM +
+                   T_0P25_0P5_ECIO_N3_N4_NUM + T_0P5_0P75_ECIO_N3_N4_NUM +
+                   T_0P75_1_ECIO_N3_N4_NUM + T_1_1P25_ECIO_N3_N4_NUM +
+                   T_1P25_1P5_ECIO_N3_N4_NUM + T_1P5_1P75_ECIO_N3_N4_NUM +
+                   T_1P75_2_ECIO_N3_N4_NUM + T_2_3_ECIO_N3_N4_NUM +
+                   T_3_4_ECIO_N3_N4_NUM + T_4UP_ECIO_N3_N4_NUM +
+                   T_0_0P25_ECIO_N2_N3_NUM + T_0P25_0P5_ECIO_N2_N3_NUM +
+                   T_0P5_0P75_ECIO_N2_N3_NUM + T_0P75_1_ECIO_N2_N3_NUM +
+                   T_1_1P25_ECIO_N2_N3_NUM + T_1P25_1P5_ECIO_N2_N3_NUM +
+                   T_1P5_1P75_ECIO_N2_N3_NUM + T_1P75_2_ECIO_N2_N3_NUM +
+                   T_2_3_ECIO_N2_N3_NUM + T_3_4_ECIO_N2_N3_NUM +
+                   T_4UP_ECIO_N2_N3_NUM + T_0_0P25_ECIO_N1_N2_NUM +
+                   T_0P25_0P5_ECIO_N1_N2_NUM + T_0P5_0P75_ECIO_N1_N2_NUM +
+                   T_0P75_1_ECIO_N1_N2_NUM + T_1_1P25_ECIO_N1_N2_NUM +
+                   T_1P25_1P5_ECIO_N1_N2_NUM + T_1P5_1P75_ECIO_N1_N2_NUM +
+                   T_1P75_2_ECIO_N1_N2_NUM + T_2_3_ECIO_N1_N2_NUM +
+                   T_3_4_ECIO_N1_N2_NUM + T_4UP_ECIO_N1_N2_NUM +
+                   T_0_0P25_ECIO_0_N1_NUM + T_0P25_0P5_ECIO_0_N1_NUM +
+                   T_0P5_0P75_ECIO_0_N1_NUM + T_0P75_1_ECIO_0_N1_NUM +
+                   T_1_1P25_ECIO_0_N1_NUM + T_1P25_1P5_ECIO_0_N1_NUM +
+                   T_1P5_1P75_ECIO_0_N1_NUM + T_1P75_2_ECIO_0_N1_NUM +
+                   T_2_3_ECIO_0_N1_NUM + T_3_4_ECIO_0_N1_NUM +
+                   T_4UP_ECIO_0_N1_NUM) AS STRENGTH1,
+               SUM(T_0_0P25_ECIO_N11_N12_NUM + T_0P25_0P5_ECIO_N11_N12_NUM +
+                   T_0P5_0P75_ECIO_N11_N12_NUM + T_0P75_1_ECIO_N11_N12_NUM +
+                   T_1_1P25_ECIO_N11_N12_NUM + T_1P25_1P5_ECIO_N11_N12_NUM +
+                   T_1P5_1P75_ECIO_N11_N12_NUM + T_1P75_2_ECIO_N11_N12_NUM +
+                   T_2_3_ECIO_N11_N12_NUM + T_3_4_ECIO_N11_N12_NUM +
+                   T_4UP_ECIO_N11_N12_NUM + T_0_0P25_ECIO_N10_N11_NUM +
+                   T_0P25_0P5_ECIO_N10_N11_NUM + T_0P5_0P75_ECIO_N10_N11_NUM +
+                   T_0P75_1_ECIO_N10_N11_NUM + T_1_1P25_ECIO_N10_N11_NUM +
+                   T_1P25_1P5_ECIO_N10_N11_NUM + T_1P5_1P75_ECIO_N10_N11_NUM +
+                   T_1P75_2_ECIO_N10_N11_NUM + T_2_3_ECIO_N10_N11_NUM +
+                   T_3_4_ECIO_N10_N11_NUM + T_4UP_ECIO_N10_N11_NUM +
+                   T_0_0P25_ECIO_N9_N10_NUM + T_0P25_0P5_ECIO_N9_N10_NUM +
+                   T_0P5_0P75_ECIO_N9_N10_NUM + T_0P75_1_ECIO_N9_N10_NUM +
+                   T_1_1P25_ECIO_N9_N10_NUM + T_1P25_1P5_ECIO_N9_N10_NUM +
+                   T_1P5_1P75_ECIO_N9_N10_NUM + T_1P75_2_ECIO_N9_N10_NUM +
+                   T_2_3_ECIO_N9_N10_NUM + T_3_4_ECIO_N9_N10_NUM +
+                   T_4UP_ECIO_N9_N10_NUM) AS STRENGTH2,
+               SUM(0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 +
+                   T_0_0P25_ECIO_N30_N31_NUM + T_0P25_0P5_ECIO_N30_N31_NUM +
+                   T_0P5_0P75_ECIO_N30_N31_NUM + T_0P75_1_ECIO_N30_N31_NUM +
+                   T_1_1P25_ECIO_N30_N31_NUM + T_1P25_1P5_ECIO_N30_N31_NUM +
+                   T_1P5_1P75_ECIO_N30_N31_NUM + T_1P75_2_ECIO_N30_N31_NUM +
+                   T_2_3_ECIO_N30_N31_NUM + T_3_4_ECIO_N30_N31_NUM +
+                   T_4UP_ECIO_N30_N31_NUM + T_0_0P25_ECIO_N29_N30_NUM +
+                   T_0P25_0P5_ECIO_N29_N30_NUM + T_0P5_0P75_ECIO_N29_N30_NUM +
+                   T_0P75_1_ECIO_N29_N30_NUM + T_1_1P25_ECIO_N29_N30_NUM +
+                   T_1P25_1P5_ECIO_N29_N30_NUM + T_1P5_1P75_ECIO_N29_N30_NUM +
+                   T_1P75_2_ECIO_N29_N30_NUM + T_2_3_ECIO_N29_N30_NUM +
+                   T_3_4_ECIO_N29_N30_NUM + T_4UP_ECIO_N29_N30_NUM +
+                   T_0_0P25_ECIO_N28_N29_NUM + T_0P25_0P5_ECIO_N28_N29_NUM +
+                   T_0P5_0P75_ECIO_N28_N29_NUM + T_0P75_1_ECIO_N28_N29_NUM +
+                   T_1_1P25_ECIO_N28_N29_NUM + T_1P25_1P5_ECIO_N28_N29_NUM +
+                   T_1P5_1P75_ECIO_N28_N29_NUM + T_1P75_2_ECIO_N28_N29_NUM +
+                   T_2_3_ECIO_N28_N29_NUM + T_3_4_ECIO_N28_N29_NUM +
+                   T_4UP_ECIO_N28_N29_NUM + T_0_0P25_ECIO_N27_N28_NUM +
+                   T_0P25_0P5_ECIO_N27_N28_NUM + T_0P5_0P75_ECIO_N27_N28_NUM +
+                   T_0P75_1_ECIO_N27_N28_NUM + T_1_1P25_ECIO_N27_N28_NUM +
+                   T_1P25_1P5_ECIO_N27_N28_NUM + T_1P5_1P75_ECIO_N27_N28_NUM +
+                   T_1P75_2_ECIO_N27_N28_NUM + T_2_3_ECIO_N27_N28_NUM +
+                   T_3_4_ECIO_N27_N28_NUM + T_4UP_ECIO_N27_N28_NUM +
+                   T_0_0P25_ECIO_N26_N27_NUM + T_0P25_0P5_ECIO_N26_N27_NUM +
+                   T_0P5_0P75_ECIO_N26_N27_NUM + T_0P75_1_ECIO_N26_N27_NUM +
+                   T_1_1P25_ECIO_N26_N27_NUM + T_1P25_1P5_ECIO_N26_N27_NUM +
+                   T_1P5_1P75_ECIO_N26_N27_NUM + T_1P75_2_ECIO_N26_N27_NUM +
+                   T_2_3_ECIO_N26_N27_NUM + T_3_4_ECIO_N26_N27_NUM +
+                   T_4UP_ECIO_N26_N27_NUM + T_0_0P25_ECIO_N25_N26_NUM +
+                   T_0P25_0P5_ECIO_N25_N26_NUM + T_0P5_0P75_ECIO_N25_N26_NUM +
+                   T_0P75_1_ECIO_N25_N26_NUM + T_1_1P25_ECIO_N25_N26_NUM +
+                   T_1P25_1P5_ECIO_N25_N26_NUM + T_1P5_1P75_ECIO_N25_N26_NUM +
+                   T_1P75_2_ECIO_N25_N26_NUM + T_2_3_ECIO_N25_N26_NUM +
+                   T_3_4_ECIO_N25_N26_NUM + T_4UP_ECIO_N25_N26_NUM +
+                   T_0_0P25_ECIO_N24_N25_NUM + T_0P25_0P5_ECIO_N24_N25_NUM +
+                   T_0P5_0P75_ECIO_N24_N25_NUM + T_0P75_1_ECIO_N24_N25_NUM +
+                   T_1_1P25_ECIO_N24_N25_NUM + T_1P25_1P5_ECIO_N24_N25_NUM +
+                   T_1P5_1P75_ECIO_N24_N25_NUM + T_1P75_2_ECIO_N24_N25_NUM +
+                   T_2_3_ECIO_N24_N25_NUM + T_3_4_ECIO_N24_N25_NUM +
+                   T_4UP_ECIO_N24_N25_NUM + T_0_0P25_ECIO_N23_N24_NUM +
+                   T_0P25_0P5_ECIO_N23_N24_NUM + T_0P5_0P75_ECIO_N23_N24_NUM +
+                   T_0P75_1_ECIO_N23_N24_NUM + T_1_1P25_ECIO_N23_N24_NUM +
+                   T_1P25_1P5_ECIO_N23_N24_NUM + T_1P5_1P75_ECIO_N23_N24_NUM +
+                   T_1P75_2_ECIO_N23_N24_NUM + T_2_3_ECIO_N23_N24_NUM +
+                   T_3_4_ECIO_N23_N24_NUM + T_4UP_ECIO_N23_N24_NUM +
+                   T_0_0P25_ECIO_N22_N23_NUM + T_0P25_0P5_ECIO_N22_N23_NUM +
+                   T_0P5_0P75_ECIO_N22_N23_NUM + T_0P75_1_ECIO_N22_N23_NUM +
+                   T_1_1P25_ECIO_N22_N23_NUM + T_1P25_1P5_ECIO_N22_N23_NUM +
+                   T_1P5_1P75_ECIO_N22_N23_NUM + T_1P75_2_ECIO_N22_N23_NUM +
+                   T_2_3_ECIO_N22_N23_NUM + T_3_4_ECIO_N22_N23_NUM +
+                   T_4UP_ECIO_N22_N23_NUM + T_0_0P25_ECIO_N21_N22_NUM +
+                   T_0P25_0P5_ECIO_N21_N22_NUM + T_0P5_0P75_ECIO_N21_N22_NUM +
+                   T_0P75_1_ECIO_N21_N22_NUM + T_1_1P25_ECIO_N21_N22_NUM +
+                   T_1P25_1P5_ECIO_N21_N22_NUM + T_1P5_1P75_ECIO_N21_N22_NUM +
+                   T_1P75_2_ECIO_N21_N22_NUM + T_2_3_ECIO_N21_N22_NUM +
+                   T_3_4_ECIO_N21_N22_NUM + T_4UP_ECIO_N21_N22_NUM +
+                   T_0_0P25_ECIO_N20_N21_NUM + T_0P25_0P5_ECIO_N20_N21_NUM +
+                   T_0P5_0P75_ECIO_N20_N21_NUM + T_0P75_1_ECIO_N20_N21_NUM +
+                   T_1_1P25_ECIO_N20_N21_NUM + T_1P25_1P5_ECIO_N20_N21_NUM +
+                   T_1P5_1P75_ECIO_N20_N21_NUM + T_1P75_2_ECIO_N20_N21_NUM +
+                   T_2_3_ECIO_N20_N21_NUM + T_3_4_ECIO_N20_N21_NUM +
+                   T_4UP_ECIO_N20_N21_NUM + T_0_0P25_ECIO_N19_N20_NUM +
+                   T_0P25_0P5_ECIO_N19_N20_NUM + T_0P5_0P75_ECIO_N19_N20_NUM +
+                   T_0P75_1_ECIO_N19_N20_NUM + T_1_1P25_ECIO_N19_N20_NUM +
+                   T_1P25_1P5_ECIO_N19_N20_NUM + T_1P5_1P75_ECIO_N19_N20_NUM +
+                   T_1P75_2_ECIO_N19_N20_NUM + T_2_3_ECIO_N19_N20_NUM +
+                   T_3_4_ECIO_N19_N20_NUM + T_4UP_ECIO_N19_N20_NUM +
+                   T_0_0P25_ECIO_N18_N19_NUM + T_0P25_0P5_ECIO_N18_N19_NUM +
+                   T_0P5_0P75_ECIO_N18_N19_NUM + T_0P75_1_ECIO_N18_N19_NUM +
+                   T_1_1P25_ECIO_N18_N19_NUM + T_1P25_1P5_ECIO_N18_N19_NUM +
+                   T_1P5_1P75_ECIO_N18_N19_NUM + T_1P75_2_ECIO_N18_N19_NUM +
+                   T_2_3_ECIO_N18_N19_NUM + T_3_4_ECIO_N18_N19_NUM +
+                   T_4UP_ECIO_N18_N19_NUM + T_0_0P25_ECIO_N17_N18_NUM +
+                   T_0P25_0P5_ECIO_N17_N18_NUM + T_0P5_0P75_ECIO_N17_N18_NUM +
+                   T_0P75_1_ECIO_N17_N18_NUM + T_1_1P25_ECIO_N17_N18_NUM +
+                   T_1P25_1P5_ECIO_N17_N18_NUM + T_1P5_1P75_ECIO_N17_N18_NUM +
+                   T_1P75_2_ECIO_N17_N18_NUM + T_2_3_ECIO_N17_N18_NUM +
+                   T_3_4_ECIO_N17_N18_NUM + T_4UP_ECIO_N17_N18_NUM +
+                   T_0_0P25_ECIO_N16_N17_NUM + T_0P25_0P5_ECIO_N16_N17_NUM +
+                   T_0P5_0P75_ECIO_N16_N17_NUM + T_0P75_1_ECIO_N16_N17_NUM +
+                   T_1_1P25_ECIO_N16_N17_NUM + T_1P25_1P5_ECIO_N16_N17_NUM +
+                   T_1P5_1P75_ECIO_N16_N17_NUM + T_1P75_2_ECIO_N16_N17_NUM +
+                   T_2_3_ECIO_N16_N17_NUM + T_3_4_ECIO_N16_N17_NUM +
+                   T_4UP_ECIO_N16_N17_NUM + T_0_0P25_ECIO_N15_N16_NUM +
+                   T_0P25_0P5_ECIO_N15_N16_NUM + T_0P5_0P75_ECIO_N15_N16_NUM +
+                   T_0P75_1_ECIO_N15_N16_NUM + T_1_1P25_ECIO_N15_N16_NUM +
+                   T_1P25_1P5_ECIO_N15_N16_NUM + T_1P5_1P75_ECIO_N15_N16_NUM +
+                   T_1P75_2_ECIO_N15_N16_NUM + T_2_3_ECIO_N15_N16_NUM +
+                   T_3_4_ECIO_N15_N16_NUM + T_4UP_ECIO_N15_N16_NUM +
+                   T_0_0P25_ECIO_N14_N15_NUM + T_0P25_0P5_ECIO_N14_N15_NUM +
+                   T_0P5_0P75_ECIO_N14_N15_NUM + T_0P75_1_ECIO_N14_N15_NUM +
+                   T_1_1P25_ECIO_N14_N15_NUM + T_1P25_1P5_ECIO_N14_N15_NUM +
+                   T_1P5_1P75_ECIO_N14_N15_NUM + T_1P75_2_ECIO_N14_N15_NUM +
+                   T_2_3_ECIO_N14_N15_NUM + T_3_4_ECIO_N14_N15_NUM +
+                   T_4UP_ECIO_N14_N15_NUM + T_0_0P25_ECIO_N13_N14_NUM +
+                   T_0P25_0P5_ECIO_N13_N14_NUM + T_0P5_0P75_ECIO_N13_N14_NUM +
+                   T_0P75_1_ECIO_N13_N14_NUM + T_1_1P25_ECIO_N13_N14_NUM +
+                   T_1P25_1P5_ECIO_N13_N14_NUM + T_1P5_1P75_ECIO_N13_N14_NUM +
+                   T_1P75_2_ECIO_N13_N14_NUM + T_2_3_ECIO_N13_N14_NUM +
+                   T_3_4_ECIO_N13_N14_NUM + T_4UP_ECIO_N13_N14_NUM +
+                   T_0_0P25_ECIO_N12_N13_NUM + T_0P25_0P5_ECIO_N12_N13_NUM +
+                   T_0P5_0P75_ECIO_N12_N13_NUM + T_0P75_1_ECIO_N12_N13_NUM +
+                   T_1_1P25_ECIO_N12_N13_NUM + T_1P25_1P5_ECIO_N12_N13_NUM +
+                   T_1P5_1P75_ECIO_N12_N13_NUM + T_1P75_2_ECIO_N12_N13_NUM +
+                   T_2_3_ECIO_N12_N13_NUM + T_3_4_ECIO_N12_N13_NUM +
+                   T_4UP_ECIO_N12_N13_NUM) AS STRENGTH3 
+          FROM MOD_COVER2_CARR_H T0,cfg_map_dev_to_ne NE
+         WHERE T0.ne_carr_id = ne.ne_carr_id
+           AND T0.CARR IN (78, 100, 119, 150, 160, 201, 242, 283, 1013, 1019)
+           AND T0.SERVICE_OPTION = 0
+           AND T0.STATISTIC_METHOD = 2
+           AND T0.START_TIME &gt;= TO_DATE('%%Y-%%M-%%D 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+           AND T0.START_TIME &lt; TO_DATE('%%Y-%%M-%%D 00:00:00', 'YYYY-MM-DD HH24:MI:SS') + 1
+         GROUP BY T0.start_time,NE.VENDOR,NE.BSC,NE.BTS,NE.LOCALBTS,NE.CELL,NE.CELL_NAME,T0.NE_CELL_ID) T2
+         WHERE T1.START_TIME = T2.START_TIME AND T1.NE_CELL_ID = T2.NE_CELL_ID
+
+
+        </sql>
+			</mapping>
+			
+			
+				<mapping name="${province_en}_CDL_SECTOR_DO_%%Y%%M%%D.csv" templet="重庆个性化话单数据SECTOR上报后台DO.ftl">
+
+				<sql>SELECT T1."时间",T1."时段",T1."厂家",T1."BSC号",T1."基站号",T1."厂商侧 CELLID",T1."扇区号",T1."扇区名称",
+       T1.STRENGTH1 as  "C/I接入区间[0,+∞)次数",
+       T1.STRENGTH2 as "C/I接入区间[-5,0)次数",
+       T1.STRENGTH3 as "C/I接入区间[-∞,-5)次数",
+       DECODE(T1.ALLNUM, 0, 0, ROUND(T1.STRENGTH1 * 100 / T1.ALLNUM, 2)) AS "C/I接入区间[0,+∞)比例",
+       DECODE(T1.ALLNUM, 0, 0, ROUND(T1.STRENGTH2 * 100 / T1.ALLNUM, 2)) AS "C/I接入区间[-5,0)比例",
+       DECODE(T1.ALLNUM, 0, 0, ROUND(T1.STRENGTH3 * 100 / T1.ALLNUM, 2)) AS "C/I释放区间[-∞,-5)比例",
+       T2.STRENGTH1 as  "C/I释放区间[0,+∞)次数",
+       T2.STRENGTH2 as "C/I释放区间[-5,0)次数",
+       T2.STRENGTH3 as "C/I释放区间[-∞,-5)次数",
+       DECODE(T2.ALLNUM, 0, 0, ROUND(T2.STRENGTH1 * 100 / T2.ALLNUM, 2)) AS "C/I释放区间[0,+∞)比例",
+       DECODE(T2.ALLNUM, 0, 0, ROUND(T2.STRENGTH2 * 100 / T2.ALLNUM, 2)) AS "C/I释放区间[-5,0)比例",
+       DECODE(T2.ALLNUM, 0, 0, ROUND(T2.STRENGTH3 * 100 / T2.ALLNUM, 2)) AS "C/I释放区间[-∞,-5)比例"  
+  FROM (select T0.START_TIME,T0.NE_CELL_ID,to_char(T0.START_TIME,'YYYY-MM-DD') AS "时间",
+                  to_char(T0.START_TIME,'HH24') AS "时段",
+                  CASE NE.VENDOR WHEN 'ZY0808' THEN '华为' WHEN 'ZY0804' then '中兴' when 'ZY0810' then '阿朗' else '' end "厂家",
+                  NE.BSC AS "BSC号",
+                  NE.BTS AS "基站号",
+                  NE.LOCALBTS AS "厂商侧 CELLID",
+                  NE.CELL AS "扇区号",
+                  NE.CELL_NAME AS "扇区名称",
+               SUM(T_0UP_ECIO_0_N31_NUM) ALLNUM,
+               SUM(T_0_0P25_ECIO_N2_N3_NUM + T_0P25_0P5_ECIO_N2_N3_NUM +
+                   T_0P5_0P75_ECIO_N2_N3_NUM + T_0P75_1_ECIO_N2_N3_NUM +
+                   T_1_1P25_ECIO_N2_N3_NUM + T_1P25_1P5_ECIO_N2_N3_NUM +
+                   T_1P5_1P75_ECIO_N2_N3_NUM + T_1P75_2_ECIO_N2_N3_NUM +
+                   T_2_3_ECIO_N2_N3_NUM + T_3_4_ECIO_N2_N3_NUM +
+                   T_4UP_ECIO_N2_N3_NUM + T_0_0P25_ECIO_N1_N2_NUM +
+                   T_0P25_0P5_ECIO_N1_N2_NUM + T_0P5_0P75_ECIO_N1_N2_NUM +
+                   T_0P75_1_ECIO_N1_N2_NUM + T_1_1P25_ECIO_N1_N2_NUM +
+                   T_1P25_1P5_ECIO_N1_N2_NUM + T_1P5_1P75_ECIO_N1_N2_NUM +
+                   T_1P75_2_ECIO_N1_N2_NUM + T_2_3_ECIO_N1_N2_NUM +
+                   T_3_4_ECIO_N1_N2_NUM + T_4UP_ECIO_N1_N2_NUM +
+                   T_0_0P25_ECIO_0_N1_NUM + T_0P25_0P5_ECIO_0_N1_NUM +
+                   T_0P5_0P75_ECIO_0_N1_NUM + T_0P75_1_ECIO_0_N1_NUM +
+                   T_1_1P25_ECIO_0_N1_NUM + T_1P25_1P5_ECIO_0_N1_NUM +
+                   T_1P5_1P75_ECIO_0_N1_NUM + T_1P75_2_ECIO_0_N1_NUM +
+                   T_2_3_ECIO_0_N1_NUM + T_3_4_ECIO_0_N1_NUM +
+                   T_4UP_ECIO_0_N1_NUM) AS STRENGTH1,
+               SUM(T_0_0P25_ECIO_N5_N6_NUM + T_0P25_0P5_ECIO_N5_N6_NUM +
+                   T_0P5_0P75_ECIO_N5_N6_NUM + T_0P75_1_ECIO_N5_N6_NUM +
+                   T_1_1P25_ECIO_N5_N6_NUM + T_1P25_1P5_ECIO_N5_N6_NUM +
+                   T_1P5_1P75_ECIO_N5_N6_NUM + T_1P75_2_ECIO_N5_N6_NUM +
+                   T_2_3_ECIO_N5_N6_NUM + T_3_4_ECIO_N5_N6_NUM +
+                   T_4UP_ECIO_N5_N6_NUM + T_0_0P25_ECIO_N4_N5_NUM +
+                   T_0P25_0P5_ECIO_N4_N5_NUM + T_0P5_0P75_ECIO_N4_N5_NUM +
+                   T_0P75_1_ECIO_N4_N5_NUM + T_1_1P25_ECIO_N4_N5_NUM +
+                   T_1P25_1P5_ECIO_N4_N5_NUM + T_1P5_1P75_ECIO_N4_N5_NUM +
+                   T_1P75_2_ECIO_N4_N5_NUM + T_2_3_ECIO_N4_N5_NUM +
+                   T_3_4_ECIO_N4_N5_NUM + T_4UP_ECIO_N4_N5_NUM +
+                   T_0_0P25_ECIO_N3_N4_NUM + T_0P25_0P5_ECIO_N3_N4_NUM +
+                   T_0P5_0P75_ECIO_N3_N4_NUM + T_0P75_1_ECIO_N3_N4_NUM +
+                   T_1_1P25_ECIO_N3_N4_NUM + T_1P25_1P5_ECIO_N3_N4_NUM +
+                   T_1P5_1P75_ECIO_N3_N4_NUM + T_1P75_2_ECIO_N3_N4_NUM +
+                   T_2_3_ECIO_N3_N4_NUM + T_3_4_ECIO_N3_N4_NUM +
+                   T_4UP_ECIO_N3_N4_NUM) AS STRENGTH2,
+               SUM(0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 +
+                   T_0_0P25_ECIO_N30_N31_NUM + T_0P25_0P5_ECIO_N30_N31_NUM +
+                   T_0P5_0P75_ECIO_N30_N31_NUM + T_0P75_1_ECIO_N30_N31_NUM +
+                   T_1_1P25_ECIO_N30_N31_NUM + T_1P25_1P5_ECIO_N30_N31_NUM +
+                   T_1P5_1P75_ECIO_N30_N31_NUM + T_1P75_2_ECIO_N30_N31_NUM +
+                   T_2_3_ECIO_N30_N31_NUM + T_3_4_ECIO_N30_N31_NUM +
+                   T_4UP_ECIO_N30_N31_NUM + T_0_0P25_ECIO_N29_N30_NUM +
+                   T_0P25_0P5_ECIO_N29_N30_NUM + T_0P5_0P75_ECIO_N29_N30_NUM +
+                   T_0P75_1_ECIO_N29_N30_NUM + T_1_1P25_ECIO_N29_N30_NUM +
+                   T_1P25_1P5_ECIO_N29_N30_NUM + T_1P5_1P75_ECIO_N29_N30_NUM +
+                   T_1P75_2_ECIO_N29_N30_NUM + T_2_3_ECIO_N29_N30_NUM +
+                   T_3_4_ECIO_N29_N30_NUM + T_4UP_ECIO_N29_N30_NUM +
+                   T_0_0P25_ECIO_N28_N29_NUM + T_0P25_0P5_ECIO_N28_N29_NUM +
+                   T_0P5_0P75_ECIO_N28_N29_NUM + T_0P75_1_ECIO_N28_N29_NUM +
+                   T_1_1P25_ECIO_N28_N29_NUM + T_1P25_1P5_ECIO_N28_N29_NUM +
+                   T_1P5_1P75_ECIO_N28_N29_NUM + T_1P75_2_ECIO_N28_N29_NUM +
+                   T_2_3_ECIO_N28_N29_NUM + T_3_4_ECIO_N28_N29_NUM +
+                   T_4UP_ECIO_N28_N29_NUM + T_0_0P25_ECIO_N27_N28_NUM +
+                   T_0P25_0P5_ECIO_N27_N28_NUM + T_0P5_0P75_ECIO_N27_N28_NUM +
+                   T_0P75_1_ECIO_N27_N28_NUM + T_1_1P25_ECIO_N27_N28_NUM +
+                   T_1P25_1P5_ECIO_N27_N28_NUM + T_1P5_1P75_ECIO_N27_N28_NUM +
+                   T_1P75_2_ECIO_N27_N28_NUM + T_2_3_ECIO_N27_N28_NUM +
+                   T_3_4_ECIO_N27_N28_NUM + T_4UP_ECIO_N27_N28_NUM +
+                   T_0_0P25_ECIO_N26_N27_NUM + T_0P25_0P5_ECIO_N26_N27_NUM +
+                   T_0P5_0P75_ECIO_N26_N27_NUM + T_0P75_1_ECIO_N26_N27_NUM +
+                   T_1_1P25_ECIO_N26_N27_NUM + T_1P25_1P5_ECIO_N26_N27_NUM +
+                   T_1P5_1P75_ECIO_N26_N27_NUM + T_1P75_2_ECIO_N26_N27_NUM +
+                   T_2_3_ECIO_N26_N27_NUM + T_3_4_ECIO_N26_N27_NUM +
+                   T_4UP_ECIO_N26_N27_NUM + T_0_0P25_ECIO_N25_N26_NUM +
+                   T_0P25_0P5_ECIO_N25_N26_NUM + T_0P5_0P75_ECIO_N25_N26_NUM +
+                   T_0P75_1_ECIO_N25_N26_NUM + T_1_1P25_ECIO_N25_N26_NUM +
+                   T_1P25_1P5_ECIO_N25_N26_NUM + T_1P5_1P75_ECIO_N25_N26_NUM +
+                   T_1P75_2_ECIO_N25_N26_NUM + T_2_3_ECIO_N25_N26_NUM +
+                   T_3_4_ECIO_N25_N26_NUM + T_4UP_ECIO_N25_N26_NUM +
+                   T_0_0P25_ECIO_N24_N25_NUM + T_0P25_0P5_ECIO_N24_N25_NUM +
+                   T_0P5_0P75_ECIO_N24_N25_NUM + T_0P75_1_ECIO_N24_N25_NUM +
+                   T_1_1P25_ECIO_N24_N25_NUM + T_1P25_1P5_ECIO_N24_N25_NUM +
+                   T_1P5_1P75_ECIO_N24_N25_NUM + T_1P75_2_ECIO_N24_N25_NUM +
+                   T_2_3_ECIO_N24_N25_NUM + T_3_4_ECIO_N24_N25_NUM +
+                   T_4UP_ECIO_N24_N25_NUM + T_0_0P25_ECIO_N23_N24_NUM +
+                   T_0P25_0P5_ECIO_N23_N24_NUM + T_0P5_0P75_ECIO_N23_N24_NUM +
+                   T_0P75_1_ECIO_N23_N24_NUM + T_1_1P25_ECIO_N23_N24_NUM +
+                   T_1P25_1P5_ECIO_N23_N24_NUM + T_1P5_1P75_ECIO_N23_N24_NUM +
+                   T_1P75_2_ECIO_N23_N24_NUM + T_2_3_ECIO_N23_N24_NUM +
+                   T_3_4_ECIO_N23_N24_NUM + T_4UP_ECIO_N23_N24_NUM +
+                   T_0_0P25_ECIO_N22_N23_NUM + T_0P25_0P5_ECIO_N22_N23_NUM +
+                   T_0P5_0P75_ECIO_N22_N23_NUM + T_0P75_1_ECIO_N22_N23_NUM +
+                   T_1_1P25_ECIO_N22_N23_NUM + T_1P25_1P5_ECIO_N22_N23_NUM +
+                   T_1P5_1P75_ECIO_N22_N23_NUM + T_1P75_2_ECIO_N22_N23_NUM +
+                   T_2_3_ECIO_N22_N23_NUM + T_3_4_ECIO_N22_N23_NUM +
+                   T_4UP_ECIO_N22_N23_NUM + T_0_0P25_ECIO_N21_N22_NUM +
+                   T_0P25_0P5_ECIO_N21_N22_NUM + T_0P5_0P75_ECIO_N21_N22_NUM +
+                   T_0P75_1_ECIO_N21_N22_NUM + T_1_1P25_ECIO_N21_N22_NUM +
+                   T_1P25_1P5_ECIO_N21_N22_NUM + T_1P5_1P75_ECIO_N21_N22_NUM +
+                   T_1P75_2_ECIO_N21_N22_NUM + T_2_3_ECIO_N21_N22_NUM +
+                   T_3_4_ECIO_N21_N22_NUM + T_4UP_ECIO_N21_N22_NUM +
+                   T_0_0P25_ECIO_N20_N21_NUM + T_0P25_0P5_ECIO_N20_N21_NUM +
+                   T_0P5_0P75_ECIO_N20_N21_NUM + T_0P75_1_ECIO_N20_N21_NUM +
+                   T_1_1P25_ECIO_N20_N21_NUM + T_1P25_1P5_ECIO_N20_N21_NUM +
+                   T_1P5_1P75_ECIO_N20_N21_NUM + T_1P75_2_ECIO_N20_N21_NUM +
+                   T_2_3_ECIO_N20_N21_NUM + T_3_4_ECIO_N20_N21_NUM +
+                   T_4UP_ECIO_N20_N21_NUM + T_0_0P25_ECIO_N19_N20_NUM +
+                   T_0P25_0P5_ECIO_N19_N20_NUM + T_0P5_0P75_ECIO_N19_N20_NUM +
+                   T_0P75_1_ECIO_N19_N20_NUM + T_1_1P25_ECIO_N19_N20_NUM +
+                   T_1P25_1P5_ECIO_N19_N20_NUM + T_1P5_1P75_ECIO_N19_N20_NUM +
+                   T_1P75_2_ECIO_N19_N20_NUM + T_2_3_ECIO_N19_N20_NUM +
+                   T_3_4_ECIO_N19_N20_NUM + T_4UP_ECIO_N19_N20_NUM +
+                   T_0_0P25_ECIO_N18_N19_NUM + T_0P25_0P5_ECIO_N18_N19_NUM +
+                   T_0P5_0P75_ECIO_N18_N19_NUM + T_0P75_1_ECIO_N18_N19_NUM +
+                   T_1_1P25_ECIO_N18_N19_NUM + T_1P25_1P5_ECIO_N18_N19_NUM +
+                   T_1P5_1P75_ECIO_N18_N19_NUM + T_1P75_2_ECIO_N18_N19_NUM +
+                   T_2_3_ECIO_N18_N19_NUM + T_3_4_ECIO_N18_N19_NUM +
+                   T_4UP_ECIO_N18_N19_NUM + T_0_0P25_ECIO_N17_N18_NUM +
+                   T_0P25_0P5_ECIO_N17_N18_NUM + T_0P5_0P75_ECIO_N17_N18_NUM +
+                   T_0P75_1_ECIO_N17_N18_NUM + T_1_1P25_ECIO_N17_N18_NUM +
+                   T_1P25_1P5_ECIO_N17_N18_NUM + T_1P5_1P75_ECIO_N17_N18_NUM +
+                   T_1P75_2_ECIO_N17_N18_NUM + T_2_3_ECIO_N17_N18_NUM +
+                   T_3_4_ECIO_N17_N18_NUM + T_4UP_ECIO_N17_N18_NUM +
+                   T_0_0P25_ECIO_N16_N17_NUM + T_0P25_0P5_ECIO_N16_N17_NUM +
+                   T_0P5_0P75_ECIO_N16_N17_NUM + T_0P75_1_ECIO_N16_N17_NUM +
+                   T_1_1P25_ECIO_N16_N17_NUM + T_1P25_1P5_ECIO_N16_N17_NUM +
+                   T_1P5_1P75_ECIO_N16_N17_NUM + T_1P75_2_ECIO_N16_N17_NUM +
+                   T_2_3_ECIO_N16_N17_NUM + T_3_4_ECIO_N16_N17_NUM +
+                   T_4UP_ECIO_N16_N17_NUM + T_0_0P25_ECIO_N15_N16_NUM +
+                   T_0P25_0P5_ECIO_N15_N16_NUM + T_0P5_0P75_ECIO_N15_N16_NUM +
+                   T_0P75_1_ECIO_N15_N16_NUM + T_1_1P25_ECIO_N15_N16_NUM +
+                   T_1P25_1P5_ECIO_N15_N16_NUM + T_1P5_1P75_ECIO_N15_N16_NUM +
+                   T_1P75_2_ECIO_N15_N16_NUM + T_2_3_ECIO_N15_N16_NUM +
+                   T_3_4_ECIO_N15_N16_NUM + T_4UP_ECIO_N15_N16_NUM +
+                   T_0_0P25_ECIO_N14_N15_NUM + T_0P25_0P5_ECIO_N14_N15_NUM +
+                   T_0P5_0P75_ECIO_N14_N15_NUM + T_0P75_1_ECIO_N14_N15_NUM +
+                   T_1_1P25_ECIO_N14_N15_NUM + T_1P25_1P5_ECIO_N14_N15_NUM +
+                   T_1P5_1P75_ECIO_N14_N15_NUM + T_1P75_2_ECIO_N14_N15_NUM +
+                   T_2_3_ECIO_N14_N15_NUM + T_3_4_ECIO_N14_N15_NUM +
+                   T_4UP_ECIO_N14_N15_NUM + T_0_0P25_ECIO_N13_N14_NUM +
+                   T_0P25_0P5_ECIO_N13_N14_NUM + T_0P5_0P75_ECIO_N13_N14_NUM +
+                   T_0P75_1_ECIO_N13_N14_NUM + T_1_1P25_ECIO_N13_N14_NUM +
+                   T_1P25_1P5_ECIO_N13_N14_NUM + T_1P5_1P75_ECIO_N13_N14_NUM +
+                   T_1P75_2_ECIO_N13_N14_NUM + T_2_3_ECIO_N13_N14_NUM +
+                   T_3_4_ECIO_N13_N14_NUM + T_4UP_ECIO_N13_N14_NUM +
+                   T_0_0P25_ECIO_N12_N13_NUM + T_0P25_0P5_ECIO_N12_N13_NUM +
+                   T_0P5_0P75_ECIO_N12_N13_NUM + T_0P75_1_ECIO_N12_N13_NUM +
+                   T_1_1P25_ECIO_N12_N13_NUM + T_1P25_1P5_ECIO_N12_N13_NUM +
+                   T_1P5_1P75_ECIO_N12_N13_NUM + T_1P75_2_ECIO_N12_N13_NUM +
+                   T_2_3_ECIO_N12_N13_NUM + T_3_4_ECIO_N12_N13_NUM +
+                   T_4UP_ECIO_N12_N13_NUM + T_0_0P25_ECIO_N11_N12_NUM +
+                   T_0P25_0P5_ECIO_N11_N12_NUM + T_0P5_0P75_ECIO_N11_N12_NUM +
+                   T_0P75_1_ECIO_N11_N12_NUM + T_1_1P25_ECIO_N11_N12_NUM +
+                   T_1P25_1P5_ECIO_N11_N12_NUM + T_1P5_1P75_ECIO_N11_N12_NUM +
+                   T_1P75_2_ECIO_N11_N12_NUM + T_2_3_ECIO_N11_N12_NUM +
+                   T_3_4_ECIO_N11_N12_NUM + T_4UP_ECIO_N11_N12_NUM +
+                   T_0_0P25_ECIO_N10_N11_NUM + T_0P25_0P5_ECIO_N10_N11_NUM +
+                   T_0P5_0P75_ECIO_N10_N11_NUM + T_0P75_1_ECIO_N10_N11_NUM +
+                   T_1_1P25_ECIO_N10_N11_NUM + T_1P25_1P5_ECIO_N10_N11_NUM +
+                   T_1P5_1P75_ECIO_N10_N11_NUM + T_1P75_2_ECIO_N10_N11_NUM +
+                   T_2_3_ECIO_N10_N11_NUM + T_3_4_ECIO_N10_N11_NUM +
+                   T_4UP_ECIO_N10_N11_NUM + T_0_0P25_ECIO_N9_N10_NUM +
+                   T_0P25_0P5_ECIO_N9_N10_NUM + T_0P5_0P75_ECIO_N9_N10_NUM +
+                   T_0P75_1_ECIO_N9_N10_NUM + T_1_1P25_ECIO_N9_N10_NUM +
+                   T_1P25_1P5_ECIO_N9_N10_NUM + T_1P5_1P75_ECIO_N9_N10_NUM +
+                   T_1P75_2_ECIO_N9_N10_NUM + T_2_3_ECIO_N9_N10_NUM +
+                   T_3_4_ECIO_N9_N10_NUM + T_4UP_ECIO_N9_N10_NUM +
+                   T_0_0P25_ECIO_N8_N9_NUM + T_0P25_0P5_ECIO_N8_N9_NUM +
+                   T_0P5_0P75_ECIO_N8_N9_NUM + T_0P75_1_ECIO_N8_N9_NUM +
+                   T_1_1P25_ECIO_N8_N9_NUM + T_1P25_1P5_ECIO_N8_N9_NUM +
+                   T_1P5_1P75_ECIO_N8_N9_NUM + T_1P75_2_ECIO_N8_N9_NUM +
+                   T_2_3_ECIO_N8_N9_NUM + T_3_4_ECIO_N8_N9_NUM +
+                   T_4UP_ECIO_N8_N9_NUM + T_0_0P25_ECIO_N7_N8_NUM +
+                   T_0P25_0P5_ECIO_N7_N8_NUM + T_0P5_0P75_ECIO_N7_N8_NUM +
+                   T_0P75_1_ECIO_N7_N8_NUM + T_1_1P25_ECIO_N7_N8_NUM +
+                   T_1P25_1P5_ECIO_N7_N8_NUM + T_1P5_1P75_ECIO_N7_N8_NUM +
+                   T_1P75_2_ECIO_N7_N8_NUM + T_2_3_ECIO_N7_N8_NUM +
+                   T_3_4_ECIO_N7_N8_NUM + T_4UP_ECIO_N7_N8_NUM +
+                   T_0_0P25_ECIO_N6_N7_NUM + T_0P25_0P5_ECIO_N6_N7_NUM +
+                   T_0P5_0P75_ECIO_N6_N7_NUM + T_0P75_1_ECIO_N6_N7_NUM +
+                   T_1_1P25_ECIO_N6_N7_NUM + T_1P25_1P5_ECIO_N6_N7_NUM +
+                   T_1P5_1P75_ECIO_N6_N7_NUM + T_1P75_2_ECIO_N6_N7_NUM +
+                   T_2_3_ECIO_N6_N7_NUM + T_3_4_ECIO_N6_N7_NUM +
+                   T_4UP_ECIO_N6_N7_NUM) AS STRENGTH3 
+          FROM MOD_COVER2_CARR_H T0,cfg_map_dev_to_ne NE
+         WHERE T0.ne_carr_id = ne.ne_carr_id
+           AND T0.CARR IN (10,
+                        15,
+                        37,
+                        78,
+                        100,
+                        119,
+                        129,
+                        150,
+                        160,
+                        170,
+                        242,
+                        1013,
+                        1019)
+           AND T0.SERVICE_OPTION = 3
+           AND T0.STATISTIC_METHOD = 1
+           AND T0.START_TIME &gt;= TO_DATE('%%Y-%%M-%%D 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+           AND T0.START_TIME &lt; TO_DATE('%%Y-%%M-%%D 00:00:00', 'YYYY-MM-DD HH24:MI:SS') + 1
+         GROUP BY  T0.start_time,NE.VENDOR,NE.BSC,NE.BTS,NE.LOCALBTS,NE.CELL,NE.CELL_NAME,T0.NE_CELL_ID) T1,
+         (select T0.START_TIME,T0.NE_CELL_ID,
+                 to_char(T0.START_TIME,'YYYY-MM-DD') AS "时间",
+                  to_char(T0.START_TIME,'HH24') AS "时段",
+                  CASE NE.VENDOR WHEN 'ZY0808' THEN '华为' WHEN 'ZY0804' then '中兴' when 'ZY0810' then '阿朗' else '' end "厂家",
+                  NE.BSC AS "BSC号",
+                  NE.BTS AS "基站号",
+                  NE.LOCALBTS AS "厂商侧 CELLID",
+                  NE.CELL AS "扇区号",
+                  NE.CELL_NAME AS "扇区名称",
+               SUM(T_0UP_ECIO_0_N31_NUM) ALLNUM,
+               SUM(T_0_0P25_ECIO_N2_N3_NUM + T_0P25_0P5_ECIO_N2_N3_NUM +
+                   T_0P5_0P75_ECIO_N2_N3_NUM + T_0P75_1_ECIO_N2_N3_NUM +
+                   T_1_1P25_ECIO_N2_N3_NUM + T_1P25_1P5_ECIO_N2_N3_NUM +
+                   T_1P5_1P75_ECIO_N2_N3_NUM + T_1P75_2_ECIO_N2_N3_NUM +
+                   T_2_3_ECIO_N2_N3_NUM + T_3_4_ECIO_N2_N3_NUM +
+                   T_4UP_ECIO_N2_N3_NUM + T_0_0P25_ECIO_N1_N2_NUM +
+                   T_0P25_0P5_ECIO_N1_N2_NUM + T_0P5_0P75_ECIO_N1_N2_NUM +
+                   T_0P75_1_ECIO_N1_N2_NUM + T_1_1P25_ECIO_N1_N2_NUM +
+                   T_1P25_1P5_ECIO_N1_N2_NUM + T_1P5_1P75_ECIO_N1_N2_NUM +
+                   T_1P75_2_ECIO_N1_N2_NUM + T_2_3_ECIO_N1_N2_NUM +
+                   T_3_4_ECIO_N1_N2_NUM + T_4UP_ECIO_N1_N2_NUM +
+                   T_0_0P25_ECIO_0_N1_NUM + T_0P25_0P5_ECIO_0_N1_NUM +
+                   T_0P5_0P75_ECIO_0_N1_NUM + T_0P75_1_ECIO_0_N1_NUM +
+                   T_1_1P25_ECIO_0_N1_NUM + T_1P25_1P5_ECIO_0_N1_NUM +
+                   T_1P5_1P75_ECIO_0_N1_NUM + T_1P75_2_ECIO_0_N1_NUM +
+                   T_2_3_ECIO_0_N1_NUM + T_3_4_ECIO_0_N1_NUM +
+                   T_4UP_ECIO_0_N1_NUM) AS STRENGTH1,
+               SUM(T_0_0P25_ECIO_N5_N6_NUM + T_0P25_0P5_ECIO_N5_N6_NUM +
+                   T_0P5_0P75_ECIO_N5_N6_NUM + T_0P75_1_ECIO_N5_N6_NUM +
+                   T_1_1P25_ECIO_N5_N6_NUM + T_1P25_1P5_ECIO_N5_N6_NUM +
+                   T_1P5_1P75_ECIO_N5_N6_NUM + T_1P75_2_ECIO_N5_N6_NUM +
+                   T_2_3_ECIO_N5_N6_NUM + T_3_4_ECIO_N5_N6_NUM +
+                   T_4UP_ECIO_N5_N6_NUM + T_0_0P25_ECIO_N4_N5_NUM +
+                   T_0P25_0P5_ECIO_N4_N5_NUM + T_0P5_0P75_ECIO_N4_N5_NUM +
+                   T_0P75_1_ECIO_N4_N5_NUM + T_1_1P25_ECIO_N4_N5_NUM +
+                   T_1P25_1P5_ECIO_N4_N5_NUM + T_1P5_1P75_ECIO_N4_N5_NUM +
+                   T_1P75_2_ECIO_N4_N5_NUM + T_2_3_ECIO_N4_N5_NUM +
+                   T_3_4_ECIO_N4_N5_NUM + T_4UP_ECIO_N4_N5_NUM +
+                   T_0_0P25_ECIO_N3_N4_NUM + T_0P25_0P5_ECIO_N3_N4_NUM +
+                   T_0P5_0P75_ECIO_N3_N4_NUM + T_0P75_1_ECIO_N3_N4_NUM +
+                   T_1_1P25_ECIO_N3_N4_NUM + T_1P25_1P5_ECIO_N3_N4_NUM +
+                   T_1P5_1P75_ECIO_N3_N4_NUM + T_1P75_2_ECIO_N3_N4_NUM +
+                   T_2_3_ECIO_N3_N4_NUM + T_3_4_ECIO_N3_N4_NUM +
+                   T_4UP_ECIO_N3_N4_NUM) AS STRENGTH2,
+               SUM(0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 +
+                   T_0_0P25_ECIO_N30_N31_NUM + T_0P25_0P5_ECIO_N30_N31_NUM +
+                   T_0P5_0P75_ECIO_N30_N31_NUM + T_0P75_1_ECIO_N30_N31_NUM +
+                   T_1_1P25_ECIO_N30_N31_NUM + T_1P25_1P5_ECIO_N30_N31_NUM +
+                   T_1P5_1P75_ECIO_N30_N31_NUM + T_1P75_2_ECIO_N30_N31_NUM +
+                   T_2_3_ECIO_N30_N31_NUM + T_3_4_ECIO_N30_N31_NUM +
+                   T_4UP_ECIO_N30_N31_NUM + T_0_0P25_ECIO_N29_N30_NUM +
+                   T_0P25_0P5_ECIO_N29_N30_NUM + T_0P5_0P75_ECIO_N29_N30_NUM +
+                   T_0P75_1_ECIO_N29_N30_NUM + T_1_1P25_ECIO_N29_N30_NUM +
+                   T_1P25_1P5_ECIO_N29_N30_NUM + T_1P5_1P75_ECIO_N29_N30_NUM +
+                   T_1P75_2_ECIO_N29_N30_NUM + T_2_3_ECIO_N29_N30_NUM +
+                   T_3_4_ECIO_N29_N30_NUM + T_4UP_ECIO_N29_N30_NUM +
+                   T_0_0P25_ECIO_N28_N29_NUM + T_0P25_0P5_ECIO_N28_N29_NUM +
+                   T_0P5_0P75_ECIO_N28_N29_NUM + T_0P75_1_ECIO_N28_N29_NUM +
+                   T_1_1P25_ECIO_N28_N29_NUM + T_1P25_1P5_ECIO_N28_N29_NUM +
+                   T_1P5_1P75_ECIO_N28_N29_NUM + T_1P75_2_ECIO_N28_N29_NUM +
+                   T_2_3_ECIO_N28_N29_NUM + T_3_4_ECIO_N28_N29_NUM +
+                   T_4UP_ECIO_N28_N29_NUM + T_0_0P25_ECIO_N27_N28_NUM +
+                   T_0P25_0P5_ECIO_N27_N28_NUM + T_0P5_0P75_ECIO_N27_N28_NUM +
+                   T_0P75_1_ECIO_N27_N28_NUM + T_1_1P25_ECIO_N27_N28_NUM +
+                   T_1P25_1P5_ECIO_N27_N28_NUM + T_1P5_1P75_ECIO_N27_N28_NUM +
+                   T_1P75_2_ECIO_N27_N28_NUM + T_2_3_ECIO_N27_N28_NUM +
+                   T_3_4_ECIO_N27_N28_NUM + T_4UP_ECIO_N27_N28_NUM +
+                   T_0_0P25_ECIO_N26_N27_NUM + T_0P25_0P5_ECIO_N26_N27_NUM +
+                   T_0P5_0P75_ECIO_N26_N27_NUM + T_0P75_1_ECIO_N26_N27_NUM +
+                   T_1_1P25_ECIO_N26_N27_NUM + T_1P25_1P5_ECIO_N26_N27_NUM +
+                   T_1P5_1P75_ECIO_N26_N27_NUM + T_1P75_2_ECIO_N26_N27_NUM +
+                   T_2_3_ECIO_N26_N27_NUM + T_3_4_ECIO_N26_N27_NUM +
+                   T_4UP_ECIO_N26_N27_NUM + T_0_0P25_ECIO_N25_N26_NUM +
+                   T_0P25_0P5_ECIO_N25_N26_NUM + T_0P5_0P75_ECIO_N25_N26_NUM +
+                   T_0P75_1_ECIO_N25_N26_NUM + T_1_1P25_ECIO_N25_N26_NUM +
+                   T_1P25_1P5_ECIO_N25_N26_NUM + T_1P5_1P75_ECIO_N25_N26_NUM +
+                   T_1P75_2_ECIO_N25_N26_NUM + T_2_3_ECIO_N25_N26_NUM +
+                   T_3_4_ECIO_N25_N26_NUM + T_4UP_ECIO_N25_N26_NUM +
+                   T_0_0P25_ECIO_N24_N25_NUM + T_0P25_0P5_ECIO_N24_N25_NUM +
+                   T_0P5_0P75_ECIO_N24_N25_NUM + T_0P75_1_ECIO_N24_N25_NUM +
+                   T_1_1P25_ECIO_N24_N25_NUM + T_1P25_1P5_ECIO_N24_N25_NUM +
+                   T_1P5_1P75_ECIO_N24_N25_NUM + T_1P75_2_ECIO_N24_N25_NUM +
+                   T_2_3_ECIO_N24_N25_NUM + T_3_4_ECIO_N24_N25_NUM +
+                   T_4UP_ECIO_N24_N25_NUM + T_0_0P25_ECIO_N23_N24_NUM +
+                   T_0P25_0P5_ECIO_N23_N24_NUM + T_0P5_0P75_ECIO_N23_N24_NUM +
+                   T_0P75_1_ECIO_N23_N24_NUM + T_1_1P25_ECIO_N23_N24_NUM +
+                   T_1P25_1P5_ECIO_N23_N24_NUM + T_1P5_1P75_ECIO_N23_N24_NUM +
+                   T_1P75_2_ECIO_N23_N24_NUM + T_2_3_ECIO_N23_N24_NUM +
+                   T_3_4_ECIO_N23_N24_NUM + T_4UP_ECIO_N23_N24_NUM +
+                   T_0_0P25_ECIO_N22_N23_NUM + T_0P25_0P5_ECIO_N22_N23_NUM +
+                   T_0P5_0P75_ECIO_N22_N23_NUM + T_0P75_1_ECIO_N22_N23_NUM +
+                   T_1_1P25_ECIO_N22_N23_NUM + T_1P25_1P5_ECIO_N22_N23_NUM +
+                   T_1P5_1P75_ECIO_N22_N23_NUM + T_1P75_2_ECIO_N22_N23_NUM +
+                   T_2_3_ECIO_N22_N23_NUM + T_3_4_ECIO_N22_N23_NUM +
+                   T_4UP_ECIO_N22_N23_NUM + T_0_0P25_ECIO_N21_N22_NUM +
+                   T_0P25_0P5_ECIO_N21_N22_NUM + T_0P5_0P75_ECIO_N21_N22_NUM +
+                   T_0P75_1_ECIO_N21_N22_NUM + T_1_1P25_ECIO_N21_N22_NUM +
+                   T_1P25_1P5_ECIO_N21_N22_NUM + T_1P5_1P75_ECIO_N21_N22_NUM +
+                   T_1P75_2_ECIO_N21_N22_NUM + T_2_3_ECIO_N21_N22_NUM +
+                   T_3_4_ECIO_N21_N22_NUM + T_4UP_ECIO_N21_N22_NUM +
+                   T_0_0P25_ECIO_N20_N21_NUM + T_0P25_0P5_ECIO_N20_N21_NUM +
+                   T_0P5_0P75_ECIO_N20_N21_NUM + T_0P75_1_ECIO_N20_N21_NUM +
+                   T_1_1P25_ECIO_N20_N21_NUM + T_1P25_1P5_ECIO_N20_N21_NUM +
+                   T_1P5_1P75_ECIO_N20_N21_NUM + T_1P75_2_ECIO_N20_N21_NUM +
+                   T_2_3_ECIO_N20_N21_NUM + T_3_4_ECIO_N20_N21_NUM +
+                   T_4UP_ECIO_N20_N21_NUM + T_0_0P25_ECIO_N19_N20_NUM +
+                   T_0P25_0P5_ECIO_N19_N20_NUM + T_0P5_0P75_ECIO_N19_N20_NUM +
+                   T_0P75_1_ECIO_N19_N20_NUM + T_1_1P25_ECIO_N19_N20_NUM +
+                   T_1P25_1P5_ECIO_N19_N20_NUM + T_1P5_1P75_ECIO_N19_N20_NUM +
+                   T_1P75_2_ECIO_N19_N20_NUM + T_2_3_ECIO_N19_N20_NUM +
+                   T_3_4_ECIO_N19_N20_NUM + T_4UP_ECIO_N19_N20_NUM +
+                   T_0_0P25_ECIO_N18_N19_NUM + T_0P25_0P5_ECIO_N18_N19_NUM +
+                   T_0P5_0P75_ECIO_N18_N19_NUM + T_0P75_1_ECIO_N18_N19_NUM +
+                   T_1_1P25_ECIO_N18_N19_NUM + T_1P25_1P5_ECIO_N18_N19_NUM +
+                   T_1P5_1P75_ECIO_N18_N19_NUM + T_1P75_2_ECIO_N18_N19_NUM +
+                   T_2_3_ECIO_N18_N19_NUM + T_3_4_ECIO_N18_N19_NUM +
+                   T_4UP_ECIO_N18_N19_NUM + T_0_0P25_ECIO_N17_N18_NUM +
+                   T_0P25_0P5_ECIO_N17_N18_NUM + T_0P5_0P75_ECIO_N17_N18_NUM +
+                   T_0P75_1_ECIO_N17_N18_NUM + T_1_1P25_ECIO_N17_N18_NUM +
+                   T_1P25_1P5_ECIO_N17_N18_NUM + T_1P5_1P75_ECIO_N17_N18_NUM +
+                   T_1P75_2_ECIO_N17_N18_NUM + T_2_3_ECIO_N17_N18_NUM +
+                   T_3_4_ECIO_N17_N18_NUM + T_4UP_ECIO_N17_N18_NUM +
+                   T_0_0P25_ECIO_N16_N17_NUM + T_0P25_0P5_ECIO_N16_N17_NUM +
+                   T_0P5_0P75_ECIO_N16_N17_NUM + T_0P75_1_ECIO_N16_N17_NUM +
+                   T_1_1P25_ECIO_N16_N17_NUM + T_1P25_1P5_ECIO_N16_N17_NUM +
+                   T_1P5_1P75_ECIO_N16_N17_NUM + T_1P75_2_ECIO_N16_N17_NUM +
+                   T_2_3_ECIO_N16_N17_NUM + T_3_4_ECIO_N16_N17_NUM +
+                   T_4UP_ECIO_N16_N17_NUM + T_0_0P25_ECIO_N15_N16_NUM +
+                   T_0P25_0P5_ECIO_N15_N16_NUM + T_0P5_0P75_ECIO_N15_N16_NUM +
+                   T_0P75_1_ECIO_N15_N16_NUM + T_1_1P25_ECIO_N15_N16_NUM +
+                   T_1P25_1P5_ECIO_N15_N16_NUM + T_1P5_1P75_ECIO_N15_N16_NUM +
+                   T_1P75_2_ECIO_N15_N16_NUM + T_2_3_ECIO_N15_N16_NUM +
+                   T_3_4_ECIO_N15_N16_NUM + T_4UP_ECIO_N15_N16_NUM +
+                   T_0_0P25_ECIO_N14_N15_NUM + T_0P25_0P5_ECIO_N14_N15_NUM +
+                   T_0P5_0P75_ECIO_N14_N15_NUM + T_0P75_1_ECIO_N14_N15_NUM +
+                   T_1_1P25_ECIO_N14_N15_NUM + T_1P25_1P5_ECIO_N14_N15_NUM +
+                   T_1P5_1P75_ECIO_N14_N15_NUM + T_1P75_2_ECIO_N14_N15_NUM +
+                   T_2_3_ECIO_N14_N15_NUM + T_3_4_ECIO_N14_N15_NUM +
+                   T_4UP_ECIO_N14_N15_NUM + T_0_0P25_ECIO_N13_N14_NUM +
+                   T_0P25_0P5_ECIO_N13_N14_NUM + T_0P5_0P75_ECIO_N13_N14_NUM +
+                   T_0P75_1_ECIO_N13_N14_NUM + T_1_1P25_ECIO_N13_N14_NUM +
+                   T_1P25_1P5_ECIO_N13_N14_NUM + T_1P5_1P75_ECIO_N13_N14_NUM +
+                   T_1P75_2_ECIO_N13_N14_NUM + T_2_3_ECIO_N13_N14_NUM +
+                   T_3_4_ECIO_N13_N14_NUM + T_4UP_ECIO_N13_N14_NUM +
+                   T_0_0P25_ECIO_N12_N13_NUM + T_0P25_0P5_ECIO_N12_N13_NUM +
+                   T_0P5_0P75_ECIO_N12_N13_NUM + T_0P75_1_ECIO_N12_N13_NUM +
+                   T_1_1P25_ECIO_N12_N13_NUM + T_1P25_1P5_ECIO_N12_N13_NUM +
+                   T_1P5_1P75_ECIO_N12_N13_NUM + T_1P75_2_ECIO_N12_N13_NUM +
+                   T_2_3_ECIO_N12_N13_NUM + T_3_4_ECIO_N12_N13_NUM +
+                   T_4UP_ECIO_N12_N13_NUM + T_0_0P25_ECIO_N11_N12_NUM +
+                   T_0P25_0P5_ECIO_N11_N12_NUM + T_0P5_0P75_ECIO_N11_N12_NUM +
+                   T_0P75_1_ECIO_N11_N12_NUM + T_1_1P25_ECIO_N11_N12_NUM +
+                   T_1P25_1P5_ECIO_N11_N12_NUM + T_1P5_1P75_ECIO_N11_N12_NUM +
+                   T_1P75_2_ECIO_N11_N12_NUM + T_2_3_ECIO_N11_N12_NUM +
+                   T_3_4_ECIO_N11_N12_NUM + T_4UP_ECIO_N11_N12_NUM +
+                   T_0_0P25_ECIO_N10_N11_NUM + T_0P25_0P5_ECIO_N10_N11_NUM +
+                   T_0P5_0P75_ECIO_N10_N11_NUM + T_0P75_1_ECIO_N10_N11_NUM +
+                   T_1_1P25_ECIO_N10_N11_NUM + T_1P25_1P5_ECIO_N10_N11_NUM +
+                   T_1P5_1P75_ECIO_N10_N11_NUM + T_1P75_2_ECIO_N10_N11_NUM +
+                   T_2_3_ECIO_N10_N11_NUM + T_3_4_ECIO_N10_N11_NUM +
+                   T_4UP_ECIO_N10_N11_NUM + T_0_0P25_ECIO_N9_N10_NUM +
+                   T_0P25_0P5_ECIO_N9_N10_NUM + T_0P5_0P75_ECIO_N9_N10_NUM +
+                   T_0P75_1_ECIO_N9_N10_NUM + T_1_1P25_ECIO_N9_N10_NUM +
+                   T_1P25_1P5_ECIO_N9_N10_NUM + T_1P5_1P75_ECIO_N9_N10_NUM +
+                   T_1P75_2_ECIO_N9_N10_NUM + T_2_3_ECIO_N9_N10_NUM +
+                   T_3_4_ECIO_N9_N10_NUM + T_4UP_ECIO_N9_N10_NUM +
+                   T_0_0P25_ECIO_N8_N9_NUM + T_0P25_0P5_ECIO_N8_N9_NUM +
+                   T_0P5_0P75_ECIO_N8_N9_NUM + T_0P75_1_ECIO_N8_N9_NUM +
+                   T_1_1P25_ECIO_N8_N9_NUM + T_1P25_1P5_ECIO_N8_N9_NUM +
+                   T_1P5_1P75_ECIO_N8_N9_NUM + T_1P75_2_ECIO_N8_N9_NUM +
+                   T_2_3_ECIO_N8_N9_NUM + T_3_4_ECIO_N8_N9_NUM +
+                   T_4UP_ECIO_N8_N9_NUM + T_0_0P25_ECIO_N7_N8_NUM +
+                   T_0P25_0P5_ECIO_N7_N8_NUM + T_0P5_0P75_ECIO_N7_N8_NUM +
+                   T_0P75_1_ECIO_N7_N8_NUM + T_1_1P25_ECIO_N7_N8_NUM +
+                   T_1P25_1P5_ECIO_N7_N8_NUM + T_1P5_1P75_ECIO_N7_N8_NUM +
+                   T_1P75_2_ECIO_N7_N8_NUM + T_2_3_ECIO_N7_N8_NUM +
+                   T_3_4_ECIO_N7_N8_NUM + T_4UP_ECIO_N7_N8_NUM +
+                   T_0_0P25_ECIO_N6_N7_NUM + T_0P25_0P5_ECIO_N6_N7_NUM +
+                   T_0P5_0P75_ECIO_N6_N7_NUM + T_0P75_1_ECIO_N6_N7_NUM +
+                   T_1_1P25_ECIO_N6_N7_NUM + T_1P25_1P5_ECIO_N6_N7_NUM +
+                   T_1P5_1P75_ECIO_N6_N7_NUM + T_1P75_2_ECIO_N6_N7_NUM +
+                   T_2_3_ECIO_N6_N7_NUM + T_3_4_ECIO_N6_N7_NUM +
+                   T_4UP_ECIO_N6_N7_NUM) AS STRENGTH3 
+          FROM MOD_COVER2_CARR_H T0,cfg_map_dev_to_ne NE
+         WHERE T0.ne_carr_id = ne.ne_carr_id
+           AND T0.CARR IN (10,
+                        15,
+                        37,
+                        78,
+                        100,
+                        119,
+                        129,
+                        150,
+                        160,
+                        170,
+                        242,
+                        1013,
+                        1019)
+           AND T0.SERVICE_OPTION = 3
+           AND T0.STATISTIC_METHOD = 2
+           AND T0.START_TIME &gt;= TO_DATE('%%Y-%%M-%%D 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+           AND T0.START_TIME &lt; TO_DATE('%%Y-%%M-%%D 00:00:00', 'YYYY-MM-DD HH24:MI:SS') + 1
+         GROUP BY T0.start_time,NE.VENDOR,NE.BSC,NE.BTS,NE.LOCALBTS,NE.CELL,NE.CELL_NAME,T0.NE_CELL_ID) T2
+         WHERE T1.START_TIME = T2.START_TIME AND T1.NE_CELL_ID = T2.NE_CELL_ID
+
+
+
+        </sql>
+			</mapping>
+			
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.94</property>
+		<property name="port">21</property>
+		<property name="username">admin</property>
+		<property name="password">admin</property>
+		<property name="path">/CONF/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!---->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>
+

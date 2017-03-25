@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<checkmodule>
+	<function data_type="1" name="配置数据上报功能"  isused="1">
+		<mapping name="_CONF_MSC_" level="1" ne_sys_id="MSC标识"></mapping>
+		<mapping name="_CONF_BSC_" level="2" ne_sys_id="BSC标识"></mapping>
+		<mapping name="_CONF_BTS_" level="3" ne_sys_id="基站标识"></mapping>
+		<mapping name="_CONF_SECTOR_" level="5" ne_sys_id="扇区标识"></mapping>
+	</function>
+
+	<function data_type="2" name="热点配置数据上报功能"  isused="1"  >
+		<mapping name="_CONF_WLANHP_" level="0" ne_sys_id="热点标识"></mapping>
+	</function>
+
+	<function data_type="3" name="盲点配置数据上报功能"  isused="1"  >
+		<mapping name="_CONF_BLINDPOINT_" level="0" ne_sys_id="盲点标识"></mapping>
+	</function>
+
+	<function data_type="4" name="性能数据上报功能"  isused="1"  >
+
+		<mapping name="_PERF_MSC_1X_" level="1" ne_sys_id="MSC标识"></mapping>
+		<mapping name="_PERF_MSC_DO_" level="1" ne_sys_id="MSC标识"></mapping>
+		<mapping name="_PERF_CITY_DO_" level="0" ne_sys_id="对象名称"></mapping>
+		<mapping name="_PERF_CITY_1X_" level="0" ne_sys_id="对象名称"></mapping>
+		<mapping name="_PERF_SCENE_DO_" level="0" ne_sys_id="场景名称"></mapping>
+		<mapping name="_PERF_SCENE_1X_" level="0" ne_sys_id="场景名称"></mapping>
+
+	</function>
+	<function data_type="5" name="用户呼叫分布统计上报功能"  isused="1"  >
+
+		<mapping name="_CDL_" level="0" ne_sys_id=""></mapping>
+
+		<mapping name="_CDL_" level="0" ne_sys_id=""></mapping>
+
+
+	</function>
+	<function data_type="6" name="VIP用户呼叫分布统计上报功能"  isused="1"  >
+
+		<mapping name="_VIPCDL__" level="0" ne_sys_id=""></mapping>
+
+		<mapping name="_VIPCDL_" level="0" ne_sys_id=""></mapping>
+
+	</function>
+
+
+	<function data_type="7" name="客户投诉统计数据上报功能"  isused="1"  >
+		<mapping name="_COMPLAINT_DO_" level="0" ne_sys_id="城市名称"></mapping>
+
+		<mapping name="_COMPLAINT_1X" level="0" ne_sys_id="城市名称"></mapping>
+	</function>
+
+	<function data_type="8" name="测评信息数据上报功能"  isused="1"  >
+
+		<mapping name="_WORKTEST_CITYHP_" level="0" ne_sys_id="序号"></mapping>
+
+		<mapping name="_WORKTEST_CITYROAD_" level="0" ne_sys_id="序号"></mapping>
+
+		<mapping name="_WORKTEST_VILLAGE_" level="0" ne_sys_id="序号"></mapping>
+
+
+
+	</function>
+	<function data_type="9" name="网优人员数据上报功能"  isused="1"  >
+
+		<mapping name="_STAFF_" level="0" ne_sys_id=""></mapping>
+
+
+	</function>
+	<function data_type="10" name="第三方厂商信息上报功能"  isused="1"  >
+
+
+		<mapping name="_VENDOR_" level="0" ne_sys_id=""></mapping>
+
+
+
+
+	</function>
+	<function data_type="11" name="仪器仪表信息上报功能"  isused="1"  >
+		<mapping name="_INSTRUMENT_" level="0" ne_sys_id="地市"></mapping>
+
+	</function>
+	<function data_type="12" name="日常优化问题统计数据上报功能"  isused="1"  >
+
+
+		<mapping name="_DOPT_" level="0" ne_sys_id="优化分类"></mapping>
+
+	</function>
+	<function data_type="13" name="流入网优中心的投诉统计数据上报功能"  isused="1"  >
+		<mapping name="_COMPLAINTSTAT_" level="0" ne_sys_id="城市"></mapping>
+	</function>
+	<function data_type="14" name="省级网优平台使用情况统计数据上报功能"  isused="1"  >
+		<mapping name="_RNOPUSESTAT_" level="0" ne_sys_id=""></mapping>
+	</function>
+	<function data_type="15" name="网优人员联系人信息数据上报功能"  isused="1"  >
+		<mapping name="_LINKMAN_" level="0" ne_sys_id=""></mapping>
+	</function>
+	<function data_type="16" name="省际边界站邻区参数数据上报功能"  isused="1"  >
+
+		<mapping name="_PARA_VCARRNBR_ZTE_1X_" level="6" ne_sys_id="源省际边界载扇标识"></mapping>
+		<mapping name="_PARA_VCARRNBR_ZTE_DO_" level="6" ne_sys_id="源省际边界载扇标识"></mapping>
+		<mapping name="_PARA_VCARRNBR_ALU_1X_" level="6" ne_sys_id="源省际边界载扇标识"></mapping>
+		<mapping name="_PARA_VCARRNBRSF_HW_1X_" level="6" ne_sys_id="源省际边界载扇标识"></mapping>
+		<mapping name="_PARA_VCARRNBRDF_HW_DO_" level="6" ne_sys_id="源省际边界载扇标识"></mapping>
+
+
+		<mapping name="_PARA_VSECTORNBR_ZTE_1X_" level="5" ne_sys_id="源省际边界扇区标识"></mapping>
+		<mapping name="_PARA_VSECTORNBR_ALU_1X_" level="5" ne_sys_id="源省际边界扇区标识"></mapping>
+		<mapping name="_PARA_VSECTOR NBR_ALU_DO_" level="5" ne_sys_id="源省际边界扇区标识"></mapping>
+		<mapping name="_PARA_VSECTORNBRSF_HW_1X_" level="5" ne_sys_id="源省际边界扇区标识"></mapping>
+		<mapping name="_PARA_VSECTOR NBRDF_HW_DO_" level="5"
+			ne_sys_id="源省际边界扇区标识"></mapping>
+
+
+	</function>
+	<function data_type="17" name="省际边界免漫游扇区数据上报功能"  isused="1"  >
+
+		<mapping name="_VSECTORFREE_" level="5" ne_sys_id="省际边界扇区标识"></mapping>
+
+
+	</function>
+	<function data_type="18" name="省际边界基站调整协调单数据接口">
+
+		<mapping name="_VERGEORDER_" level="0" ne_sys_id="协调单编号"></mapping>
+
+
+
+	</function>
+	<function data_type="19" name="载扇参数数据接口">
+		<mapping name="_PARA_CARR_ZTE_1X_" level="6" ne_sys_id="载扇标识"></mapping>
+
+		<mapping name="_PARA_CARR_ZTE_DO_" level="6" ne_sys_id="载扇标识"></mapping>
+
+	</function>
+	<function data_type="20" name="扇区参数数据接口">
+
+		<mapping name="_PARA_SECTOR_ZTE_1X_" level="5" ne_sys_id="扇区标识"></mapping>
+
+		<mapping name="_PARA_SECTOR_ZTE_DO_" level="5" ne_sys_id="扇区标识"></mapping>
+
+
+	</function>
+	<function data_type="21" name="BTS参数数据接口">
+		<mapping name="_PARA_BTS_ZTE_1X_" level="5" ne_sys_id="基站标识"></mapping>
+
+
+	</function>
+	<function data_type="22" name="BSC参数数据接口">
+
+		<mapping name="_PARA_BSC_ZTE_1X_" level="5" ne_sys_id="BSC标识"></mapping>
+
+		<mapping name="_PARA_BSC_ZTE_DO_" level="5" ne_sys_id="BSC标识"></mapping>
+
+
+	</function>
+	<function data_type="23" name="省际边界站配置数据服务功能"  isused="1"  >
+
+		<mapping name="_VERGESITE_VBTSCONF_" level="5" ne_sys_id=""></mapping>
+
+		<mapping name="_VERGESITE_VSECTORCONF_" level="5" ne_sys_id=""></mapping>
+
+
+	</function>
+	<function data_type="24" name="省际边界站邻区参数数据服务功能"  isused="1"  >
+
+		<mapping name="_VERGESITE_VCARRNBR_ZTE_1X_" level="6"
+			ne_sys_id=""></mapping>
+
+		<mapping name="_VERGESITE_VCARRNBR_ZTE_DO_" level="6"
+			ne_sys_id=""></mapping>
+
+		<mapping name="_VERGESITE_VCARRNBR_ALU_1X_" level="6"
+			ne_sys_id=""></mapping>
+
+		<mapping name="_VERGESITE_VCARRNBRSF_HW_1X_" level="6"
+			ne_sys_id=""></mapping>
+
+
+		<mapping name="_VERGESITE_VCARRNBRDF_HW_DO_" level="6"
+			ne_sys_id=""></mapping>
+
+
+
+		<mapping name="_VERGESITE_VSECTORNBR_ZTE_1X_" level="5"
+			ne_sys_id=""></mapping>
+
+		<mapping name="_VERGESITE_VSECTORNBR_ALU_1X_" level="5"
+			ne_sys_id=""></mapping>
+
+		<mapping name="_VERGESITE_VSECTORNBR_ALU_DO_" level="5"
+			ne_sys_id=""></mapping>
+
+
+		<mapping name="_VERGESITE_VSECTORNBRSF_HW_1X_" level="5"
+			ne_sys_id=""></mapping>
+
+		<mapping name="_VERGESITE_VSECTORNBRDF_HW_DO_" level="5"
+			ne_sys_id=""></mapping>
+
+
+
+
+
+	</function>
+	<function data_type="25" name="省际边界免漫游扇区数据服务功能"  isused="1"  >
+
+
+		<mapping name="_VERGESITE_VSECTORFREE_" level="0" ne_sys_id=""></mapping>
+
+
+
+	</function>
+	<function data_type="26" name="省际边界基站调整协调单数据服务功能"  isused="1"  >
+
+		<mapping name="_VERGEORDER_" level="0" ne_sys_id=""></mapping>
+
+	</function>
+
+
+</checkmodule>
+
+

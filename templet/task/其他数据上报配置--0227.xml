@@ -1,0 +1,838 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+        <include>
+			<property name="mapping">mapping.xml</property>
+			<property name="loop">false</property>
+        </include>
+
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.0.180:1521:cnoap</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">cnoap</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+	<to id="1">
+		<resolve dsid="1">
+		
+			
+			
+
+	
+	
+
+
+<!-- 省际边界参数数据  华为  HW基础字段 （重要）HWCM=HW COMMON -->
+			<!-- 省际边界参数数据  华为：1X同频载频-->
+				<mapping name="${province_en}_PARA_VCARRNBRSF_HW_1X_%%Y%%M%%D.csv" templet="其他数据上报配置省际边界_HW_1X_SF.ftl">
+				<sql> select pro.omc_name || '.' || pro.bsc_name || '.' || pro.bts_id || '.' ||
+       pro.cell_id || '.' || pro.carr_seq as "源省际边界载扇标识",
+       '%%Y-%%M-%%D' as "时间戳",
+       '${province_cn}' as "省份",
+       pro.city_name as "城市",
+       pro.MSC_NAME as "源载扇所属MSC标识",
+       pro.mgw as "源载扇所属MGW标识",
+       pro.msc_name || '.' || pro.bsc_name as "源载扇所属BSC标识",
+       pro.bsc_name || '.' || pro.bts_id as "源载扇所属BTS标识",
+       pro.bsc_name || '.' || pro.bts_id || '.' || pro.cell_id as "源载扇所属扇区标识",
+       replace(pro.cell_name, ',', '，') as "源载扇所属扇区名称",
+       pro.cell_id as "源载扇所属扇区编号",
+       pro.carr_seq as "源载波编号",
+       pro.carr_id as "源载波频点",
+       pro.pn as "源pn",
+       pro.nbrseq as "邻区顺序",
+       pro.switchtype as "切换方法",
+       case
+         when pro.bordertype = 3 then
+          pro.nei_sid || '_' || pro.nei_ci || '_' || pro.nei_ne_pn || '_' ||
+          pro.nei_carr_id
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id || '.' ||
+          pro.nei_cell_id || '.' || pro.nei_carr_seq
+       end as "邻载扇标识",
+       pro.nei_county_name as "邻载扇行政区",
+       case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_msc_nam
+       end as "邻载扇所属MSC标识",
+       pro.nei_mgw as "邻载扇所属MGW标识",
+       
+       case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_msc_nam || '.' || pro.nei_bsc_name
+       end as "邻载扇所属BSC标识",
+       case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id
+       end as "邻载扇所属BTS标识",
+       case
+         when pro.bordertype = 3 then
+          pro.nei_sid || '_' || pro.nei_ci || '_' || pro.nei_ne_pn
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id || '.' ||
+          pro.nei_cell_id
+       end as "邻载扇所属扇区标识",
+       pro.nei_cell_name as "邻扇区名称",
+       pro.nei_cell_id as "邻扇区编号",
+       pro.nei_carr_seq as "邻载波标识",
+       pro.nei_carr_id as "邻载波频点",
+       pro.nei_ne_pn as "邻pn",
+       pro.nei_province_name as "邻扇区所属省",
+       pro.nei_city_name as "邻扇区所属城市",
+       pro.bordertype as "邻区关系类型",
+       case pro.nei_vendor
+         when 'ZY0808' then
+          '华为'
+         when 'ZY0804' then
+          '中兴'
+         when 'ZY0810' then
+          '朗讯'
+       end as "邻扇区所属厂家",
+       pro.isouter as "是否为外部邻区",
+       pro.CCDMACH as "中心载频",
+       pro.NBRCDMACH as "相邻载频",
+       pro.SFRSN as "同频优先级",
+       pro.PARA_CCDMACH as "中心载频",
+       pro.PARA_NBRCDMACH as "相邻载频",
+       pro.PARA_NSRCHWININC as "是否包含相邻集分支搜索窗口大小",
+       pro.PARA_NSRCHWINSIZE as "相邻集分支搜索窗口大小",
+       pro.PARA_NSRCHWINOFFSETINC as "是否包含相邻集分支搜索窗口偏置",
+       pro.PARA_NSRCHWINOFFSET as "相邻集分支搜索窗口偏置",
+       pro.PARA_SRCHP as "搜索优先级"
+  from MOD_PRO_BORDER_HW_1XSF pro
+  where STAMPTIME =to_date('%%Y-%%M-%%D','yyyy-mm-dd')
+				</sql>
+			</mapping>
+	      
+	        <!-- 	1X异频载频 -->
+ <mapping name="${province_en}_PARA_VCARRNBRDF_HW_1X_%%Y%%M%%D.csv" templet="其他数据上报配置省际边界_HW_1X_DF.ftl">
+				<sql>select pro.omc_name || '.' || pro.bsc_name || '.' || pro.bts_id || '.' ||
+       pro.cell_id || '.' || pro.carr_seq as "源省际边界载扇标识",
+       '%%Y-%%M-%%D' as "时间戳",
+       '${province_cn}' as "省份",
+       pro.city_name as "城市",
+       pro.MSC_NAME as "源载扇所属MSC标识",
+       pro.mgw as "源载扇所属MGW标识",
+       pro.msc_name || '.' || pro.bsc_name as "源载扇所属BSC标识",
+       pro.bsc_name || '.' || pro.bts_id as "源载扇所属BTS标识",
+       pro.bsc_name || '.' || pro.bts_id || '.' || pro.cell_id as "源载扇所属扇区标识",
+       replace(pro.cell_name, ',', '，') as "源载扇所属扇区名称",
+       pro.cell_id as "源载扇所属扇区编号",
+       pro.carr_seq as "源载波编号",
+       pro.carr_id as "源载波频点",
+       pro.pn as "源pn",
+       pro.nbrseq as "邻区顺序",
+       pro.switchtype as "切换方法",
+       case
+         when pro.bordertype = 3 then
+          pro.nei_sid || '_' || pro.nei_ci || '_' || pro.nei_ne_pn || '_' ||
+          pro.nei_carr_id
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id || '.' ||
+          pro.nei_cell_id || '.' || pro.nei_carr_seq
+       end as "邻载扇标识",
+       pro.nei_county_name as "邻载扇行政区",
+       
+       case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_msc_nam
+       end as "邻载扇所属MSC标识",
+       pro.nei_mgw as "邻载扇所属MGW标识",
+       case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_msc_nam || '.' || pro.nei_bsc_name
+       end as "邻载扇所属BSC标识",
+       case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id
+       end as "邻载扇所属BTS标识",
+       case
+         when pro.bordertype = 3 then
+          pro.nei_sid || '_' || pro.nei_ci || '_' || pro.nei_ne_pn
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id || '.' ||
+          pro.nei_cell_id
+       end as "邻载扇所属扇区标识",
+       
+       pro.nei_cell_name as "邻扇区名称",
+       pro.nei_cell_id as "邻扇区编号",
+       pro.nei_carr_seq as "邻载波标识",
+       pro.nei_carr_id as "邻载波频点",
+       pro.nei_ne_pn as "邻pn",
+       pro.nei_province_name as "邻扇区所属省",
+       pro.nei_city_name as "邻扇区所属城市",
+       pro.bordertype as "邻区关系类型",
+       case pro.nei_vendor
+         when 'ZY0808' then
+          '华为'
+         when 'ZY0804' then
+          '中兴'
+         when 'ZY0810' then
+          '朗讯'
+       end as "邻扇区所属厂家",
+       pro.isouter as "是否为外部邻区",
+       pro.CCDMACH as "中心载频",
+       pro.NBRCDMACH as "相邻载频",
+       pro.DFRSN as "异频优先级",
+       pro.PARA_CCDMACH as "中心载频",
+       pro.PARA_NBRCDMACH as "相邻载频",
+       pro.PARA_SRCHSET as "搜索集",
+       pro.PARA_NSRCHWINSIZE as "相邻集分支搜索窗口大小",
+       pro.PARA_NSRCHWINOFFSETINC as "是否包含相邻集分支搜索窗口偏置",
+       pro.PARA_NSRCHWINOFFSET as "相邻集分支搜索窗口偏置",
+       pro.PARA_SRCHP as "搜索优先级"
+
+  from MOD_PRO_BORDER_HW_1XDF pro
+  where STAMPTIME =to_date('%%Y-%%M-%%D','yyyy-mm-dd')
+				</sql>
+			</mapping>
+	      
+	      <!-- DO同频载频-->
+ <mapping name="${province_en}_PARA_VCARRNBRSF_HW_DO_%%Y%%M%%D.csv" templet="其他数据上报配置省际边界_HW_DO_SF.ftl">
+				<sql> select pro.omc_name || '.' || pro.bsc_name || '.' || pro.bts_id || '.' ||
+       pro.cell_id || '.' || pro.carr_seq as "源省际边界载扇标识",
+       '%%Y-%%M-%%D' as "时间戳",
+       '${province_cn}' as "省份",
+       pro.city_name as "城市",
+       pro.MSC_NAME as "源载扇所属MSC标识",
+       pro.mgw as "源载扇所属MGW标识",
+       pro.msc_name || '.' || pro.bsc_name as "源载扇所属BSC标识",
+       pro.bsc_name || '.' || pro.bts_id  as "源载扇所属BTS标识",
+       pro.bsc_name || '.' || pro.bts_id || '.' || pro.cell_id as "源载扇所属扇区标识",
+       replace(pro.cell_name, ',', '，') as "源载扇所属扇区名称",
+       pro.cell_id as "源载扇所属扇区编号",
+       pro.carr_seq as "源载波编号",
+       pro.carr_id as "源载波频点",
+       pro.pn as "源pn",
+       pro.nbrseq as "邻区顺序",
+       pro.switchtype as "切换方法",
+       case
+         when pro.bordertype = 3 then
+       pro.nei_sid || '_' || pro.nei_ci || '_' || pro.nei_ne_pn || '_' ||
+       pro.nei_carr_id 
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id || '.' ||
+          pro.nei_cell_id || '.' || pro.nei_carr_seq
+       end as  "邻载扇标识",
+       pro.nei_county_name as "邻载扇行政区",
+       
+        case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_msc_nam
+       end as "邻载扇所属MSC标识",
+       pro.nei_mgw as "邻载扇所属MGW标识",
+       case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_msc_nam || '.' || pro.nei_bsc_name
+       end as "邻载扇所属BSC标识",
+       case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id
+       end as "邻载扇所属BTS标识",
+       case
+         when pro.bordertype = 3 then
+          pro.nei_sid || '_' || pro.nei_ci || '_' || pro.nei_ne_pn
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id || '.' ||
+          pro.nei_cell_id
+       end as "邻载扇所属扇区标识",
+      
+      pro.nei_cell_name as "邻扇区名称",
+       pro.nei_cell_id as "邻扇区编号",
+       pro.nei_carr_seq as "邻载波标识",
+       pro.nei_carr_id as "邻载波频点",
+       pro.nei_ne_pn as "邻pn",
+       pro.nei_province_name as "邻扇区所属省",
+       pro.nei_city_name as "邻扇区所属城市",
+       pro.bordertype as "邻区关系类型",
+       case pro.nei_vendor
+         when 'ZY0808' then
+          '华为'
+         when 'ZY0804' then
+          '中兴'
+         when 'ZY0810' then
+          '朗讯'
+       end as "邻扇区所属厂家",
+       pro.isouter as "是否为外部邻区",
+       pro.CCDMACH as "中心载频",
+       pro.NBRCDMACH as "相邻载频",
+       pro.SFRSN as "同频优先级",
+       pro.PARA_CCDMACH as "中心载频",
+       pro.PARA_NBRCDMACH as "相邻载频",
+       pro.PARA_NSRCHWININC as "是否包含相邻集分支搜索窗口大小",
+       pro.PARA_NSRCHWINSIZE as "相邻集分支搜索窗口大小",
+       pro.PARA_NSRCHWINOFFSETINC as "是否包含相邻集分支搜索窗口偏置",
+       pro.PARA_NSRCHWINOFFSET as "相邻集分支搜索窗口偏置",
+       pro.PARA_SRCHP as "搜索优先级",
+       pro.DOPARA_CCDMACH as "中心载频",
+       pro.DOPARA_NBRCDMACH as "相邻载频",
+       pro.DOPARA_NSRCHWININC as "是否包含相邻集分支搜索窗口大小",
+       pro.DORA_NSRCHWINSIZE as "相邻集分支搜索窗口大小",
+       pro.DOPARA_NSRCHWINOFFSETINC as "是否包含相邻集分支搜索窗口偏置",
+       pro.DOPARA_NSRCHWINOFFSET as "相邻集分支搜索窗口偏置"
+
+  from MOD_PRO_BORDER_HW_DOSF pro
+  where STAMPTIME =to_date('%%Y-%%M-%%D','yyyy-mm-dd')
+							
+				</sql>
+			</mapping>
+	      <!--DO异频载频 -->
+ <mapping name="${province_en}_PARA_VCARRNBRDF_HW_DO_%%Y%%M%%D.csv" templet="其他数据上报配置省际边界_HW_DO_DF.ftl">
+				<sql>select pro.omc_name || '.' || pro.bsc_name || '.' || pro.bts_id || '.' ||
+       pro.cell_id || '.' || pro.carr_seq as "源省际边界载扇标识",
+       '%%Y-%%M-%%D' as "时间戳",
+       '${province_cn}' as "省份",
+       pro.city_name as "城市",
+       pro.MSC_NAME as "源载扇所属MSC标识",
+       pro.mgw as "源载扇所属MGW标识",
+       pro.msc_name || '.' || pro.bsc_name as "源载扇所属BSC标识",
+       pro.bsc_name || '.' || pro.bts_id  as "源载扇所属BTS标识",
+       pro.bsc_name || '.' || pro.bts_id || '.' || pro.cell_id as "源载扇所属扇区标识",
+       replace(pro.cell_name, ',', '，') as "源载扇所属扇区名称",
+       pro.cell_id as "源载扇所属扇区编号",
+       pro.carr_seq as "源载波编号",
+       pro.carr_id as "源载波频点",
+       pro.pn as "源pn",
+       pro.nbrseq as "邻区顺序",
+       pro.switchtype as "切换方法",
+       case
+         when pro.bordertype = 3 then
+       pro.nei_sid || '_' || pro.nei_ci || '_' || pro.nei_ne_pn || '_' ||
+       pro.nei_carr_id 
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id || '.' ||
+          pro.nei_cell_id || '.' || pro.nei_carr_seq
+       end as  "邻载扇标识",
+       pro.nei_county_name as "邻载扇行政区",
+       
+         case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_msc_nam
+       end as "邻载扇所属MSC标识",
+       pro.nei_mgw as "邻载扇所属MGW标识",
+       case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_msc_nam || '.' || pro.nei_bsc_name
+       end as "邻载扇所属BSC标识",
+       case
+         when pro.bordertype = 3 then
+          ''
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id
+       end as "邻载扇所属BTS标识",
+       case
+         when pro.bordertype = 3 then
+          pro.nei_sid || '_' || pro.nei_ci || '_' || pro.nei_ne_pn
+         else
+          pro.nei_bsc_name || '.' || pro.nei_bts_id || '.' ||
+          pro.nei_cell_id
+       end as "邻载扇所属扇区标识",
+            
+       
+       pro.nei_cell_name as "邻扇区名称",
+       pro.nei_cell_id as "邻扇区编号",
+       pro.nei_carr_seq as "邻载波标识",
+       pro.nei_carr_id as "邻载波频点",
+       pro.nei_ne_pn as "邻pn",
+       pro.nei_province_name as "邻扇区所属省",
+       pro.nei_city_name as "邻扇区所属城市",
+       pro.bordertype as "邻区关系类型",
+       case pro.nei_vendor
+         when 'ZY0808' then
+          '华为'
+         when 'ZY0804' then
+          '中兴'
+         when 'ZY0810' then
+          '朗讯'
+       end as "邻扇区所属厂家",
+       pro.isouter as "是否为外部邻区",
+       pro.CCDMACH as "中心载频",
+       pro.NBRCDMACH as "相邻载频",
+       pro.DFRSN as "异频优先级",
+       pro.PARA_CCDMACH as "中心载频",
+       pro.PARA_NBRCDMACH as "相邻载频",
+       pro.PARA_SRCHSET as "搜索集",
+       pro.PARA_NSRCHWINSIZE as "相邻集分支搜索窗口大小",
+       pro.PARA_NSRCHWINOFFSETINC as "是否包含相邻集分支搜索窗口偏置",
+       pro.PARA_NSRCHWINOFFSET as "相邻集分支搜索窗口偏置",
+       pro.PARA_SRCHP as "搜索优先级",
+       pro.DOPARA_CCDMACH as "中心载频",
+       pro.DOPARA_NBRCDMACH as "相邻载频",
+       pro.DOPARA_NSRCHWININC as "是否包含相邻集分支搜索窗口大小",
+       pro.DOPARA_NSRCHWINSIZE as "相邻集分支搜索窗口大小",
+       pro.DOPARA_NSRCHWINOFFSETINC as "是否包含相邻集分支搜索窗口偏置",
+       pro.DOPARA_NSRCHWINOFFSET as "相邻集分支搜索窗口偏置"
+
+  from MOD_PRO_BORDER_HW_DODF pro
+   where STAMPTIME =to_date('%%Y-%%M-%%D','yyyy-mm-dd')
+							
+				</sql>
+			</mapping>
+			<!-- 中兴 -->
+			<!--1X扇区 -->
+			 <mapping name="${province_en}_PARA_VSECTORNBR_ZTE_1X_%%Y%%M%%D.csv" templet="其他数据上报配置省际边界_ZTE_1X_SECTORNBR.ftl">
+				<sql>select BSC_NAME || '.' || BTS_ID || '.' || CELL_ID as "源省际边界扇区标识",
+				       '%%Y-%%M-%%D' as "时间戳",
+				       CELL_NAME as "源省际边界扇区名称",
+				       '${province_cn}' as "省份",
+				       CITY_NAME as "城市",
+				       MSC_NAME as "源扇区所属MSC标识",
+				       mgw as "源扇区所属MGW标识",
+				       pro.msc_name || '.' || pro.bsc_name as "源扇区所属BSC标识",
+				       BSC_NAME || '.' || BTS_ID as "源扇区所属BTS标识",
+				       CELL_ID as "源扇区编号",
+				       PN as "源pn",
+				       nbrseq as "邻区顺序",
+				       switchtype as "切换方法",
+				       
+				       case
+         when bordertype = 3 then
+          nei_sid || '.' || nei_ci || '.' || nei_ne_pn
+         else
+         
+          nei_bsc_name || '.' || nei_bts_id || '.' ||
+          nei_cell_id
+       end as "邻扇区标识",			      
+				       nei_county_name as "邻扇区行政区",
+				      
+				       case
+         when bordertype = 3 then
+          ''
+         else
+          nei_msc_nam
+       end as "邻扇区所属MSC标识",
+       nei_mgw as "邻扇区所属MGW标识",
+       case
+         when bordertype = 3 then
+          ''
+         else
+          nei_msc_nam || '.' || nei_bsc_name
+       end as "邻扇区所属BSC标识",
+       case
+         when bordertype = 3 then
+          ''
+         else
+          nei_bsc_name || '.' || nei_ne_bts_id
+       end as "邻扇区所属BTS标识", 
+				      
+				       NEI_CELL_ID as "邻扇区编号",
+ case
+         when bordertype = 3 then
+          to_char(ci)
+         else
+          nei_cell_name
+       end as "邻扇区名称",
+				       NEI_NE_PN as "邻pn",
+				       NEI_PROVINCE_NAME as "邻扇区所属省",
+				       NEI_CITY_NAME as "邻扇区所属城市",
+				       bordertype as "邻区关系类型",
+				       case nei_vendor
+				         when 'ZY0808' then
+				          '华为'
+				         when 'ZY0804' then
+				          '中兴'
+				         when 'ZY0810' then
+				          '朗讯'
+				       end as "邻扇区所属厂家",
+				       isouter as "是否为外部邻区",
+				       nbr_cell_pilot_pn as "导频PN序列偏置",
+				       nbr_cell_ncelltype as "相邻小区类型",
+				       nbr_cell_ncellofficeid as "相邻小区局向号",
+				       nbr_cell_ncellsystemid as "相邻小区BTS号",
+				       nbr_cell_ncellid as "相邻小区Cell号",
+				       nbr_cell_gncellid as "邻区全局标示",
+				       nbr_cell_ci_discriminator as "小区识别鉴别方式",
+				       nbr_cell_lac as "所在位置区域编码",
+				       nbr_cell_ci as "小区识别",
+				       nbr_cell_marketid as "市场号",
+				       nbr_cell_switchnumber as "交换号",
+				       nbr_cell_p_rev as "协议版本号",
+				       nbr_cell_ncellmode as "小区模式",
+				       nbr_cell_dla_id as "PTT调度服务区ID号",
+				       nbr_cell_ncell_bs_id as "ncell_bs_id",
+				       nbr_cell_alias_b as "alias别名",
+				       nbr_cell_sequence_b as "sequence_b"
+				
+				  from mod_pro_border_zte_1xsector pro
+
+			  where stamptime=to_date('%%Y-%%M-%%D','yyyy-mm-dd')
+
+						
+				</sql>
+			</mapping>
+			
+			<!-- 1X载频 -->
+			 <mapping name="${province_en}_PARA_VCARRNBR_ZTE_1X_%%Y%%M%%D.csv" templet="其他数据上报配置省际边界_ZTE_1X.ftl">
+				<sql> select BSC_NAME || '.' || BTS_ID || '.' || CELL_ID || '.' || CARR_SEQ as "源省际边界载扇标识",
+       '%%Y-%%M-%%D' as "时间戳",
+       '${province_cn}' as "省份",
+       CITY_NAME as "城市",
+       MSC_NAME as "源载扇所属MSC标识",
+       mgw as "源载扇所属MGW标识",
+      pro.msc_name || '.' || pro.bsc_name as "源载扇所属BSC标识",
+       BSC_NAME || '.' || BTS_ID as "源载扇所属BTS标识",
+       BSC_NAME || '.' || BTS_ID || '.' || CELL_ID as "源载扇所属扇区标识",
+       replace(CELL_NAME, ',', '，') as "源载扇所属扇区名称",
+       CELL_ID as "源载扇所属扇区编号",
+       CARR_SEQ as "源载波编号",
+       CARR_ID as "源载波频点",
+       PN as "源pn",
+       nbrseq as "邻区顺序",
+       switchtype as "切换方法",
+       case
+         when bordertype = 3 then
+          nei_sid || '_' || nei_ci || '_' || nei_ne_pn || '_' || nei_carr_id
+       
+         else
+          nei_bsc_name || '.' || nei_bts_id || '.' || nei_cell_id || '.' ||
+          nei_carr_seq
+       end as "邻载扇标识",
+       
+       nei_county_name as "邻载扇行政区",
+       
+       case
+         when bordertype = 3 then
+          ''
+         else
+          nei_msc_name
+       end as "邻载扇所属MSC标识",
+       
+       nei_mgw as "邻载扇所属MGW标识",
+       
+       case
+         when bordertype = 3 then
+          ''
+         else
+          nei_msc_name || '.' || nei_bsc_name
+       end as "邻载扇所属BSC标识",
+       case
+         when bordertype = 3 then
+          ''
+         else
+          nei_bsc_name || '.' || nei_bts_id
+       end as "邻载扇所属BTS标识",
+       case
+         when bordertype = 3 then
+          nei_sid || '_' || nei_ci || '_' || nei_ne_pn
+         else
+          nei_bsc_name || '.' || nei_bts_id || '.' || nei_cell_id
+       end as "邻载扇所属扇区标识",
+       nei_cell_name as "邻扇区名称",
+       
+       NEI_CELL_ID as "邻扇区编号",
+       nei_carr_seq as "邻载波标识",
+       nei_carr_id as "邻载波频点",
+       nei_ne_pn as "邻pn",
+       nei_province_name as "邻扇区所属省",
+       nei_city_name as "邻扇区所属城市",
+       bordertype as "邻区关系类型",
+       case nei_vendor
+         when 'ZY0808' then
+          '华为'
+         when 'ZY0804' then
+          '中兴'
+         when 'ZY0810' then
+          '朗讯'
+       end as "邻扇区所属厂家",
+       isouter as "是否为外部邻区",
+       nbr_carr_bssid as "bssid",
+       nbr_carr_system as "system",
+       nbr_carr_cellid as "cellid",
+       nbr_carr_pilot_pn as "pilot_pn",
+       nbr_carr_carrierid as "carrierid",
+       nbr_carr_mscid as "mscid",
+       nbr_carr_ci as "ci",
+       nbr_carr_officeid as "officeid",
+       nbr_carr_nghbr_config as "邻区载频配置",
+       nbr_carr_search_priority as "邻区导频搜索优先级",
+       nbr_carr_srch_win_nghbr as "导频搜索窗大小",
+       nbr_carr_freq_incl as "频率包含指示",
+       nbr_carr_nghbr_band as "邻区频带类别",
+       nbr_carr_nghbr_freq as "邻区频率",
+       nbr_carr_access_entry_ho as "可否接入入口切换",
+       nbr_carr_access_ho_allowed as "可否接入切换",
+       nbr_carr_timing_incl as "邻区时间信息包含指示长",
+       nbr_carr_nghbr_tx_offset as "邻区发送时间偏置",
+       nbr_carr_nghbr_tx_duration as "邻区发送在每个周期的时长",
+       nbr_carr_nghbr_tx_period as "邻区发送时长",
+       nbr_carr_add_pilot_rec_incl as "邻区导频附加信息包含指示",
+       nbr_carr_nghbr_pilot_rec_type as "邻区导频信息记录类型",
+       nbr_carr_srch_offset_nghbr as "邻区导频搜索窗大小的偏置",
+       nbr_carr_sequence_b as "sequence_b",
+       nbr_carr_locked_b as "locked_b",
+       nbr_carr_alias_b as "alias_b",
+       nbr_carr_ncell_bs_id as "ncell_bs_id"
+
+  from mod_pro_border_zte_1xcarrier pro
+
+
+				   where stamptime=to_date('%%Y-%%M-%%D','yyyy-mm-dd')
+				</sql>
+			</mapping>
+			<!-- DO载频 -->
+			 <mapping name="${province_en}_PARA_VCARRNBR_ZTE_DO_%%Y%%M%%D.csv" templet="其他数据上报配置省际边界_ZTE_DO.ftl">
+				<sql> select BSC_NAME || '.' || BTS_ID || '.' || CELL_ID || '.' || CARR_SEQ as "源省际边界载扇标识",
+       '%%Y-%%M-%%D' as "时间戳",
+       '${province_cn}' as "省份",
+       CITY_NAME as "城市",
+       MSC_NAME as "源载扇所属MSC标识",
+       mgw as "源载扇所属MGW标识",
+       msc_name || '.' || bsc_name as "源载扇所属BSC标识",
+       BSC_NAME || '.' || BTS_ID as "源载扇所属BTS标识",
+       BSC_NAME || '.' || BTS_ID || '.' || CELL_ID as "源载扇所属扇区标识",
+       replace(CELL_name, ',', '，') as "源载扇所属扇区名称",
+       CELL_ID as "源载扇所属扇区编号",
+       CARR_SEQ as "源载波编号",
+       CARR_ID as "源载波频点",
+       PN as "源pn",
+       nbrseq as "邻区顺序",
+       switchtype as "切换方法",
+       case
+         when bordertype = 3 then
+          nei_sid || '_' || nei_ci || '_' || nei_ne_pn || '_' || nei_carr_id
+         else
+          nei_bsc_name || '.' || nei_bts_id || '.' || nei_cell_id || '.' ||
+          nei_carr_seq
+       end as "邻载扇标识",
+       nei_county_name as "邻载扇行政区",
+       case
+         when bordertype = 3 then
+          ''
+         else
+          nei_msc_name
+       end as "邻载扇所属MSC标识",
+       nei_mgw as "邻载扇所属MGW标识",
+       case
+         when bordertype = 3 then
+          ''
+         else
+          nei_msc_name || '.' || nei_bsc_name
+       end as "邻载扇所属BSC标识",
+       case
+         when bordertype = 3 then
+          ''
+         else
+          nei_bsc_name || '.' || nei_bts_id
+       end as "邻载扇所属BTS标识",
+       case
+         when bordertype = 3 then
+          nei_sid || '_' || nei_ci || '_' || nei_ne_pn
+         else
+          nei_bsc_name || '.' || nei_bts_id || '.' || nei_cell_id
+       
+       end as "邻载扇所属扇区标识",
+       nei_cell_name as "邻扇区名称",
+       NEI_CELL_ID as "邻扇区编号",
+       nei_carr_seq as "邻载波标识",
+       nei_carr_id as "邻载波频点",
+       NEI_NE_PN as "邻pn",
+       NEI_PROVINCE_NAME as "邻扇区所属省",
+       NEI_CITY_NAME as "邻扇区所属城市",
+       bordertype as "邻区关系类型",
+       case nei_vendor
+         when 'ZY0808' then
+          '华为'
+         when 'ZY0804' then
+          '中兴'
+         when 'ZY0810' then
+          '朗讯'
+       end as "邻扇区所属厂家",
+       isouter as "是否为外部邻区",
+       nbr_carr_o_PILOTPN as "PILOTPN",
+       nbr_carr_o_SYSTEMTYPE as "SYSTEMTYPE",
+       nbr_carr_o_BANDCLASS as "BANDCLASS",
+       nbr_carr_o_ChannelNumber as "ChannelNumber",
+       nbr_carr_o_SEARCHWINDOWSIZE as "SEARCHWINDOWSIZE",
+       nbr_carr_o_SEARCHWINDOWOFFSET as "SEARCHWINDOWOFFSET",
+       nbr_carr_o_BCSubnet as "BCSubnet",
+       nbr_carr_o_sequence_b as "sequence_b",
+       nbr_carr_o_CI as "CI"
+
+  from mod_pro_border_zte_docarrier pro
+
+
+
+                  where stamptime=to_date('%%Y-%%M-%%D','yyyy-mm-dd')
+						
+				</sql>
+			</mapping>
+			
+			<!--朗讯  LUC扇区基础字段 （重要）LUCCELLCM=HW CELL COMMON   -->
+					
+			<!-- end -->
+		</resolve>
+	</to>
+	
+	<to id="2">
+		<resolve dsid="1">
+	        <!--平台使用情况 -->
+			<mapping name="${province_en}_RNOPUSESTAT_%%Y%%M%%D.csv" templet="平台使用情况数据.ftl">
+				<sql>   select '${province_cn}' as pro, '%%Y-%%M-%%D' as uptime, modulename, count
+									  from (select b.modulename, count(a.id) as count
+									          from sec_operatelog a, cfg_module b
+									         where a.modleid = b.id
+									           and a.operatetime &gt;=
+									               to_date('%%Y-%%M-%%D 00:00:00', 'yyyy-MM-dd hh24:mi:ss')
+									           and a.operatetime &lt;=
+									               to_date('%%Y-%%M-%%D 23:59:59', 'yyyy-MM-dd hh24:mi:ss')
+									         group by b.modulename
+									         order by count desc)
+									 where rownum &lt;= 10
+			               </sql>
+			              <sql>                           
+			                 select a.loginname, b.username, 
+			                             to_char(a.entertime, 'yyyy-mm-dd hh24:mi:ss') entertime,
+								       to_char(a.exittime, 'yyyy-mm-dd hh24:mi:ss') exittime
+								  from sec_userinfo b, sec_loginlog a
+								 where a.loginname = b.loginname
+								   and a.entertime &gt;=
+								       to_date('%%Y-%%M-%%D 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+								   and a.entertime &lt;=
+								       to_date('%%Y-%%M-%%D 23:59:59', 'YYYY-MM-DD HH24:MI:SS')
+			                       order by a.entertime
+			               </sql>
+			               
+			             <sql> 							       
+								       select distinct '${province_cn}' as pro,
+									                '%%Y-%%M-%%D' as uptime,
+									                a.username as username,
+									                null as count,
+									                null as sumtime
+									  from sec_userinfo a, sec_dept b, cfg_city c
+									 where a.deptid = b.id
+									   and a.city_id = c.city_id       
+			             </sql>
+			</mapping>
+	    
+	    
+	    </resolve>
+	
+	</to>
+	<to id="3">
+		<resolve dsid="1">
+	<!-- 客户投诉统计数据1X -->
+			<mapping name="${province_en}_COMPLAINT_1X_%%Y%%M%%D.csv" templet="其他数据上报配置.ftl">
+				<sql>select to_char(COM.accepttime, 'yyyy-mm-dd hh24:mi:ss') as "时间戳",
+			       '${province_cn}' as "省份名称",
+			       CITY.CITY_NAME as "城市名称",
+			       COM.YGCOVERCOUNT as "弱覆盖类投诉计数",
+			       COM.CRCOVERCOUNT as "过覆盖类投诉计数",
+			       COM.PILOTPOLLCOUNT as "导频污染类投诉计数",
+			       COM.OBSTACCOUNT as "干扰类投诉计数",
+			       COM.EQUIPMENTCOUNT as "设备故障类投诉计数",
+			       COM.USERRELUCOUNT as "用户原因类投诉计数",
+			       COM.ROAMRESCOUNT as "漫游问题类投诉计数",
+			       COM.TELEPHONECOUNT as "手机上网类投诉计数",
+			       COM.UIMRESCOUNT as "UIM卡问题类投诉计数",
+			       COM.THNETCOUNT as "3G上网类投诉计数",
+			       COM.NORESCOUNT as "不明原因类投诉计数",
+			       COM.NETMANAGCOUNT as "网管数据配置类投诉计数",
+			       '' as "预留字段1",
+			       '' as "预留字段2",
+			       '' as "预留字段3",
+			       '' as "预留字段4",
+			       '' as "预留字段5"
+			  from ne_uway_complaintdata com, cfg_city city
+			 where com.businesstype &lt;&gt; 'DO'
+			   and com.city_id = city.city_id
+			   and to_char(accepttime, 'yyyy-MM-dd') = '%%Y%%M%%D'
+			   </sql>
+			</mapping>
+			
+			
+			<!-- 客户投诉统计数据DO -->
+				<mapping name="${province_en}_COMPLAINT_DO_%%Y%%M%%D.csv" templet="其他数据上报配置.ftl">
+				<sql>select to_char(COM.accepttime, 'yyyy-mm-dd hh24:mi:ss') as "时间戳",
+			       '${province_cn}' as "省份名称",
+			       CITY.CITY_NAME as "城市名称",
+			       COM.YGCOVERCOUNT as "弱覆盖类投诉计数",
+			       COM.CRCOVERCOUNT as "过覆盖类投诉计数",
+			       COM.PILOTPOLLCOUNT as "导频污染类投诉计数",
+			       COM.OBSTACCOUNT as "干扰类投诉计数",
+			       COM.EQUIPMENTCOUNT as "设备故障类投诉计数",
+			       COM.USERRELUCOUNT as "用户原因类投诉计数",
+			       COM.ROAMRESCOUNT as "漫游问题类投诉计数",
+			       COM.TELEPHONECOUNT as "手机上网类投诉计数",
+			       COM.UIMRESCOUNT as "UIM卡问题类投诉计数",
+			       COM.THNETCOUNT as "3G上网类投诉计数",
+			       COM.NORESCOUNT as "不明原因类投诉计数",
+			       COM.NETMANAGCOUNT as "网管数据配置类投诉计数",
+			       '' as "预留字段1",
+			       '' as "预留字段2",
+			       '' as "预留字段3",
+			       '' as "预留字段4",
+			       '' as "预留字段5"
+			  from ne_uway_complaintdata com, cfg_city city
+			 where com.businesstype = 'DO'
+			   and com.city_id = city.city_id
+			   and to_char(accepttime, 'yyyy-MM-dd') = '%%Y%%M%%D'
+				</sql>
+			</mapping>
+			
+				    </resolve>
+	
+	</to>
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">10.252.0.204</property>
+		<property name="port">21</property>
+		<property name="username">sxftp</property>
+		<property name="password">fzs%Jxop</property>
+		<property name="path">/PARA/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+	</ti>
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="2" after="1">
+		<property name="ftpip">10.252.0.204</property>
+		<property name="port">21</property>
+		<property name="username">sxftp</property>
+		<property name="password">fzs%Jxop</property>
+		<property name="path">/WORK/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<ti id="3" after="1">
+		<property name="ftpip">10.252.0.204</property>
+		<property name="port">21</property>
+		<property name="username">sxftp</property>
+		<property name="password">fzs%Jxop</property>
+		<property name="path">/COMPLAINT/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--ftp文件方式 -->
+		<action id="2" toid="2" tiid="2" strategyid="1" /><!--ftp文件方式 -->
+		<action id="3" toid="3" tiid="3" strategyid="1" /><!--ftp文件方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

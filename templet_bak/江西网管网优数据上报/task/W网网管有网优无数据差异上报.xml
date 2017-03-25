@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora11</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">wcdma2</property>
+		<property name="password">uwaysoft2010</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="W_小区_网管有_网优无统计_%%Y%%M%%D.CSV" templet="W网网管有网优无数据差异上报-cell.ftl" >
+				<sql>
+				select cell.OMCID,
+       cell.COLLECTTIME,
+       cell.STAMPTIME,
+       cell.UTRANCELL_NAME,
+       cell.UTRANCELL_STATES,
+       cell.RELATED_RNC,
+       cell.LAC,
+       cell.CI,
+       cell.RELATED_NODEB,
+       cell.RELATED_OMC,
+       cell.CITY_NAME,
+       cell.VENDER,
+       cell.NE_DN
+  from CLT_NE_W_UTRANCELL cell
+ where not exists
+ (select 1
+          from ne_cell_W ne
+         where cell.lac = ne.lac
+               and cell.ci = ne.ci)
+       and cell.STAMPTIME = (select max(STAMPTIME) from clt_ne_w_utrancell)
+				</sql>
+			</mapping>
+			<mapping name="W_基站_网管有_网优无统计_%%Y%%M%%D.CSV" templet="W网网管有网优无数据差异上报-rnc.ftl" >
+				<sql>
+				SELECT NODEB.OMCID,
+       NODEB.COLLECTTIME,
+       NODEB.STAMPTIME,
+       NODEB.NODEB_NAME,
+       NODEB.NODEB_ID,
+       NODEB.NODEB_STATES,
+       NODEB.RELATED_RNC,
+       NODEB.RELATED_OMC,
+       NODEB.CITY_NAME,
+       NODEB.VENDER,
+       NODEB.VERSION,
+       NODEB.NE_DN
+  FROM CLT_NE_W_NODEB NODEB
+ where not exists
+ (select 1 from ne_bts_W ne where NODEB.NE_DN = ne.EXT_OID)
+       and NODEB.STAMPTIME =
+       (select max(STAMPTIME) STAMPTIME from CLT_NE_W_NODEB)
+       	</sql>
+			</mapping>
+			<mapping name="W_RNC_网管有_网优无统计_%%Y%%M%%D.CSV" templet="W网网管有网优无数据差异上报-rnc.ftl" >
+				<sql> 
+				SELECT RNC.OMCID,
+       RNC.COLLECTTIME,
+       RNC.STAMPTIME,
+       RNC.RNC_NAME,
+       RNC.RNC_ID,
+       RNC.RNC_STATES,
+       RNC.RELATED_OMC,
+       RNC.CITY_NAME,
+       RNC.VENDER_ID,
+       RNC.VERSION,
+       RNC.NE_DN
+  FROM CLT_NE_W_RNC RNC
+ where not exists (select 1 from ne_bsc_W ne where RNC.NE_DN = ne.EXT_OID)
+       and RNC.STAMPTIME in
+       (select max(STAMPTIME) STAMPTIME from CLT_NE_W_RNC)
+				</sql>
+			</mapping>
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+	    <property name="ftpip">192.168.15.123</property>
+		<property name="port">21</property>
+		<property name="username">admin</property>
+		<property name="password">admin</property>
+		<property name="path">/networkmag/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 500:webservice 400:others -->
+		<ds id="1" type="500">
+		<property name="url">jdbc:oracle:thin:@192.168.101.110:1521:noap2</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noap</property>
+		<property name="password">uwaysoft2009</property>
+		
+	</ds>
+
+	<!-- to 与  resolve 是一对多关系, package为可选标签 to_char(START_TIME,'YYYY-MM-DD HH24:MI:SS')  -->
+
+	 <!-- NBI_PERF_MSC_1X, NBI_PERF_MSC_DO, NBI_PERF_CITY_1X,NBI_PERF_CITY_DO, NBI_PERF_SCENE_1X, NBI_PERF_SCENE_DO -->
+	<to id="1">
+		<resolve dsid="1">
+	
+	
+			<mapping name="${province_en}_PERF_MSC_1X_%%Y%%M%%D.csv" templet="性能数据模板MSC1X_PERF_WEBSERVICE.ftl">
+				<ws> 
+				   <property name="url">http://132.228.39.155/noap_nbi/KpiSQLToolService.asmx</property>
+				   <property name="param_type">NBI_PERF_MSC_1X</property>		 				   
+				   <property name="table_key">MSC标识,数据时间点,MSC名称,省份,城市</property>
+				</ws> 	
+			</mapping>  
+		
+			<mapping name="${province_en}_PERF_MSC_DO_%%Y%%M%%D.csv" templet="性能数据模板MSCDO_PERF_WEBSERVICE.ftl">
+				<ws> 
+				   <property name="url">http://132.228.39.155/noap_nbi/KpiSQLToolService.asmx</property>
+				   <property name="param_type">NBI_PERF_MSC_DO</property>
+				   <property name="table_key">MSC标识,数据时间点,MSC名称,省份,城市</property>		 				   
+				</ws> 
+			</mapping>
+			
+			<mapping name="${province_en}_PERF_CITY_1X_%%Y%%M%%D.csv" templet="性能数据模板CITY1X后台_PERF_WEBSERVICE.ftl">
+					<ws> 
+				   <property name="url">http://132.228.39.155/noap_nbi/KpiSQLToolService.asmx</property>
+				   <property name="param_type">NBI_PERF_CITY_1X</property>
+				   <property name="table_key">对象级别,数据时间点,对象名称,省份,城市</property>		 				   
+				</ws> 
+			</mapping>
+			<mapping name="${province_en}_PERF_CITY_DO_%%Y%%M%%D.csv" templet="性能数据模板CITYDO后台_PERF_WEBSERVICE.ftl">
+				<ws> 
+				   <property name="url">http://132.228.39.155/noap_nbi/KpiSQLToolService.asmx</property>
+				   <property name="param_type">NBI_PERF_CITY_DO</property>
+				   <property name="table_key">对象级别,数据时间点,对象名称,省份,城市</property>		 				   
+				</ws> 
+			</mapping> 
+			
+
+			<mapping name="${province_en}_PERF_SCENE_1X_%%Y%%M%%D.csv" templet="场景上报1X省接口_三期_PERF_WEBSERVICE.ftl">
+				<ws> 
+				   <property name="url">http://132.228.39.155/noap_nbi/KpiSQLToolService.asmx</property>
+				   <property name="param_type">NBI_PERF_SCENE_1X</property>
+				   <property name="table_key">场景级别,数据时间点,场景名称,省份,城市</property>		 				   
+				</ws> 
+			</mapping> 
+			
+			<mapping name="${province_en}_PERF_SCENE_DO_%%Y%%M%%D.csv" templet="场景上报DO省接口_三期_PERF_WEBSERVICE.ftl">
+				<ws> 
+				   <property name="url">http://132.228.39.155/noap_nbi/KpiSQLToolService.asmx</property>
+				   <property name="param_type">NBI_PERF_SCENE_DO</property>
+				   <property name="table_key">场景级别,数据时间点,场景名称,省份,城市</property>		 				   
+				</ws> 
+			</mapping>
+			
+		
+		</resolve>
+	</to>
+	
+
+	<ti id="1" after="1">
+		<property name="ftpip">132.63.5.83</property>
+		<property name="port">21</property>
+		<property name="username">jsftp</property>
+		<property name="password">ExZp^yNz</property>
+		<property name="path">/PERF/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--数据库方式-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

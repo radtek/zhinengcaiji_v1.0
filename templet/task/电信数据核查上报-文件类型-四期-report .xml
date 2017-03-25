@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket    400:others   600:exceldb  700: datacheck-->
+	<!-- 从数据库表中获取数据，便于产生csv文件 -->
+	<ds id="1" type="700">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10
+		</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noapjs</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+
+	<to id="1">
+		<resolve dsid="1">
+		<parameters>			
+   		  <parameter  name ="now"  format="%%Y%%M%%D%%H%%m%%S"></parameter>			
+   		  <parameter  name ="yesterday" format="%%Y%%M%%D%%H%%m%%S"></parameter>			
+		</parameters>
+
+
+<mapping name="${province_en}_VERIFICATION_REPORT_${yesterday}.csv"  templet="电信数据核查模板-数据错误类型_四期-report.ftl"   strategy="3" >
+	
+			  
+			 			
+	  <sql>
+
+SELECT 
+T.PRO_NAME  AS  "省份",
+T.ASKREPORTFILE AS "要求上报文件",
+T.ACTUALREPORTFILE AS "实际上报文件",
+T.REPORT_PERSON AS "上报人",
+TO_CHAR(T.REPORT_DATE,'YYYY-MM-DD HH24:MI:SS') AS "上报时间",
+T.REPORT_TYPE AS "上报类型" 
+FROM MOD_VERIFICATION_REPORT T	 
+
+ where   trunc(T.REPORT_DATE,'hh') =to_date('%%Y-%%M-%%D %%H','yyyy-mm-dd hh24')    and t.nbi_ststus=0
+ 
+
+				</sql>
+				
+
+			</mapping>
+
+		</resolve>
+	</to>
+
+
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.223</property>
+		<property name="port">21</property>
+		<property name="username">rd</property>
+		<property name="password">uway_rd_good</property>
+		<property name="path">/VERIFICATION/</property>
+		<property name="encode">UTF-8</property>
+	</ti>
+
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="2" />
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+<!-- before ,after ,exception -->
+	<strategy id="2">
+		<property name="ids">1</property>
+	</strategy>
+	
+	
+    <strategy id="3">
+		<property name="ids">2</property>
+	</strategy>
+	
+
+	<!-- before ,after ,exception -->
+	
+	<trigger id="1" class="cn.uway.nbi.task.triggerbean.BatchUpdateBean">
+		<property name="sql">
+			
+			update  MOD_VERIFICATION_REPORT  t  set nbi_ststus=1 
+			
+				
+			 where   trunc(T.REPORT_DATE,'hh') =to_date('%%Y-%%M-%%D %%H','yyyy-mm-dd hh24')  and (nbi_ststus=0 or nbi_ststus is null) 
+ 			
+		</property>
+		
+	</trigger>
+	
+	
+	<trigger id="2" class="cn.uway.nbi.task.triggerbean.BatchUpdateBean">
+		<property name="sql">
+			
+			update  MOD_VERIFICATION_REPORT  t  set 
+			
+			 actualreportfile =substr(askreportfile,1,instr(askreportfile,'.',1)-1)||'_'|| to_char(sysdate,'yyyymmddhh24miss') ||  '.csv' 
+			
+				
+			 where   trunc(T.REPORT_DATE,'hh') =to_date('%%Y-%%M-%%D %%H','yyyy-mm-dd hh24')  and (nbi_ststus=0 or nbi_ststus is null) 
+ 			
+		</property>
+		
+	</trigger>
+	
+</config>

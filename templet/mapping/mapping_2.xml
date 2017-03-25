@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mapping>
+    <province province_en="GD" province_cn="广东">
+       
+       <city city_id="752">
+					<property name="city_cn">惠州</property>
+					<property name="city_en">HZ</property>										
+       </city>
+       <city city_id="759">
+					<property name="city_cn">湛江</property>
+					<property name="city_en">ZJ</property>										
+       </city>
+       <city city_id="662">
+					<property name="city_cn">阳江</property>
+					<property name="city_en">YJ</property>										
+       </city>
+       <city city_id="668">
+					<property name="city_cn">茂名</property>
+					<property name="city_en">MM</property>										
+       </city>
+      
+    </province>
+</mapping>

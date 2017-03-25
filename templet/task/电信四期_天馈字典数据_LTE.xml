@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:test10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">test_cnoap</property>
+		<property name="password">test_cnoap</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="${province_en}_ANTENNAFEEDER_%%Y%%M.csv" templet="电信四期_天馈字典数据_LTE.ftl" >
+				<sql>
+						<![CDATA[				
+														
+		  select  '1.42.01b_SP0'  as "版本号",
+		   '%%Y-%%M' as "时间戳",
+       "省份",
+        "地市",
+       "天线厂家",
+         "天线型号名称",
+        "天线型号ID",
+        "方向类型",
+        "天线极化方式",
+        "天线增益",
+        "天线水平半功率角（度）",
+        "天线垂直半功率角（度）",
+        "是否可变电调天线",
+        "预置电下倾（度）",
+        "备注"
+		  
+    	 from VRPT_ANTENNAFEEDER t
+	     
+   
+								 						
+						]]>
+				</sql>
+			</mapping>
+		
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+ 	  	<property name="ftpip">192.168.15.43</property>
+		<property name="port">21</property>
+		<property name="username">ftp</property>
+		<property name="password">1</property>
+			
+	<!-- 	<property name="ftpip">192.168.15.249</property>
+		<property name="port">21</property>
+		<property name="username">zhaogt</property>
+		<property name="password">SZM0893</property> -->
+		
+		<property name="path">/WORK/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

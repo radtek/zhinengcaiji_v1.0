@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.1.12:1521:noap</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">CNOAP</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="HB_PERF_CARR_1X_%%Y%%M%%D.txt" templet="WLAN网管与网优平台接口-CARR-1X.ftl" >
+				<sql> 
+				select p.CITY_ID,
+				       p.BSC as BscId,
+				       p.BTS as BtsId,
+				       p.CELL as CellId,
+				       n.carr_seq AS CarrierId,
+				       to_char(p.start_time, 'yyyy-mm-dd hh24:mi:ss') as START_TIME,
+				       ROUND(SUM(DATA_THROUGHPUT_FWD_1X) / 1000, 3) as "1X前向流量"
+				  from perf_carr_c p
+				  left join cfg_map_dev_to_ne n
+				    on p.ne_sys_id = n.ne_carr_id
+				   and p.city_id = n.city_id
+				 where p.start_time &gt;=
+				       to_date('%%Y-%%M-%%D 00:00:00', 'yyyy-mm-dd hh24:mi:ss')
+				   and p.start_time &lt;=
+				       to_date('%%Y-%%M-%%D 23:59:59', 'yyyy-mm-dd hh24:mi:ss')
+				   and n.bustype = '1X'
+				 group by p.CITY_ID,
+				          n.carr_seq,
+				          p.CELL,
+				          p.BTS,
+				          p.BSC,
+				          to_char(start_time, 'yyyy-mm-dd hh24:mi:ss')
+				 order by p.CITY_ID, p.BSC, p.BTS, p.CELL, CARRIERid
+				</sql>
+			</mapping>
+			<mapping name="HB_PERF_CARR_DO_%%Y%%M%%D.txt" templet="WLAN网管与网优平台接口-CARR-DO.ftl" >
+				<sql> 
+				select p.CITY_ID,
+				       p.BSC as BscId,
+				       p.BTS as BtsId,
+				       p.CELL as CellId,
+				       n.carr_seq AS CarrierId,
+				       to_char(p.start_time, 'yyyy-mm-dd hh24:mi:ss') as START_TIME,
+				       ROUND(AVG(DO_TCH_AVG_SLOT_OCCUPY_RATE), 3) as "时隙占用率",
+				       ROUND(SUM(EQU_USER_NUM_DO), 3) as "等效用户数",
+				       ROUND(SUM(DO_FTCH_RLP_TX + FTCH_RLP_RETX_DO) / 1024 / 1024, 3) as "DO前向流量"
+				  from perf_carr_c p
+				  left join cfg_map_dev_to_ne n
+				    on p.ne_sys_id = n.ne_carr_id
+				   and p.city_id = n.city_id
+				 where p.start_time &gt;=
+				       to_date('%%Y-%%M-%%D 00:00:00', 'yyyy-mm-dd hh24:mi:ss')
+				   and p.start_time &lt;=
+				       to_date('%%Y-%%M-%%D 23:59:59', 'yyyy-mm-dd hh24:mi:ss')
+				   and n.bustype='DO'
+				 group by p.CITY_ID,
+				          n.carr_seq,
+				          p.CELL,
+				          p.BTS,
+				          p.BSC,
+				          to_char(start_time, 'yyyy-mm-dd hh24:mi:ss')
+				 order by p.CITY_ID, p.BSC, p.BTS, p.CELL, CARRIERid
+				</sql>
+			</mapping>
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">127.0.0.1</property>
+		<property name="port">21</property>
+		<property name="username">yinhl</property>
+		<property name="password">123</property>
+		<property name="path">/PERF/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

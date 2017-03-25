@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+        <include>
+			<property name="mapping">mapping.xml</property>
+			<property name="loop">false</property>
+        </include>
+
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="200">
+	
+	    <property name="localdir">e:/test/</property>
+	
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+	<to id="1">
+		<resolve dsid="1">			
+			<files name="">
+			    	<property name="filename">D:\lte\local_to_ftp_%%Y%%M%%D%%H%%m.txt
+                    </property>
+			</files>	    	    
+	    </resolve>
+	
+	</to>
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+
+		<ti id="1" after="1">
+		<property name="ftpip">192.168.15.69</property>
+		<property name="port">21</property>
+		<property name="username">test</property>
+		<property name="password">liuqtest</property>
+		<property name="path">/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+        
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--FTP文件方式-->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

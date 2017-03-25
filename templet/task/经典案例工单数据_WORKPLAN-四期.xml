@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 500:webservice 400:others -->
+		<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:test10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">test_cnoap</property>
+		<property name="password">test_cnoap</property>
+	</ds>
+
+<!-- 
+VRPT_WOINFO(结单工单) 和
+VRPT_WOFILE(结单工单对应的附件)
+ -->
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="${province_en}_WOCASE_%%Y%%M%%D.csv" templet="经典案例工单数据_WORKPLAN-四期.ftl"  addhead="true"  batchnum="500">
+				<sql>				
+<![CDATA[
+				     		select  工单编号,
+省份,
+城市,
+经典案例申请人,
+生成时间,
+申请备注,
+经典案例文件名称,
+附件上传人,
+附件上传时间,
+附件格式,
+附件名称
+			     					     		
+				     		  from  VRPT_WOCASELIST    t   where   t.生成时间 	>=TO_DATE('%%Y-%%M-%%D','YYYY-MM-DD')  AND   t.生成时间 		<TO_DATE('%%Y-%%M-%%D','YYYY-MM-DD')+ 7 
+]]>
+				</sql>
+			</mapping> 
+								
+			
+		</resolve>
+	</to>
+	
+
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.223</property>
+		<property name="port">21</property>
+		<property name="username">rd</property>
+		<property name="password">uway_rd_good</property>
+		<property name="path">/WOCASE/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--数据库方式-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.0.180:1521:uway</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">igp</property>
+		<property name="password">igp</property>
+	</ds>
+	<ds id="2" type="200">
+		<!--可以有多个路径-->
+		<property name="path1">c:\test\allTablename%%Y%%M%%D%%h%%m%%s\</property>
+		<property name="path2">c:\test\allTablename%%Y%%M%%D%%h%%m%%s\</property>
+	</ds>
+	<ds id="3" type="201">
+		<property name="ftpip">192.168.0.113</property>
+		<property name="port">21</property>
+		<property name="username">litp</property>
+		<property name="password">litp</property>
+		<!--只能有一个路径-->
+		<property name="path">/erc/aaa/%%Y%%M%%D%%h%%m%%s/</property>
+		<property name="encode">utf-8</property>
+	</ds>
+	<ds id="4" type="300">
+		<property name="ip">192.168.0.113</property>
+		<property name="port">21</property>
+	</ds>
+	<!--transfer object 传输对象 -->
+	<to id="1">
+		<!-- 100:db -->
+		<resolve dsid="1">
+			<mapping name="${province_en}_AA_%%Y%%M%%D.csv" templet="AA数据模板.ftl">
+				<sql>select * form table1</sql>
+			</mapping>
+		</resolve>
+		<resolve dsid="1">
+			<mapping name="${province_en}_BB_%%Y%%M%%D.csv.gz" templet="BB数据模板.ftl" batchnum="1000" addhead="true">
+				<sql>select * form table2</sql>
+				<sql>select * form table3</sql>
+			</mapping>
+		</resolve>
+		<package after="2">
+			<property name="filename">allTablename%%Y%%M%%D%%h%%m%%s.rar</property><!--可以配置通配符-->
+		</package>
+	</to>
+	<to id="2">
+		<resolve dsid="2">
+			<filename></filename>
+			<filename></filename>
+			<filename></filename>
+		</resolve>
+	</to>
+	<to id="3">
+		<resolve dsid="3">
+			<filename></filename>
+			<filename></filename>
+		</resolve>
+	</to>
+	<to id="4">
+		
+	</to>
+	<!--transfer interface 传输接口  local path:ftp -->
+	<ti id="1" after="1">
+		<!-- file -->
+		<property name="ftpip">192.168.0.113</property>
+		<property name="port">21</property>
+		<property name="username">litp</property>
+		<property name="password">litp</property>
+		<property name="path">/erc/aaa/bbb/</property><!--可以配置通配符-->
+		<property name="encode">utf-8</property>
+	</ti>
+	<ti id="2" after="1">
+		<property name="path">d:/aaa/bbb/</property><!--可以配置通配符-->
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--数据库方式-->
+		<action id="2" toid="2" tiid="1" strategyid="1"/><!--本地文件方式-->
+		<action id="3" toid="3" tiid="2" strategyid="1"/><!--ftp文件方式-->
+		<action id="4" toid="4" tiid="2" strategyid="1"/><!--socket方式-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mapping>
+    <province province_en="GD" province_cn="广东">
+       
+       <city city_id="758">
+					<property name="city_cn">肇庆</property>
+					<property name="city_en">ZQ</property>										
+       </city>
+       <city city_id="750">
+					<property name="city_cn">江门</property>
+					<property name="city_en">JM</property>										
+       </city>
+       <city city_id="755">
+					<property name="city_cn">深圳</property>
+					<property name="city_en">SZ</property>										
+       </city>
+       <city city_id="756">
+					<property name="city_cn">珠海</property>
+					<property name="city_en">ZH</property>										
+       </city>
+    </province>
+</mapping>

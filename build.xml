@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="nbi" default="build_full" basedir=".">
+	<property name="dist_dir" value="nbi" />
+	<property name="jar_name" value="nbi.jar" />
+	<fileset id="jar_libs" dir="lib">
+		<include name="*.jar"/>	
+	</fileset>
+	<path id="nbi_classpath">
+		<fileset refid="jar_libs" />
+	</path>
+	<target name="init">
+		<delete dir="${dist_dir}" />
+		<mkdir dir="${dist_dir}" />
+		<mkdir dir="${dist_dir}/lib" />
+		<mkdir dir="${dist_dir}/log" />
+		<mkdir dir="${dist_dir}/conf" />
+		<mkdir dir="${dist_dir}/classes" />
+		<mkdir dir="${dist_dir}/templet" />
+		<mkdir dir="${dist_dir}/Web" />
+		<mkdir dir="${dist_dir}/data" />
+		<mkdir dir="${dist_dir}/bin" />
+	</target>
+	<target name="compile" depends="init">
+		<javac srcdir="src" destdir="${dist_dir}/classes" debug="true" debuglevel="lines,vars,source">
+			<compilerarg value="-Xlint:unchecked"/>
+		    <compilerarg line="-encoding UTF-8"/>   
+			<classpath refid="nbi_classpath" />
+		</javac>
+		<javac srcdir="dxsheet3" destdir="${dist_dir}/classes" debug="true" debuglevel="lines,vars,source">
+				<compilerarg value="-Xlint:unchecked"/>
+			    <compilerarg line="-encoding UTF-8"/>   
+				<classpath refid="nbi_classpath" />
+		</javac>
+	</target>
+	<target name="build" depends="compile">
+		<jar jarfile="${dist_dir}/lib/${jar_name}" basedir="${dist_dir}/classes" />
+	</target>
+	<target name="clean" depends="build">
+		<delete dir="${dist_dir}/classes" />
+	</target>
+	<target name="copy_files" depends="build">
+		<copydir dest="${dist_dir}/conf" src="conf">
+		   <include name="bsa/**"/>
+		   <include name="datacheck/**"/>
+		   <include name="emos/**"/>
+		   <include name="oss_report/**"/>
+		   <include name="ucloud/**"/>
+		   <include name="workorder/**"/>
+		   <include name="**"/>
+		</copydir>
+		<copy todir="${dist_dir}/lib">
+			<fileset refid="jar_libs" />
+		</copy>
+		<copydir dest="${dist_dir}/Web" src="Web">
+				   <include name="WEB-INF/**"/>
+				   <include name="**"/>
+		</copydir>
+		<copydir dest="${dist_dir}/templet" src="templet">
+						   <include name="file/**"/>
+			               <include name="mapping/**"/>
+			               <include name="task/**"/>
+		</copydir>
+		<copydir dest="${dist_dir}/bin" src="sh">
+			             <include name="**"/>
+		</copydir>
+	</target>
+	<target name="build_full" depends="copy_files,clean">
+	</target>
+</project>

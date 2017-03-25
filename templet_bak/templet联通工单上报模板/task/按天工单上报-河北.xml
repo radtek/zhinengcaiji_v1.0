@@ -1,0 +1,1104 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ORA11</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">Test_OCMDB5</property>
+		<property name="password">OCMDBPWD</property>
+	</ds>
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="${province_en}_CCH_WCDMA_%%Y%%M%%D.csv.tar.gz" templet="工单数据上报.ftl">
+				<sql>
+select nvl((select PROV_CODE from cfg_city_map_hq_id where city_id = i.city_id),0)  省份
+
+        ,nvl((select hq_id from cfg_city_map_hq_id where city_id = i.city_id),0) 地市
+
+       ,nvl(i.serialno,' ') 客服投诉单编号
+  
+       ,nvl(ACCEPTNUM,' ') 受理人姓名
+
+       ,nvl(ACCEPTORGA,' ') 受理人单位
+
+       ,nvl(ACCEPTPHONE,' ') 受理人电话 
+
+       ,acceptTime 受理时间
+
+       ,(SELECT max(c.DEPTNAME) from cfg_net_interfaceuser a ,sec_userinfo b , sec_dept c where a.loginname=b.LOGINNAME and b.DEPTID = c.ID and a.city_id = i.city_id) 接收部门 ---
+
+       ,nvl(URGENTDEGREE,0) 紧急程度
+
+       ,case when  i.extendfield3 like '12%' then '1' else '2' end 网络类型
+
+       ,decode
+
+(i.extendfield3,'13010103','201','13010102','201','13010101','201','13010403','204','13010402','204','13010401','204','13010503','205','13010504','205','13010502','205','13010501','205',
+
+        '13010303','203','13010302','203','13010301','203','13010203','202','13010202','202','13010201','202','130201','207','130204','207','130206','207','130205','207','130203','207',
+
+        '130202','207','130301','208','130302','208','13040101','227','13040103','227','13040102','227','13041302','224','13041303','224','13041301','224','130410','236','130415','226',
+
+        
+
+'13041403','225','13041402','225','13041401','225','130429','237','130406','232','130405','231','13040305','222','13040303','222','130404','230','130420','235','130412','233','13040201','223',
+
+        '13040203','223','13040204','223','13040205','223','13040206','223','13040202','223','13043101','223','13043103','223','13043104','223','13043105','223','13043106','223','13043102','223',
+
+        '130411','234','13041603','228','13041602','228','13041601','228','12010103','101','12010102','101','12010101','101','12010403','104','12010402','104','12010401','104','12010503','105',
+
+        '12010504','105','12010502','105','12010501','105','12010303','103','12010302','103','12010301','103','12010203','102','12010202','102','12010201','102','120201','107','120202','107',
+
+        '12030101','126','12030103','126','12030102','126','12030602','123','12030603','123','12030601','123','120308','125','12030703','124','12030702','124','12030701','124','120354','132',
+
+        '120304','130','12030203','122','12030202','122','12030201','122','120303','129','120319','131','12030903','127','12030902','127','12030901','127','237') 业务产品类型
+
+       ,decode((case when rp.complaints_id is not null then to_char(rp.task_level) when f.instance_code is not null then to_char(f.field5) end),'0','1',(case when rp.complaints_id is not null then 
+
+to_char(rp.task_level) when f.instance_code is not null then to_char(f.field5) end)) 投诉级别
+
+       ,CASE WHEN i.serialno IS NOT NULL THEN '1' ELSE '0' END 是否客服支撑转化工单
+
+       ,i.collecttime 客服派单时间
+
+       ,i.collecttime 网络公司接单时间
+
+      -- ,i.musthandledate 客服要求回复时限
+       , ceil(to_date(i.musthandledate,'yyyy-MM-dd hh24:mi:ss')-i.collecttime)*8 客服要求回复时限
+       , decode((select A.Step_Name
+                 from uf_template_step A ,(select Uf_Instance_Step.step_id,uf_instance_flow.instance_code
+                  from uf_instance_flow,Uf_Instance_Step
+                    where uf_instance_flow.fid =Uf_Instance_Step.Instance_Flow_Id(+)
+                 and Uf_Instance_Step.Next_Instance_Step_Id = '00000000-0000-0000-0000-000000000000') B
+                   where A.Fid = B.Step_Id and B.instance_code = i.task_id), '派单',4, '分析定位(运维)', 8, '分析定位(网优)', 32, '分析定位(网建)', 80, '现场测试', 
+
+32, '专家升级(网优)', 40,
+                    '调整实施(运维)',32,'调整实施(网优)',32,'调整实施(网建)',1044,'归档审核',4,20） 网络公司要求回复总时限
+
+       ,decode((select A.Step_Name
+                 from uf_template_step A ,(select Uf_Instance_Step.step_id,uf_instance_flow.instance_code
+                  from uf_instance_flow,Uf_Instance_Step
+                    where uf_instance_flow.fid =Uf_Instance_Step.Instance_Flow_Id(+)
+                 and Uf_Instance_Step.Next_Instance_Step_Id = '00000000-0000-0000-0000-000000000000') B
+                   where A.Fid = B.Step_Id and B.instance_code = i.task_id), '分析定位(网建)',80,'调整实施(网建)',1044,0） 网络公司要求网建回复时限
+
+       ,decode((select A.Step_Name
+                 from uf_template_step A ,(select Uf_Instance_Step.step_id,uf_instance_flow.instance_code
+                  from uf_instance_flow,Uf_Instance_Step
+                    where uf_instance_flow.fid =Uf_Instance_Step.Instance_Flow_Id(+)
+                 and Uf_Instance_Step.Next_Instance_Step_Id = '00000000-0000-0000-0000-000000000000') B
+                   where A.Fid = B.Step_Id and B.instance_code = i.task_id),'分析定位(运维)', 8,'调整实施(运维)',32,0） 网络公司要求运维回复时限
+
+       ,decode((select A.Step_Name
+                 from uf_template_step A ,(select Uf_Instance_Step.step_id,uf_instance_flow.instance_code
+                  from uf_instance_flow,Uf_Instance_Step
+                    where uf_instance_flow.fid =Uf_Instance_Step.Instance_Flow_Id(+)
+                 and Uf_Instance_Step.Next_Instance_Step_Id = '00000000-0000-0000-0000-000000000000') B
+                   where A.Fid = B.Step_Id and B.instance_code = i.task_id), '分析定位(网优)', 32, '专家升级(网优)',40,'调整实施(网优)',32,0） 网络公司要求网优回复时限
+
+       ,nvl(i.customername,' ') 客户姓名
+
+       ,decode(i.CUSTOMER_TYPE,'标准普通',1,'标准VIP',2,'3G普通',3,'3GVIP',4,0) 客户级别
+
+       ,nvl(i.CALLNO,' ') 主叫号码
+
+       ,nvl(i.USERCITY,' ') 主叫号码归属地   ---此字段为空，由于i.USERCITY采集为空，具体对应字段如果有误请找产品确认
+
+       ,nvl(i.phonenumber1,' ') 业务号码
+
+       ,' ' 手机厂商
+
+       ,nvl(i.customername,' ') 联系人
+
+       ,nvl(i.phonenumber1,' ') 联系电话
+
+       ,nvl(i.USERTYPE,' ') 客户品牌
+
+       ,nvl(i.troubletime,' ') 故障发生时间
+
+       ,nvl(i.BUILDINGINFO,' ') 建筑物类型
+
+       ,' ' 投诉点地址
+
+       ,0 投诉点经度
+
+       ,0 投诉点纬度
+
+       ,
+
+     '"'||REPLACE(REPLACE(REPLACE（REPLACE（ REPLACE（REPLACE（REPLACE( REPLACE(REPLACE（REPLACE（REPLACE(REPLACE(REPLACE(nvl(i.SERVICECONTENT,'请处理'),'''','‘'),'＇','‘'）,'?','？'）,'"','“'）,',','，
+
+'）,'.','。'）,':','：'）,'!','！'）,'-','－'）,'/','∕'),';','；'）,chr(10),chr(13)),'~','～')||'"'
+      投诉内容
+      ,case when faultPhenomenon is null then nvl(faultPhenomenon,' ')
+      else       
+       '"'||REPLACE(REPLACE(REPLACE（REPLACE（ REPLACE（ REPLACE（REPLACE(REPLACE(REPLACE（REPLACE（REPLACE(REPLACE(REPLACE(nvl(faultPhenomenon,' 
+
+'),'''','‘'),'＇','‘'）,'?','？'）,'"','“'）,',','，'）,'.','。'）,':','：'）,'!','！'）,'-','－'）,'/','∕'),';','；'）,chr(10),chr(13)),'~','～')||'"' 
+       end
+       故障现象
+       ,    problemType  问题类型
+        ,   nvl(fr.remark,' ')  备注   
+            ,i.task_id 投诉处理工单编号
+       ,sysdate 时间戳  
+        ,   nvl(ncPreliExam,1)  网络公司初审
+       ,   nvl(nowProcessUnit,0)  当前所处环节处理单位     
+         ,0 是否在网建本年度建设计划中
+      -- ,    ncCompHandleNum  投诉处理工单编号
+       ,    nvl(firstReplyerName,' ')  初次回单人姓名
+       ,    nvl(firstReplyerDep,' ')  初次回单人单位
+       ,    nvl(firstReplyerPhone,' ')  初次回单人电话
+        ,   nvl(firstReplyMajor,' ')  初次回复专业
+        ,   nvl(firstReplyDep,0)  初次回复单位
+        ,   nvl(firstReplyTime,' ')  初次回复时间
+       ,   nvl(fr.reasonCategory,' ')  初次原因定位分类
+         ,  nvl(fr.reasonDescript,' ')  初次具体原因描述
+        ,  nvl(fr.faultDescript,' ')   初次故障情况
+        ,   nvl(fr.handleResult,' ')  初次处理结果
+        ,   nvl(fr.remark,' ')  初次回复备注
+        ,   nvl(lastReplyerName,' ')  最终回单人姓名
+        ,   nvl(lastReplyerDep,' ')  最终回单人单位
+       ,    nvl(lastReplyerPhone,' ')  最终回单人电话
+         ,  nvl(lastReplyMajor,' ')  最终回复专业
+        ,   nvl(lastReplyDep,' ')  最终回复单位
+         ,  nvl(lastReplyTime,' ')  最终回复时间
+       ,   nvl(lr.reasonCategory,0)  最终原因定位分类
+      ,     nvl(lr.reasonDescript,' ')  最终具体原因分类
+        ,   nvl(lr.faultDescript,' ')  最终故障情况
+       ,    nvl(lr.handleResult,' ')  最终处理结果
+        ,   nvl(ncLastExam,0)  网络公司审核
+       ,    nvl(lr.remark,' ')  最终回复备注
+from mod_complaints_item  i
+Left join mod_complaints_taskDetail td
+on td.serialinfono = i.serialinfono
+Left join mod_complaints_FirstReply fr 
+on fr.serialinfono = i.serialinfono
+Left Join mod_complaints_LastReply lr
+on lr.serialinfono = i.serialinfono
+left join mod_complaints_archive_date d
+on i.task_id = d.task_id
+left join mod_complaints_reply rp
+on i.id = rp.complaints_id
+left join uf_instance_flow f 
+on i.task_id = f.instance_code
+Where i.collecttime between To_Date('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss') and To_Date('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss') and i.task_id is not null
+order by i.COLLECTTIME desc  
+
+					</sql>
+			</mapping>
+			
+			 <mapping name="${province_en}_CCHAP_WCDMA_%%Y%%M%%D.csv.tar.gz" templet="工单数据上报.ftl">
+                <sql>
+select nvl((select PROV_CODE from cfg_city_map_hq_id where city_id = i.city_id),0)  省份
+        ,nvl((select hq_id from cfg_city_map_hq_id where city_id = i.city_id),0) 地市
+       ,nvl(i.serialno,' ') 客服投诉单编号
+       ,i.task_id 投诉处理工单编号
+       ,sysdate 时间戳  
+       ,nvl((select A.Step_Name
+                 from uf_template_step A ,(select Uf_Instance_Step.step_id,uf_instance_flow.instance_code
+                  from uf_instance_flow,Uf_Instance_Step
+                    where uf_instance_flow.fid =Uf_Instance_Step.Instance_Flow_Id(+)
+                 and Uf_Instance_Step.Next_Instance_Step_Id = '00000000-0000-0000-0000-000000000000') B
+                   where A.Fid = B.Step_Id and B.instance_code = i.task_id and rownum = 1 ),' ') 流程环节名称
+       ,1 环节所处重要回复点
+       ,nvl(jn.username,'网络公司接口人') 接单人姓名 
+       ,nvl（tp.UMOBILECODE,' ') 接单人电话
+       ,nvl(dtp.deptname,' ') 接单人部门
+       ,( SELECT start_date FROM (
+                SELECT t1.start_date,instance_code   FROM uf_template_step t3 LEFT JOIN uf_instance_step t2 ON t3.fid=t2.step_id
+                LEFT JOIN uf_instance_flow t1 ON t1.fid=t2.instance_flow_id where t2.next_instance_step_id='00000000-0000-0000-0000-000000000000' 
+                ) WHERE instance_code=i.task_id and rownum = 1 ) 接单时间 
+       ,(  select f.begin_date from Uf_Instance_Step f,(select st.Previous_Instance_Step_Id,fl.instance_code
+          from uf_instance_flow fl, Uf_Instance_Step st
+         where fl.fid = st.Instance_Flow_Id(+)
+           and st.next_instance_step_id =
+               '00000000-0000-0000-0000-000000000000') f1
+               where f.fid = f1.Previous_Instance_Step_Id and f1.instance_code = i.task_id and rownum = 1 ) 派单时间 
+        ,case when rpLast.ispass = 1 then 0 else 1 end 审核结果  
+        , case when rpLast.REPLYCONTENT is null then nvl(rpLast.REPLYCONTENT,' ') else
+        '"'||REPLACE（REPLACE（REPLACE（REPLACE（ REPLACE（REPLACE（REPLACE( REPLACE(REPLACE（REPLACE（REPLACE(REPLACE(REPLACE(nvl(rpLast.REPLYCONTENT,' '),'''','‘'),'＇','‘'）,'?','？'）,'"','“'）,',','，'）,'.','。'）,':','：'）,'!','！'）,'-','－'）,'/','∕'),';','；'）,chr(10),chr(13)),'~','～')||'"' end
+        处理意见
+        ,nvl(nextUser.username,' ') 下一步接单人姓名
+        ,nvl(nextUser.UMOBILECODE,' ') 下一步接单人电话
+        ,nvl(nextDept.deptname,' ') 下一步接单人部门
+        ,' ' 备注      
+                
+from mod_complaints_item  i
+left join uf_instance_flow f 
+on i.task_id = f.instance_code
+left join mod_complaints_archive_date d
+on i.task_id = d.task_id
+ left join mod_complaints_replypool r 
+ on i.serialinfono = r.serialinfono
+left join mod_complaints_reply rp
+on i.id = rp.complaints_id
+left join (select * from (select rp.*,row_number()over( partition by rp.serialinfono order by rp.replytime ,rp.collecttime) fno  from mod_complaints_replypool rp) where fno = 1) rpFirst
+on i.serialinfono = rpFirst.serialinfono
+left join (select * from (select rp.*,row_number()over( partition by rp.serialinfono order by rp.replytime desc ,rp.collecttime desc) fno  from mod_complaints_replypool rp) where fno = 1) rpLast
+on i.serialinfono = rpLast.serialinfono
+left join (select f.username,b.instance_code from sec_userinfo f,              
+(select us.user_code,t.instance_code
+  from UF_INSTANCE_STEP_USER us,
+  (select st.Previous_Instance_Step_Id,fl.instance_code
+          from uf_instance_flow fl, Uf_Instance_Step st
+         where fl.fid = st.Instance_Flow_Id(+)
+           and st.next_instance_step_id =
+               '00000000-0000-0000-0000-000000000000'
+          ) t
+ where us.instance_step_id = t.Previous_Instance_Step_Id) b                 
+                 where f.LOGINNAME = b.user_code) jn
+ on i.task_id = jn.instance_code 
+left join (select f.UMOBILECODE,b.instance_code from sec_userinfo f,              
+(select us.user_code,t.instance_code
+  from UF_INSTANCE_STEP_USER us,
+  (select st.Previous_Instance_Step_Id,fl.instance_code
+          from uf_instance_flow fl, Uf_Instance_Step st
+         where fl.fid = st.Instance_Flow_Id(+)
+           and st.next_instance_step_id =
+               '00000000-0000-0000-0000-000000000000'
+          ) t
+ where us.instance_step_id = t.Previous_Instance_Step_Id) b                 
+                 where f.LOGINNAME = b.user_code) tp
+on i.task_id = tp.instance_code
+left join (select dp.deptname, c.instance_code from sec_dept dp,
+(select f.deptid,b.instance_code from sec_userinfo f,              
+(select us.user_code,t.instance_code
+  from UF_INSTANCE_STEP_USER us,
+  (select st.Previous_Instance_Step_Id,fl.instance_code
+          from uf_instance_flow fl, Uf_Instance_Step st
+         where fl.fid = st.Instance_Flow_Id(+)
+           and st.next_instance_step_id =
+               '00000000-0000-0000-0000-000000000000'
+          ) t
+ where us.instance_step_id = t.Previous_Instance_Step_Id) b                 
+                 where f.LOGINNAME = b.user_code) c
+                 where dp.id = c.deptid) dtp
+on i.task_id = dtp.instance_code   
+left join 
+(select f.username,f.UMOBILECODE,t1.instance_code from sec_userinfo f,(
+select us.user_code,t.instance_code
+  from UF_INSTANCE_STEP_USER us,
+  (select st.fid,fl.instance_code
+          from uf_instance_flow fl, Uf_Instance_Step st
+         where fl.fid = st.Instance_Flow_Id(+)
+           and st.next_instance_step_id =
+               '00000000-0000-0000-0000-000000000000'
+          ) t
+ where us.instance_step_id = t.FID ) t1
+ where f.loginname = t1.user_code ) nextUser
+ on i.task_id = nextUser.instance_code 
+left join
+(select dp.deptname, c.instance_code from sec_dept dp,
+(select f.deptid,t1.instance_code from sec_userinfo f,(
+select us.user_code,t.instance_code
+  from UF_INSTANCE_STEP_USER us,
+  (select st.fid,fl.instance_code
+          from uf_instance_flow fl, Uf_Instance_Step st
+         where fl.fid = st.Instance_Flow_Id(+)
+           and st.next_instance_step_id =
+               '00000000-0000-0000-0000-000000000000'
+          ) t
+ where us.instance_step_id = t.FID ) t1
+ where f.loginname = t1.user_code) c
+                 where dp.id = c.deptid) nextDept
+on i.task_id = nextDept.instance_code
+where i.task_id &lt; &gt;  ' '  and i.task_id is not null
+order by i.COLLECTTIME desc
+                </sql>
+            </mapping>
+            
+		<mapping name="${province_en}_CCHST_WCDMA_%%Y%%M%%D.csv.tar.gz"  templet="工单数据上报.ftl">
+				<sql>
+SELECT   (select PROV_CODE from cfg_city_map_hq_id where city_id = T1.city_id) 
+省份, (select hq_id from cfg_city_map_hq_id where city_id = T1.city_id) 地市, 
+T1.统计开始时间, T1.统计结束时间, DECODE(T1.投诉网络类型,'GSM',1,'WCDMA',2) 
+投诉网络类型, T1.客服派单数, 
+-- 客服部门派至网络公司的投诉工单数 T1.网络公司接单数, 
+-- 网络公司接收投诉工单总数 T1.及时处理工单数, T1.应回复工单数, 
+T1.及时回复工单数, T1.已回复工单数,                              --
+应回复工单总数 T1.超时回复的工单数, 
+-- 回复工单总数+ T2.归因为网络质量问题的工单数, T2.归因为客户原因问题的工单数, 
+T1.网络公司处理工单数,    T1.运维应解决的投诉工单数,         --
+应实际解决问题总数 
+-- 网络公司处理投诉工单数 T1.运维及时解决工单数, T1.运维已解决的投诉工单数, 
+T1.运维超时解决的工单数, -- T1.运维未解决工单数, T1.网优应解决的投诉工单数, 
+T1.网优及时解决工单数, T1.网优已解决的投诉工单数, T1.网优超时解决的工单数, --
+T1.网优未解决工单数, -- T1.网建应解决的投诉工单数, -- T1.网建应解决且年度覆盖, -
+- T1.网建已解决的投诉工单数, -- T1.网建已解决且年度覆盖, --
+T1.网建按时解决的工单数, -- T1.网建超时解决的工单数, -- T1.网建未解决工单数, 
+T1.咨询入线单数, T1.咨询单生成投诉单数
+        
+FROM 
+(
+WITH Complaints AS
+(SELECT X1.*
+  FROM (select m1.ID, m1.Serialinfono, m1.Serialno, m1.Collecttime, m1.City_Id, m1.Customer_Type, m1.BLACKLISTFLAG,
+               Case
+                 When nvl(m2.Complaints_Id, -1) &lt; &gt;  -1 Then
+                  NULL
+                 Else
+                  m1.Task_Id
+               End Task_Id,m1.NetType,
+               m1.IsReply, m1.Musthandledate, m1.Extendfield1, m1.Extendfield2, m1.Extendfield3, m1.Extendfield4,
+               m1.Extendfield5, m1.Extendfield6, m1.Extendfield7, m1.Extendfield8, m1.Extendfield9, m1.EXTENDFIELD10
+          from (SELECT * FROM (SELECT X1.*,
+                       CASE
+                         WHEN TRIM(X1.EXTENDFIELD3) LIKE '12%' THEN
+                          'GSM'
+                         WHEN TRIM(X1.EXTENDFIELD3) LIKE '13%' THEN
+                          'WCDMA'
+                         ELSE
+                          'GSM'
+                       END NetType,
+                       row_number() OVER(PARTITION BY SERIALNO ORDER BY id desc, collecttime desc) Fno
+                    FROM Mod_Complaints_Item X1
+                    WHERE X1.serialinfono NOT IN
+                       (SELECT serialinfono FROM mod_complaints_item_list WHERE TYPE = 1))
+                    WHERE FNO = 1) m1
+          LEFT JOIN MOD_COMPLAINTS_REPLY m2
+            ON m1.Id = m2.Complaints_Id) X1
+          WHERE X1.COLLECTTIME &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss')  
+                AND X1.COLLECTTIME &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss') 
+), TASKINFO AS
+    (
+    select d.city_id, e.DEPTTYPE, b.INSTANCE_FLOW_ID,a.INSTANCE_CODE TASK_ID,f.ExecTime 
+                from UF_INSTANCE_FLOW a
+               inner join (select Case When usr.fid is not null then usr.fid else us.fid end AS FIDANDRFID,us.fid,us.instance_flow_id from UF_INSTANCE_STEP us
+    left join (SELECT r.instance_step_id,s.PREVIOUS_INSTANCE_STEP_ID AS FID FROM ( SELECT a.instance_step_id, a.select_step_id,b.fid AS instance_flow_id FROM UF_INSTANCE_STEP_RETURNSTEP a , 
+
+UF_INSTANCE_FLOW b , UF_INSTANCE_STEP c
+                                                WHERE a.instance_step_id = c.fid AND c.instance_flow_id = b.fid) r
+                           INNER JOIN ( select row_number()over(partition by s.instance_flow_id,s.step_id order by s.create_date desc) fno, s.* from uf_instance_step s where s.status = 6) s
+                           ON r.select_step_id = s.step_id AND r.instance_flow_id = s.instance_flow_id
+                           AND s.fno = 1) usr
+    on us.fid = usr.instance_step_id) b
+                  on a.FID = b.instance_flow_id
+                  AND a.STATUS &lt; &gt;  6
+               inner join (SELECT * FROM (SELECT uu.* ,row_number()over(partition by instance_step_id order by User_Type) fno FROM uf_instance_step_nextstep_user uu) where fno = 1) c
+                  on b.FIDANDRFID = c.instance_step_id
+               inner join sec_userinfo d
+                  on c.user_code = d.loginname
+               inner join sec_dept e
+                  on d.deptid = e.id
+               inner join (
+                            SELECT * FROM (select a.*,row_number()over(partition by instance_flow_id order by ExecTime desc) FNO 
+                                           from
+                                           (
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_ADVANCEFILE
+                                            UNION ALL
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_ANALYSIS
+                                            UNION ALL
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_AYSIS_PST 
+                                            UNION ALL
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_BACK
+                                            UNION ALL
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_EXECADVANCEFILE
+                                            UNION ALL
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_EXECBACKIUSER
+                                            UNION ALL
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_EXECFILE
+                                            UNION ALL
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_FIELDTEST
+                                            UNION ALL
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_FILE_CHECK
+                                            UNION ALL
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_SEND_FORWARD 
+                                            UNION ALL
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_TURNSEND 
+                                            UNION ALL
+                                            SELECT instance_step_id,instance_flow_id,create_data ExecTime
+                                            FROM WO_COMPLAINT_FILE
+                                            )a)
+                                            WHERE FNO = 1 )f
+                 on b.INSTANCE_FLOW_ID = f.instance_flow_id
+                 and b.fid = f.instance_step_id
+               where c.user_type = 0 
+    )
+,Orders AS 
+  ( SELECT  T1.CITY_ID,T1.NetType,
+              COUNT(*) AS RelatedCount, COUNT(*) AS ReceiveCount                             --  本月应回复的工单数 
+      FROM   Complaints T1 
+      LEFT JOIN  
+           (SELECT * FROM (SELECT X.*,row_number()OVER(PARTITION BY X.SERIALNO ORDER BY X.Complaints_ID DESC, X.REPLYTIME ,X.COLLECTTIME) FNO FROM 
+                        (SELECT A.*,Case when musthandledate &lt;   replytime  then 0 else 1 end intime
+                          FROM Mod_Complaints_Replypool A
+                          WHERE A.COLLECTTIME &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss')  
+                           AND A.COLLECTTIME &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')   
+                           AND A.CITY_ID IS NOT NULL  
+                           )X)
+                           WHERE FNO = 1 ) T2  
+      ON T1.SERIALNO = T2.SERIALNO  
+      WHERE 1 = 1 
+            AND T1.CITY_ID IS NOT NULL 
+            
+      GROUP BY T1.CITY_ID,T1.NetType
+  )
+ ,Replys AS --回复情况
+ ( SELECT  T1.CITY_ID,T1.NetType,
+           SUM(CASE WHEN (T2.REPLYTIME IS NOT NULL AND T2.REPLYTIME &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss')  
+          AND T2.REPLYTIME &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')
+          AND TO_DATE(T1.MUSTHANDLEDATE,'yyyy-mm-dd hh24:mi:ss') &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss')) THEN 1 ELSE 0 END) AS ReplyCount,-- 回复工单总数  
+           SUM(CASE WHEN (T2.ReplyTime is null AND TO_DATE(T1.MUSTHANDLEDATE,'yyyy-mm-dd hh24:mi:ss') &lt;  TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')) then 1 else 0 end) AS NotReplyCount  
+
+-- 未回复工单总数 
+    FROM Complaints T1 
+    LEFT JOIN 
+         (SELECT * FROM (SELECT X.*,row_number()OVER(PARTITION BY X.SERIALNO ORDER BY X.Complaints_ID DESC, X.REPLYTIME,X.COLLECTTIME) FNO FROM 
+                        (SELECT A.*,Case when musthandledate &lt;   replytime  then 0 else 1 end intime
+                          FROM Mod_Complaints_Replypool A                           
+                           )X)
+                           WHERE FNO = 1 ) T2  
+    ON T1.Serialno = T2.Serialno 
+    WHERE T1.CITY_ID IS NOT NULL         
+                     
+    GROUP BY T1.CITY_ID,T1.NetType
+  )
+ ,
+IntimeReplys AS --及时回复数
+ (SELECT     CITY_ID,NetType,
+             SUM(ReplyCount) AS ReplyCount,-- 回复工单总数 
+             SUM(IntimeReplyCount2) AS IntimeReplyCount2, -- 及时解决的问题总数(及时回复的问题总数)              
+             SUM(IntimeReplyCount3) AS IntimeReplyCount3, -- 及时解决的问题总数(及时回复的问题总数) 
+             SUM(IntimeReplyCount1) AS IntimeReplyCount1  -- 及时解决的问题总数(及时回复的问题总数)  
+        FROM (
+            SELECT  T1.CITY_ID,T1.NetType,
+                    Count(T2.ReplyTime) AS ReplyCount,-- 回复工单总数 
+                        SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 2 THEN 1 ELSE 0 END) AS IntimeReplyCount2, -- 及时解决的问题总数(及时回复的问题总数)              
+                        SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 3 THEN 1 ELSE 0 END) AS IntimeReplyCount3, -- 及时解决的问题总数(及时回复的问题总数) 
+                        SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 1 THEN 1 ELSE 0 END) AS IntimeReplyCount1 -- 及时解决的问题总数(及时回复的问题总数)  
+            FROM Complaints T1 
+            LEFT JOIN 
+                    (SELECT * FROM (SELECT X.*,row_number()OVER(PARTITION BY X.SERIALNO ORDER BY FRNO,intime,X.Complaints_ID DESC, X.REPLYTIME,X.COLLECTTIME) FNO FROM 
+                                (SELECT A.*,Case when musthandledate &lt;   replytime  then 0 else 1 end intime,row_number()OVER(PARTITION BY SERIALNO ORDER BY Complaints_ID DESC, 
+
+REPLYTIME,COLLECTTIME) FRNO
+                                    FROM Mod_Complaints_Replypool A                            
+                                    )X)
+                                    WHERE FNO = 1 ) T2  
+            ON T1.Serialno = T2.Serialno     
+            WHERE   T1.CITY_ID IS NOT NULL                
+                    AND NVL(T1.extendfield10,'未退单') &lt; &gt;  '已退单' --是否退单
+                    AND (TO_DATE(T1.Musthandledate,'yyyy-mm-dd hh24:mi:ss') &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss') AND T2.INTIME = 1 )
+                    AND T2.REPLYTIME &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss')  
+                    AND T2.REPLYTIME &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')
+                    AND T1.TASK_ID IS NOT NULL AND T2.ISREPLY = 1
+                               
+            GROUP BY T1.CITY_ID,T1.NetType
+            UNION ALL
+                (  SELECT  T1.CITY_ID,T1.NetType,
+                    Count(T3.ReplyTime) AS ReplyCount,-- 回复工单总数 
+                        SUM(CASE WHEN DECODE(T2.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 2 THEN 1 ELSE 0 END) AS IntimeReplyCount2, -- 及时解决的问题总数(及时回复的问题总数)              
+                        SUM(CASE WHEN DECODE(T2.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 3 THEN 1 ELSE 0 END) AS IntimeReplyCount3, -- 及时解决的问题总数(及时回复的问题总数) 
+                        SUM(CASE WHEN DECODE(T2.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 1 THEN 1 ELSE 0 END) AS IntimeReplyCount1 -- 及时解决的问题总数(及时回复的问题总数)  
+                    FROM Complaints  T1
+                    LEFT JOIN  
+                            MOD_COMPLAINTS_REPLY T2  
+                    ON T1.ID = T2.Complaints_ID  
+                    LEFT JOIN  
+                            (SELECT * FROM (SELECT X.*,row_number()OVER(PARTITION BY X.Complaints_ID ORDER BY X.REPLYTIME ,X.COLLECTTIME) FNO FROM 
+                                    (SELECT A.*,Case when musthandledate &lt;   replytime  then 0 else 1 end intime
+                                    FROM Mod_Complaints_Replypool A
+                                    WHERE A.CITY_ID IS NOT NULL     
+                                        )X)
+                                        WHERE FNO = 1 ) T3
+                    ON  T1.ID = T3.Complaints_ID 
+                    WHERE T1.CITY_ID IS NOT NULL            
+                            AND NVL(T1.extendfield10,'未退单') &lt; &gt;  '已退单' --是否退单
+                            AND T3.REPLYTIME &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss')  
+                            AND T3.REPLYTIME &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')
+                            AND (TO_DATE(T1.Musthandledate,'yyyy-mm-dd hh24:mi:ss') &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss') AND T3.INTIME = 1 )
+                            AND T1.TASK_ID IS NULL AND T3.ISREPLY = 1
+                            
+                    GROUP BY T1.CITY_ID,T1.NetType
+        ))GROUP BY CITY_ID,NetType
+  )
+ ,TimeoutNotSolve AS -- 超时未回复
+  ( SELECT  CITY_ID,NetType,
+        --SUM(IntimeNotReplyCount)    AS IntimeNotReplyCount                  ---未及时解决的问题总数 
+         SUM(UnIntimeReplyCount2)   UnIntimeReplyCount2,   --未及时解决
+         SUM(UnIntimeReplyCount3)   UnIntimeReplyCount3,   --未及时解决
+         SUM(UnIntimeReplyCount1)   UnIntimeReplyCount1   --未及时解决
+        FROM (
+                      (SELECT T1.CITY_ID,T1.NetType,
+                              --SUM(CASE WHEN T1.TASK_ID IS NOT NULL AND T2.REPLYTIME IS NULL THEN 1 ELSE 0 END)  AS IntimeNotReplyCount                ---未及时解决的问题总数（未回复走工单）       
+
+                                                         
+                               SUM(CASE WHEN DECODE(T3.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 2 THEN 1 ELSE 0 END)   UnIntimeReplyCount2,   --未及时解决
+                               SUM(CASE WHEN DECODE(T3.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 3 THEN 1 ELSE 0 END)   UnIntimeReplyCount3,   --未及时解决
+                               SUM(CASE WHEN DECODE(T3.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 1 THEN 1 ELSE 0 END)   UnIntimeReplyCount1   --未及时解决         
+                               FROM Complaints T1
+                          LEFT JOIN  
+                               (SELECT * FROM (SELECT X.*,row_number()OVER(PARTITION BY X.Complaints_ID ORDER BY X.REPLYTIME ,X.COLLECTTIME) FNO FROM 
+                                            (SELECT A.*,Case when musthandledate &lt;   replytime  then 0 else 1 end intime
+                                              FROM Mod_Complaints_Replypool A
+                                              WHERE A.CITY_ID IS NOT NULL    
+                                               )X)
+                                               WHERE FNO = 1 ) T2  
+                          ON T1.ID = T2.Complaints_ID    
+                          LEFT JOIN  TASKINFO T3
+                          ON T1.TASK_ID = T3.TASK_ID
+                          WHERE T1.CITY_ID IS NOT NULL            
+                                AND NVL(T1.extendfield10,'未退单') &lt; &gt;  '已退单' --是否退单
+                                AND (T1.Extendfield10 IS NULL AND TO_DATE(T1.Musthandledate,'yyyy-mm-dd hh24:mi:ss') &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss') )
+                                AND T1.TASK_ID IS NOT NULL AND T2.REPLYTIME IS NULL
+                                
+                          GROUP BY T1.CITY_ID,T1.NetType)
+                      UNION ALL
+                      (SELECT T1.CITY_ID,T1.NetType,
+                              --SUM(CASE WHEN T2.intime = 0 THEN 1 ELSE 0 END)  IntimeNotReplyCount             ---未及时解决的问题总数(超时已回复走工单)                                  
+                               SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 2 THEN 1 ELSE 0 END)   UnIntimeReplyCount2,   --未及时解决
+                               SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 3 THEN 1 ELSE 0 END)   UnIntimeReplyCount3,   --未及时解决
+                               SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 1 THEN 1 ELSE 0 END)   UnIntimeReplyCount1   --未及时解决          
+                               FROM Complaints T1
+                          LEFT JOIN  
+                               (SELECT * FROM (SELECT X.*,row_number()OVER(PARTITION BY X.Complaints_ID ORDER BY X.REPLYTIME ,X.COLLECTTIME) FNO FROM 
+                                            (SELECT A.*,Case when musthandledate &lt;   replytime  then 0 else 1 end intime
+                                              FROM Mod_Complaints_Replypool A
+                                              WHERE A.CITY_ID IS NOT NULL  
+                                               )X)
+                                               WHERE FNO = 1 ) T2  
+                          ON T1.ID = T2.Complaints_ID    
+                          WHERE T1.CITY_ID IS NOT NULL            
+                                AND NVL(T1.extendfield10,'未退单') &lt; &gt;  '已退单' --是否退单
+                                AND T1.serialinfono NOT IN (SELECT serialinfono FROM mod_complaints_item_list WHERE TYPE = 1)
+                                AND T2.REPLYTIME IS NOT NULL
+                                AND T1.TASK_ID IS NOT NULL
+                                AND (T1.Extendfield10 IS NULL AND (TO_DATE(T1.Musthandledate,'yyyy-mm-dd hh24:mi:ss') &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss') ))
+                                AND T2.REPLYTIME &gt;  TO_DATE(T1.Musthandledate,'yyyy-mm-dd hh24:mi:ss')
+                                
+                          GROUP BY T1.CITY_ID,T1.NetType)
+                       UNION ALL
+                          (SELECT T1.CITY_ID,T1.NetType,
+                               --SUM(CASE WHEN T3.intime = 0 THEN 1 ELSE 0 END)  IntimeNotReplyCount             ---未及时解决的问题总数(超时直接回复客服)                                 
+                               SUM(CASE WHEN DECODE(T2.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 2 THEN 1 ELSE 0 END)   UnIntimeReplyCount2,   --未及时解决
+                               SUM(CASE WHEN DECODE(T2.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 3 THEN 1 ELSE 0 END)   UnIntimeReplyCount3,   --未及时解决
+                               SUM(CASE WHEN DECODE(T2.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 1 THEN 1 ELSE 0 END)   UnIntimeReplyCount1   --未及时解决          
+                               FROM Complaints  T1
+                          LEFT JOIN MOD_COMPLAINTS_REPLY T2
+                          ON T1.ID = T2.COMPLAINTS_ID
+                          LEFT JOIN  
+                               (SELECT * FROM (SELECT X.*,row_number()OVER(PARTITION BY X.Complaints_ID ORDER BY X.REPLYTIME ,X.COLLECTTIME) FNO FROM 
+                                            (SELECT A.*,Case when musthandledate &lt;   replytime  then 0 else 1 end intime
+                                              FROM Mod_Complaints_Replypool A
+                                              WHERE A.CITY_ID IS NOT NULL  
+                                               )X)
+                                               WHERE FNO = 1 ) T3  
+                          ON T1.ID = T3.Complaints_ID    
+                          WHERE T1.CITY_ID IS NOT NULL            
+                                AND NVL(T1.extendfield10,'未退单') &lt; &gt;  '已退单' --是否退单
+                                AND (T1.Extendfield10 IS NULL AND (TO_DATE(T1.Musthandledate,'yyyy-mm-dd hh24:mi:ss') &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss') ))
+                                AND T1.TASK_ID IS NULL
+                                AND T3.REPLYTIME IS NOT NULL
+                                AND T3.REPLYTIME &gt;  TO_DATE(T1.Musthandledate,'yyyy-mm-dd hh24:mi:ss')
+                                
+                          GROUP BY T1.CITY_ID,T1.NetType)
+                     /* UNION ALL
+                      (
+                      SELECT T1.CITY_ID,T1.NetType,  
+                             SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 2 THEN 1 ELSE 0 END)   UnIntimeReplyCount2,   --未及时解决
+                             SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 3 THEN 1 ELSE 0 END)   UnIntimeReplyCount3,   --未及时解决
+                             SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 1 THEN 1 ELSE 0 END)   UnIntimeReplyCount1   --未及时解决        
+                               FROM Complaints T1
+                          INNER JOIN (SELECT * FROM (SELECT c.*,row_number()OVER(PARTITION BY CITY_ID ORDER BY ID) FNO FROM CFG_NET_INTERFACEUSER c) WHERE FNO =1) T2
+                          ON T2.CITY_ID = T1.CITY_ID 
+                          WHERE NVL(T1.ISREPLY,0) = 0
+                                AND T1.TASK_ID IS NULL               
+                                AND T1.CITY_ID IS NOT NULL            
+                                AND NVL(T1.extendfield10,'未退单') &lt; &gt;  '已退单' --是否退单
+                                AND (T1.Extendfield10 IS NULL AND TO_DATE(T1.Musthandledate,'yyyy-mm-dd hh24:mi:ss') &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss') )            
+                                
+                          GROUP BY T1.CITY_ID,T1.NetType
+                      )*/)
+       GROUP BY CITY_ID,NetType
+  )
+  , ActualSolvss AS  ---实际时间
+  ( SELECT CITY_ID,NetType,
+            SUM(ActualSolveCount2) AS ActualSolveCount2, -- 实际解决问题数 
+            SUM(ActualSolveCount3) AS ActualSolveCount3, -- 实际解决问题数 
+            SUM(ActualSolveCount1) AS ActualSolveCount1  -- 实际解决问题数 
+    FROM (
+    (SELECT  T1.CITY_ID,T1.NetType,
+              SUM(CASE WHEN DECODE(T3.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 2  AND ( T2.REPLYTIME IS NOT NULL AND T2.TASK_ID IS NOT NULL AND T3.FileTime &gt; = TO_DATE('%%Y-%%M-%%D 
+
+0:00:00','yyyy-mm-dd hh24:mi:ss')  
+          AND T3.FileTime &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')) THEN 1 ELSE 0 END) AS ActualSolveCount2,              -- 实际解决问题数 
+              SUM(CASE WHEN DECODE(T3.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 3  AND ( T2.REPLYTIME IS NOT NULL AND T2.TASK_ID IS NOT NULL AND T3.FileTime &gt; = TO_DATE('%%Y-%%M-%%D 
+
+0:00:00','yyyy-mm-dd hh24:mi:ss')  
+          AND T3.FileTime &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')) THEN 1 ELSE 0 END) AS ActualSolveCount3,              -- 实际解决问题数 
+              SUM(CASE WHEN DECODE(T3.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 1  AND ( T2.REPLYTIME IS NOT NULL AND T2.TASK_ID IS NOT NULL AND T3.FileTime &gt; = TO_DATE('%%Y-%%M-%%D 
+
+0:00:00','yyyy-mm-dd hh24:mi:ss')  
+          AND T3.FileTime &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')) THEN 1 ELSE 0 END) AS ActualSolveCount1               -- 实际解决问题数                          
+    FROM Complaints T1 
+    LEFT JOIN 
+         (SELECT * FROM (SELECT X.*,row_number()OVER(PARTITION BY X.SERIALNO ORDER BY FRNO,intime,X.Complaints_ID DESC, X.REPLYTIME,X.COLLECTTIME) FNO FROM 
+                        (SELECT A.*,Case when musthandledate &lt;   replytime  then 0 else 1 end intime,row_number()OVER(PARTITION BY SERIALNO ORDER BY Complaints_ID DESC, REPLYTIME,COLLECTTIME) FRNO
+                          FROM Mod_Complaints_Replypool A                             
+                           )X)
+                           WHERE FNO = 1 ) T2  
+    ON T1.Serialno = T2.Serialno 
+    LEFT JOIN
+          (select d.city_id, f.DEPTTYPE, b.INSTANCE_FLOW_ID,a.INSTANCE_CODE TASK_ID,cf.create_data FileTime
+                from UF_INSTANCE_FLOW a
+               inner join UF_INSTANCE_STEP b
+                  on a.FID = b.instance_flow_id
+                  AND a.STATUS = 6
+               inner join UF_INSTANCE_STEP_USER c
+                  on b.fid = c.instance_step_id
+               inner join sec_userinfo d
+                  on c.user_code = d.loginname
+               inner join sec_dept e
+                  on d.deptid = e.id
+               inner join (
+                        SELECT r.*,cr.depttype FROM 
+                                    (select a.*,row_number()over(partition by instance_flow_id order by FileTime desc) FNO from
+                                    (
+                                    SELECT af.instance_step_id,af.instance_flow_id,af.ANALYSIS_REASON,af.create_data FileTime FROM WO_COMPLAINT_ADVANCEFILE af
+                                    UNION ALL
+                                    SELECT fc.instance_step_id,fc.instance_flow_id,fc.ANALYSIS_REASON,create_data FileTime FROM Wo_Complaint_File_Check fc
+                                    UNION ALL
+                                    SELECT instance_step_id,instance_flow_id,ANALYSIS_REASON,create_data FileTime FROM WO_COMPLAINT_EXECADVANCEFILE 
+                                    /*UNION ALL
+                                    SELECT instance_step_id,instance_flow_id,ANALYSIS_REASON,create_data FileTime FROM WO_COMPLAINT_ANALYSIS*/ 
+                                    )a
+                                    )r
+              inner join (select distinct REASON_CODE,/*TYPEFORTOTAL as depttype*/dept_type depttype from WO_CFG_REASON) cr
+              on r.ANALYSIS_REASON = cr.REASON_CODE   
+                                    WHERE FNO = 1 AND ANALYSIS_REASON NOT IN(32,33,34,37)
+                        ) f
+                  on b.INSTANCE_FLOW_ID = f.instance_flow_id
+                 and b.fid = f.instance_step_id
+               inner join  (SELECT * FROM (SELECT cfh.*,row_number()over(partition by instance_flow_id order by cfh.create_data) FNO FROM wo_complaint_file  cfh) where FNO =1) cf
+               on  b.INSTANCE_FLOW_ID = cf.INSTANCE_FLOW_ID
+               where c.user_type = 0 
+               ) T3            
+    ON T1.Task_id = T3.TASK_ID
+    LEFT JOIN 
+    (select d.city_id, e.DEPTTYPE, b.INSTANCE_FLOW_ID,a.INSTANCE_CODE TASK_ID,b.create_date ExecTime
+                from UF_INSTANCE_FLOW a
+               inner join (SELECT * FROM 
+                                  (SELECT s.*,row_number()over(partition by s.instance_flow_id order by s.create_date DESC) FNO FROM UF_INSTANCE_STEP s)
+                          WHERE FNO = 1) b
+                  on a.FID = b.instance_flow_id
+               inner join UF_INSTANCE_STEP_USER c
+                  on b.fid = c.instance_step_id
+               inner join sec_userinfo d
+                  on c.user_code = d.loginname
+               inner join sec_dept e
+                  on d.deptid = e.id
+               where c.user_type = 0 AND b.instance_flow_id NOT IN (SELECT FID FROM UF_INSTANCE_FLOW WHERE STATUS =6)
+               ) T4           
+    ON T1.Task_id = T4.TASK_ID
+    LEFT JOIN MOD_COMPLAINTS_ARCHIVE_DATE T5
+    ON T1.Task_Id = T5.Task_Id
+    WHERE T1.CITY_ID IS NOT NULL 
+        AND NVL(T1.extendfield10,'未退单') &lt; &gt;  '已退单' --是否退单
+        AND T5.MUST_ARCHIVE_DATE Between TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss') AND TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss') 
+            
+    GROUP BY T1.CITY_ID,T1.NetType)
+    UNION ALL
+    (
+        SELECT  T1.CITY_ID,T1.NetType,
+            SUM(CASE WHEN DECODE(T3.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 2 AND (T2.TASK_ID IS NULL AND T2.REPLYTIME IS NOT NULL AND T2.REPLYTIME &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-
+
+dd hh24:mi:ss')  
+              AND T2.REPLYTIME &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')) THEN 1 ELSE 0 END)  AS ActualSolveCount2,              -- 实际解决问题数(直接回复客服)
+            SUM(CASE WHEN DECODE(T3.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 3 AND (T2.TASK_ID IS NULL AND T2.REPLYTIME IS NOT NULL AND T2.REPLYTIME &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-
+
+dd hh24:mi:ss')  
+              AND T2.REPLYTIME &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')) THEN 1 ELSE 0 END)  AS ActualSolveCount3,              -- 实际解决问题数(直接回复客服)
+            SUM(CASE WHEN DECODE(T3.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 1 AND (T2.TASK_ID IS NULL AND T2.REPLYTIME IS NOT NULL AND T2.REPLYTIME &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-
+
+dd hh24:mi:ss')  
+              AND T2.REPLYTIME &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')) THEN 1 ELSE 0 END)  AS ActualSolveCount1               -- 实际解决问题数(直接回复客服)          
+        FROM Complaints T1 
+    LEFT JOIN 
+         (SELECT * FROM (SELECT X.*,row_number()OVER(PARTITION BY X.SERIALNO ORDER BY FRNO,intime,X.Complaints_ID DESC, X.REPLYTIME,X.COLLECTTIME) FNO FROM 
+                        (SELECT A.*,Case when musthandledate &lt;   replytime  then 0 else 1 end intime,row_number()OVER(PARTITION BY SERIALNO ORDER BY Complaints_ID DESC, REPLYTIME,COLLECTTIME) FRNO
+                          FROM Mod_Complaints_Replypool A                             
+                           )X)
+                           WHERE FNO = 1 ) T2  
+    ON T1.Serialno = T2.Serialno         
+            LEFT JOIN  
+                 MOD_COMPLAINTS_REPLY T3  
+            ON T1.ID = T3.Complaints_ID 
+        WHERE T1.CITY_ID IS NOT NULL   
+            AND NVL(T1.extendfield10,'未退单') &lt; &gt;  '已退单' --是否退单
+            AND T3.Complaints_ID IS NOT NULL
+            AND T3.reason_type &lt; &gt;  0              
+          
+    GROUP BY T1.CITY_ID,T1.NetType
+  ))
+    GROUP BY CITY_ID,NetType
+  ),NOActualSolvss AS
+  (SELECT CITY_ID, NetType,
+              SUM(TimeoutNotSolve2) TimeoutNotSolve2,    -- 未解决问题数    
+              SUM(TimeoutNotSolve3) TimeoutNotSolve3,    -- 未解决问题数  
+              SUM(TimeoutNotSolve1) TimeoutNotSolve1     -- 未解决问题数 
+                         FROM
+        ((SELECT   T1.CITY_ID,T1.NetType,            
+              SUM(CASE WHEN DECODE(T3.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 2 THEN 1 ELSE 0 END) TimeoutNotSolve2,    -- 未解决问题数    
+              SUM(CASE WHEN DECODE(T3.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 3 THEN 1 ELSE 0 END) TimeoutNotSolve3,    -- 未解决问题数  
+              SUM(CASE WHEN DECODE(T3.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 1 THEN 1 ELSE 0 END) TimeoutNotSolve1    -- 未解决问题数                          
+              ---未解决问题总数(派单情况)
+                         FROM 
+                    Complaints  T1
+                    LEFT JOIN  
+                         (SELECT * FROM (SELECT X.*,row_number()OVER(PARTITION BY X.Complaints_ID ORDER BY X.REPLYTIME ,X.COLLECTTIME) FNO FROM 
+                                      (SELECT A.*,Case when musthandledate &lt;   replytime  then 0 else 1 end intime
+                                        FROM Mod_Complaints_Replypool A
+                                        WHERE A.CITY_ID IS NOT NULL   
+                                         )X)
+                                         WHERE FNO = 1 ) T2  
+                    ON T1.ID = T2.Complaints_ID
+                  LEFT JOIN   TASKINFO T3
+                  ON T1.TASK_ID = T3.TASK_ID
+                  LEFT JOIN MOD_COMPLAINTS_ARCHIVE_DATE T4
+                  ON T1.Task_Id = T4.Task_Id
+                    WHERE T1.CITY_ID IS NOT NULL            
+                          AND NVL(T1.extendfield10,'未退单') &lt; &gt;  '已退单' --是否退单
+                          AND T4.MUST_ARCHIVE_DATE Between TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss') AND TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss') 
+                          AND NVL(T3.TASK_ID,'NULL') &lt; &gt;  'NULL'
+                          
+                    GROUP BY T1.CITY_ID,T1.NetType )
+              UNION ALL
+              (
+              (SELECT T1.CITY_ID,T1.NetType,
+              SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 2 THEN 1 ELSE 0 END) TimeoutNotSolve2,    -- 未解决问题数    
+              SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 3 THEN 1 ELSE 0 END) TimeoutNotSolve3,    -- 未解决问题数  
+              SUM(CASE WHEN DECODE(T2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) = 1 THEN 1 ELSE 0 END) TimeoutNotSolve1    -- 未解决问题数                          
+              ---未解决问题总数(未回复)          
+                                   FROM Complaints  T1
+                                   INNER JOIN (SELECT * FROM (SELECT c.*,row_number()OVER(PARTITION BY CITY_ID ORDER BY ID) FNO FROM CFG_NET_INTERFACEUSER c) WHERE FNO =1) T2
+                                          ON T2.CITY_ID = T1.CITY_ID 
+                              WHERE T1.CITY_ID IS NOT NULL            
+                                    AND NVL(T1.Extendfield10,'未退单') &lt; &gt;  '已退单' --是否退单
+                                    AND T1.TASK_ID IS NULL AND T1.ISREPLY = 0
+                                    
+                              GROUP BY T1.CITY_ID,T1.NetType)
+              ))
+      GROUP BY CITY_ID,NetType
+   ),
+  ReCall AS
+  ( SELECT RC.CITY_ID, 3 AS DEPTTYPE,RC.NetType ,SUM(ReCallCount) AS ReCallCount
+           FROM (
+           SELECT T1.SERIALNO ,T1.NetType,T1.CITY_ID,COUNT(1) - 1 AS ReCallCount ---多次派单
+           FROM( SELECT X1.*,
+               CASE WHEN TRIM(X1.Customer_Type) IN (SELECT TRIM(Name) FROM Wo_Cfg_Datadic d1 where d1.type = 'GSM') 
+                 THEN 'GSM' 
+                   WHEN TRIM(X1.Customer_Type) IN (SELECT TRIM(Name) FROM Wo_Cfg_Datadic d1 where d1.type = 'WCDMA') 
+                 THEN 'WCDMA'
+                   ELSE
+                     'GSM'
+                     END NetType
+                     FROM (
+                                select m1.ID,m1.Serialinfono,m1.Serialno,m1.Collecttime,m1.City_Id,m1.Customer_Type,m1.BLACKLISTFLAG, Case When nvl(m2.Complaints_Id,-1) &lt; &gt;  -1 Then NULL Else 
+
+m1.Task_Id End Task_Id,m1.IsReply,m1.Musthandledate, 
+                                       
+
+m1.Extendfield1,m1.Extendfield2,m1.Extendfield3,m1.Extendfield4,m1.Extendfield5,m1.Extendfield6,m1.Extendfield7,m1.Extendfield8,m1.Extendfield9,m1.EXTENDFIELD10
+                                from mod_complaints_item m1
+                                     LEFT JOIN MOD_COMPLAINTS_REPLY m2 
+                                     ON m1.Id = m2.Complaints_Id) X1
+                                )  T1                             
+      WHERE T1.COLLECTTIME &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss')  
+            AND T1.COLLECTTIME &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')              
+            AND T1.CITY_ID IS NOT NULL 
+            
+            GROUP BY T1.SERIALNO ,T1.NetType,T1.CITY_ID
+            ) RC
+      GROUP BY RC.CITY_ID,RC.NetType
+   )
+   
+   SELECT 
+     T1.city_id,
+    '%%Y-%%M-%%D 0:00:00' 统计开始时间,
+    '%%Y-%%M-%%D 23:59:59' 统计结束时间,
+    T6.NetType 投诉网络类型,                          
+  SUM(NVL(T2.RelatedCount, 0)) AS 客服派单数,                                                                -- 客服部门派至网络公司的投诉工单数
+  SUM(NVL(T2.ReceiveCount, 0)) AS 网络公司接单数,                                                                -- 网络公司接收投诉工单总数
+  SUM(NVL(T3.IntimeReplyCount1, 0) +NVL(T3.IntimeReplyCount2, 0) +NVL(T3.IntimeReplyCount3, 0))  AS 及时处理工单数,
+  SUM(NVL(T6.ReplyCount,0) + NVL(T6.NotReplyCount,0)) AS  应回复工单数,                              -- 应回复工单总数
+  SUM(NVL(T2.ReceiveCount, 0)) 及时回复工单数,
+  SUM(NVL(T6.ReplyCount,0)) AS 已回复工单数,       
+  0 超时回复的工单数,                                                              -- 回复工单总数
+  SUM(NVL(T6.ReplyCount,0)) AS 网络公司处理工单数,        -- 网络公司处理投诉工单数
+  SUM(NVL(T8.TimeoutNotSolve2,0) + NVL(T7.ActualSolveCount2, 0)) AS 运维应解决的投诉工单数,         -- 应实际解决问题总数     
+  SUM(NVL(T3.IntimeReplyCount2, 0)) AS 运维及时解决工单数,
+  SUM(NVL(T7.ActualSolveCount2, 0)) AS 运维已解决的投诉工单数,          -- 网建已解决的投诉工单数
+  SUM(NVL(T4.UnIntimeReplyCount2,0)) AS 运维超时解决的工单数,
+  SUM(NVL(T8.TimeoutNotSolve2,0)) AS 运维未解决工单数,
+  SUM(NVL(T8.TimeoutNotSolve3,0) + NVL(T7.ActualSolveCount3, 0)) AS 网优应解决的投诉工单数,         -- 应实际解决问题总数
+  SUM(NVL(T3.IntimeReplyCount3, 0)) AS 网优及时解决工单数,
+  SUM(NVL(T7.ActualSolveCount3, 0)) AS 网优已解决的投诉工单数,                                                                                   -- 网建已解决的投诉工单数
+  SUM(NVL(T4.UnIntimeReplyCount3,0)) AS 网优超时解决的工单数,
+  SUM(NVL(T8.TimeoutNotSolve3,0)) AS 网优未解决工单数,                                                                                                                                
+  SUM(NVL(T8.TimeoutNotSolve1,0) + NVL(T7.ActualSolveCount1, 0)) AS 网建应解决的投诉工单数,         -- 应实际解决问题总数
+  0 网建应解决且年度覆盖,
+  SUM(NVL(T7.ActualSolveCount1, 0)) AS 网建已解决的投诉工单数,    
+  0 网建已解决且年度覆盖,
+  SUM(NVL(T3.IntimeReplyCount1, 0)) AS 网建按时解决的工单数,
+  SUM(NVL(T4.UnIntimeReplyCount1,0)) AS 网建超时解决的工单数,
+  SUM(NVL(T8.TimeoutNotSolve1,0)) AS 网建未解决工单数,
+  SUM(NVL(T2.ReceiveCount, 0)) 咨询入线单数, 
+  SUM(NVL(T2.ReceiveCount, 0)) 咨询单生成投诉单数
+         
+  FROM CFG_CITY T1 
+  INNER JOIN ( SELECT 'GSM' NetType FROM DUAL UNION ALL SELECT 'WCDMA' NetType FROM DUAL) T6 ON 1 = 1                                                                   
+  LEFT JOIN Orders T2
+       ON T1.CITY_ID = T2.CITY_ID AND T2.NetType = T6.NetType
+  LEFT JOIN IntimeReplys T3 
+       ON T1.CITY_ID = T3.CITY_ID  AND T2.NetType = T3.NetType
+  LEFT JOIN TimeoutNotSolve T4
+       ON T1.CITY_ID = T4.CITY_ID  AND T2.NetType = T4.NetType
+  LEFT JOIN Replys T6
+       ON T1.CITY_ID = T6.CITY_ID  AND T2.NetType = T6.NetType  
+  LEFT JOIN ActualSolvss T7
+       ON T1.CITY_ID = T7.CITY_ID  AND T2.NetType = T7.NetType
+  LEFT JOIN NOActualSolvss T8
+       ON T1.CITY_ID = T8.CITY_ID  AND T2.NetType = T8.NetType
+  LEFT JOIN ReCall T9
+       ON T1.CITY_ID = T9.CITY_ID  AND T2.NetType = T9.NetType
+  WHERE 1=1 AND T1.CITY_ID IN(select city_id from cfg_city)  
+  group by  T1.city_id,T6.NetType
+ )T1        
+    -----------------------------------------------------------------------------------------------------------------------------------------------------------
+ Inner join
+ (
+WITH 
+    CT AS
+    (
+        SELECT TT1.* 
+            FROM (SELECT X1.*
+                      FROM (select m1.ID, m1.Serialinfono, m1.Serialno, m1.Collecttime, m1.City_Id, m1.Customer_Type, m1.BLACKLISTFLAG,
+                                   Case
+                                     When nvl(m2.Complaints_Id, -1) &lt; &gt;  -1 Then
+                                      NULL
+                                     Else
+                                      m1.Task_Id
+                                   End Task_Id,m1.NetType,
+                                   m1.IsReply, m1.Musthandledate, m1.Extendfield1, m1.Extendfield2, m1.Extendfield3, m1.Extendfield4,
+                                   m1.Extendfield5, m1.Extendfield6, m1.Extendfield7, m1.Extendfield8, m1.Extendfield9, m1.EXTENDFIELD10
+                              from (SELECT * FROM (SELECT X1.*,
+                                           CASE
+                                             WHEN TRIM(X1.EXTENDFIELD3) LIKE '12%' THEN
+                                              'GSM'
+                                             WHEN TRIM(X1.EXTENDFIELD3) LIKE '13%' THEN
+                                              'WCDMA'
+                                             ELSE
+                                              'GSM'
+                                           END NetType,
+                                           row_number() OVER(PARTITION BY SERIALNO ORDER BY id desc, collecttime desc) Fno
+                                        FROM Mod_Complaints_Item X1
+                                        WHERE X1.serialinfono NOT IN
+                                           (SELECT serialinfono FROM mod_complaints_item_list WHERE TYPE = 1))
+                                        WHERE FNO = 1) m1
+                              LEFT JOIN MOD_COMPLAINTS_REPLY m2
+                                ON m1.Id = m2.Complaints_Id) X1
+                              WHERE X1.COLLECTTIME &gt; = TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss')  
+                                    AND X1.COLLECTTIME &lt; = TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss') 
+                    ) TT1
+    INNER JOIN (SELECT * FROM (SELECT X.*,row_number()OVER(PARTITION BY X.SERIALNO ORDER BY FRNO, intime,X.Complaints_ID DESC, X.REPLYTIME ,X.COLLECTTIME) FNO FROM 
+                        (SELECT A.*,Case when musthandledate &lt;   replytime  then 0 else 1 end intime,row_number()OVER(PARTITION BY SERIALNO ORDER BY Complaints_ID DESC, REPLYTIME,COLLECTTIME) FRNO
+                          FROM Mod_Complaints_Replypool A
+                           WHERE A.CITY_ID IS NOT NULL  
+                           )X)
+                           WHERE FNO = 1 ) T2
+    ON TT1.ID = T2.COMPLAINTS_ID
+    ),
+    K1 AS
+ (select T2.CITY_ID,T2.DEPTTYPE AS DEPTTYPE ,T2.NetType,sum(Filed1) as Filed1  from 
+  (
+    SELECT TT1.CITY_ID,
+         DECODE(TT2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) AS DEPTTYPE,NetType,
+        count(*) AS Filed1 
+    FROM (CT) TT1 --公用表
+    left JOIN (select d.city_id, e.DEPTTYPE, b.INSTANCE_FLOW_ID,a.INSTANCE_CODE,cf.create_data FileTime,a.fid
+                from UF_INSTANCE_FLOW a
+               inner join UF_INSTANCE_STEP b
+                  on a.FID = b.instance_flow_id
+               inner join UF_INSTANCE_STEP_USER c
+                  on b.fid = c.instance_step_id
+               inner join sec_userinfo d
+                  on c.user_code = d.loginname
+               inner join sec_dept e
+                  on d.deptid = e.id
+                inner join (
+                        SELECT * FROM 
+                                    (select a.*,row_number()over(partition by instance_flow_id order by FileTime desc) FNO from
+                                    (
+                                    SELECT af.instance_step_id,af.instance_flow_id,af.ANALYSIS_REASON,af.create_data FileTime FROM WO_COMPLAINT_ADVANCEFILE af
+                                    UNION ALL
+                                    SELECT fc.instance_step_id,fc.instance_flow_id,fc.ANALYSIS_REASON,create_data FileTime FROM Wo_Complaint_File_Check fc
+                                    UNION ALL
+                                    SELECT instance_step_id,instance_flow_id,ANALYSIS_REASON,create_data FileTime FROM WO_COMPLAINT_EXECADVANCEFILE 
+                                    /*UNION ALL
+                                    SELECT instance_step_id,instance_flow_id,ANALYSIS_REASON,create_data FileTime FROM WO_COMPLAINT_ANALYSIS*/ 
+                                    
+                                    )a
+                                    )
+                                    WHERE FNO = 1 
+                        )  f
+                  on b.INSTANCE_FLOW_ID = f.instance_flow_id
+                 and b.fid = f.instance_step_id
+                 and f.ANALYSIS_REASON  between 1 and 26    --  传输设备和线路故障 
+              inner join  (SELECT * FROM (SELECT cfh.*,row_number()over(partition by instance_flow_id order by cfh.create_data) FNO FROM wo_complaint_file  cfh) where FNO =1) cf
+                on  b.INSTANCE_FLOW_ID = cf.instance_flow_id
+               where c.user_type = 0
+               ) TT2
+          ON TT1.task_id = TT2.INSTANCE_CODE
+    INNER JOIN MOD_COMPLAINTS_ARCHIVE_DATE T3    
+    ON TT1.Task_Id = T3.Task_Id
+    WHERE  T3.MUST_ARCHIVE_DATE Between TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss') AND TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss') 
+       AND TT2.FileTime &gt; =
+             TO_DATE('%%Y-%%M-%%D 0:00:00', 'yyyy-mm-dd hh24:mi:ss')
+         AND TT2.FileTime &lt; =
+             TO_DATE('%%Y-%%M-%%D 23:59:59', 'yyyy-mm-dd hh24:mi:ss')   
+         
+         AND TT1.CITY_ID =TT2.CITY_ID
+         AND TT1.CITY_ID is not null
+     GROUP BY TT1.CITY_ID,NetType, DECODE(TT2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3)
+   union all
+   (SELECT TT3.CITY_ID, DECODE(TT4.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) AS DEPTTYPE,NetType, count(*) AS Filed1 
+     FROM (CT) TT3 --公用表
+    left JOIN Mod_Complaints_Reply TT4
+     on TT3.id=TT4.complaints_id
+     where TT4.File_Time between To_Date('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss') and To_Date('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')   
+            
+     and TT4.reason_type between 1 and 38 and  TT4.reason_type not between 27 and 34 
+     GROUP BY TT3.CITY_ID,NetType, DECODE(TT4.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3)
+     ) 
+  ) T2
+     group by city_id,depttype,NetType
+            ),
+K2 AS
+ (select T2.CITY_ID,T2.DEPTTYPE AS DEPTTYPE ,T2.NetType,sum(Filed2) as Filed2  from 
+  (
+    SELECT TT1.CITY_ID,
+         DECODE(TT2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) AS DEPTTYPE,NetType,
+        count(*) AS Filed2 
+    FROM (CT) TT1 --公用表
+    left JOIN (select d.city_id, e.DEPTTYPE, b.INSTANCE_FLOW_ID,a.INSTANCE_CODE,cf.create_data FileTime,a.fid
+                from UF_INSTANCE_FLOW a
+               inner join UF_INSTANCE_STEP b
+                  on a.FID = b.instance_flow_id
+               inner join UF_INSTANCE_STEP_USER c
+                  on b.fid = c.instance_step_id
+               inner join sec_userinfo d
+                  on c.user_code = d.loginname
+               inner join sec_dept e
+                  on d.deptid = e.id
+                inner join (
+                        SELECT * FROM 
+                                    (select a.*,row_number()over(partition by instance_flow_id order by FileTime desc) FNO from
+                                    (
+                                    SELECT af.instance_step_id,af.instance_flow_id,af.ANALYSIS_REASON,af.create_data FileTime FROM WO_COMPLAINT_ADVANCEFILE af
+                                    UNION ALL
+                                    SELECT fc.instance_step_id,fc.instance_flow_id,fc.ANALYSIS_REASON,create_data FileTime FROM Wo_Complaint_File_Check fc
+                                    UNION ALL
+                                    SELECT instance_step_id,instance_flow_id,ANALYSIS_REASON,create_data FileTime FROM WO_COMPLAINT_EXECADVANCEFILE 
+/*                                    UNION ALL
+                                    SELECT instance_step_id,instance_flow_id,ANALYSIS_REASON,create_data FileTime FROM WO_COMPLAINT_ANALYSIS 
+*/                                    )a
+                                    )
+                                    WHERE FNO = 1 
+                        )  f
+                  on b.INSTANCE_FLOW_ID = f.instance_flow_id
+                 and b.fid = f.instance_step_id
+                 and f.ANALYSIS_REASON  between 32 and 34   --  传输设备和线路能力不足 
+              inner join  (SELECT * FROM (SELECT cfh.*,row_number()over(partition by instance_flow_id order by cfh.create_data) FNO FROM wo_complaint_file  cfh) where FNO =1) cf
+                on  b.INSTANCE_FLOW_ID = cf.instance_flow_id
+               where c.user_type = 0
+               ) TT2
+          ON TT1.task_id = TT2.INSTANCE_CODE
+    INNER JOIN MOD_COMPLAINTS_ARCHIVE_DATE T3    
+    ON TT1.Task_Id = T3.Task_Id
+    WHERE  T3.MUST_ARCHIVE_DATE Between TO_DATE('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss') AND TO_DATE('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss') 
+       AND TT2.FileTime &gt; =
+             TO_DATE('%%Y-%%M-%%D 0:00:00', 'yyyy-mm-dd hh24:mi:ss')
+         AND TT2.FileTime &lt; =
+             TO_DATE('%%Y-%%M-%%D 23:59:59', 'yyyy-mm-dd hh24:mi:ss')   
+         
+         AND TT1.CITY_ID =TT2.CITY_ID
+         AND TT1.CITY_ID is not null
+     GROUP BY TT1.CITY_ID,NetType, DECODE(TT2.DEPTTYPE, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3)
+   union all
+   (SELECT TT3.CITY_ID, DECODE(TT4.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3) AS DEPTTYPE,NetType, count(*) AS Filed2
+     FROM (CT) TT3 --公用表
+    left JOIN Mod_Complaints_Reply TT4
+     on TT3.id=TT4.complaints_id
+     where TT4.File_Time between To_Date('%%Y-%%M-%%D 0:00:00','yyyy-mm-dd hh24:mi:ss') and To_Date('%%Y-%%M-%%D 23:59:59','yyyy-mm-dd hh24:mi:ss')   
+            
+     and TT4.reason_type  between 27 and 34
+     GROUP BY TT3.CITY_ID, NetType,DECODE(TT4.DUTY_DEPT, 1 , 1, 2, 2, 3, 3, NULL, 3, 0, 3)
+     ) 
+  ) T2
+     group by city_id,NetType,depttype
+            )
+ select  city_id,
+  '%%Y-%%M-%%D 0:00:00' 统计开始时间,'%%Y-%%M-%%D 23:59:59' 统计结束时间,NetType 投诉网络类型,sum(归因为网络质量问题的投诉工单数) AS  归因为网络质量问题的工单数,
+  sum(归因为客户原因问题的投诉工单数) AS 归因为客户原因问题的工单数 from
+  ( 
+SELECT DISTINCT T1.CITY_ID, T1.CITY_NAME,TT.DEPTTYPE as DEPTID,DECODE(TT.DEPTTYPE, 1, '网建', 2, '运维', 3, '网优',0, '网优', null,'网优') AS DEPTTYPE, T23.NetType,
+ NVL(T2.Filed1,0) as 归因为网络质量问题的投诉工单数,
+  NVL(T3.Filed2,0) as 归因为客户原因问题的投诉工单数                  
+  FROM CFG_CITY T1
+  INNER JOIN ( SELECT 'GSM' NetType FROM DUAL UNION ALL SELECT 'WCDMA' NetType FROM DUAL) T23 ON 1 = 1 
+  left join (select DISTINCT CITYID, DECODE(DEPTTYPE,1,1,2,2,3,3,0,3) AS DEPTTYPE  from sec_dept)  TT
+      ON TT.CITYID=T1.CITY_ID
+  LEFT JOIN K1 T2
+      ON T1.CITY_ID = T2.CITY_ID and  T2.DEPTTYPE=TT.DEPTTYPE and T2.NetType = T23.NetType
+  LEFT JOIN K2 T3
+      ON T1.CITY_ID = T3.CITY_ID and  T3.DEPTTYPE=TT.DEPTTYPE and T3.NetType = T23.NetType
+where TT.depttype is not null   AND TT.DEPTTYPE IN (1, 2, 3)  AND T1.CITY_ID IN(select city_id from cfg_city) 
+ORDER BY T1.CITY_ID, TT.DEPTTYPE)
+group by city_id,NetType)T2
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ON T1.City_ID = T2.City_ID
+AND  T1.投诉网络类型=T2.投诉网络类型
+
+					</sql>
+			</mapping>
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.94</property>
+		<property name="port">21</property>
+		<property name="username">admin</property>
+		<property name="password">admin</property>
+		<property name="path">/CCH/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--?????-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>

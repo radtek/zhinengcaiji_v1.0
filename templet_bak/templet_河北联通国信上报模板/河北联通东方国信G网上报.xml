@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="600">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">gnoap</property>
+		<property name="password">uwaysoft</property>
+	</ds>
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="河北联通资源情况_小区(GSM)_%%Y.%%M.%%D.xlsx" templet="河北联通资源情况_小区(GSM)" >
+				<sql>
+SELECT TO_CHAR(P.START_TIME, 'YYYY-MM-DD HH24:MI:SS') "时间",
+       P.CITY_NAME "城市名称",
+       C.COUNTY_NAME "行政区",
+       P.VENDOR_NAME "厂家",
+       P.RELATED_BSCNAME "BSC名称",
+       P.RELATED_BTSNAME "基站名称",
+       P.LAC "LAC",
+       P.CI "CI",
+       P.CHINA_NAME "小区名称",
+       CASE
+         WHEN NVL(SUM(WIRE_LOAD), 0) + NVL(SUM(CONFIG_DEDICATED_PDCH), 0) = 0 THEN
+          0
+         ELSE
+          ROUND((NVL(SUM(T_TRAFFIC), 0) + NVL(SUM(DL_BUSY_PDCH_MEAN), 0)) * 100 /
+                (NVL(SUM(WIRE_LOAD), 0) + NVL(SUM(CONFIG_DEDICATED_PDCH), 0)),
+                4)
+       END "无线资源利用率",
+       ROUND(SUM(T_TRAFFIC), 4) "TCH话务量",
+       CASE
+         WHEN NVL(SUM(TCH_F_AVAIL_CARRIER), 0) = 0 THEN
+          0
+         ELSE
+          ROUND(SUM(T_TRAFFIC) / SUM(TCH_F_AVAIL_CARRIER), 4)
+       END "TCH每线话务量"
+  FROM PERF_CELL_G P, DS_PERF_BUSY_CELL_D D, CFG_COUNTY C
+ WHERE P.START_TIME = D.BT_DAY_T_TRAFFIC_DL_BUSY_PDCH
+   AND P.NE_SYS_ID = D.NE_CELL_ID
+   AND P.ADM_AREA = C.COUNTY_ID
+   AND D.START_TIME =
+       TO_DATE('%%Y-%%M-%%D %%H:%%m:%%S', 'YYYY-MM-DD HH24:MI:SS') --需要每天取数据 如10月8号 取10月7号 数据
+ GROUP BY P.START_TIME,
+          P.LAC,
+          P.CI,
+          P.CHINA_NAME,
+          P.RELATED_BTSNAME,
+          P.RELATED_BSCNAME,
+          P.CITY_NAME,
+          C.COUNTY_NAME,
+          P.VENDOR_NAME
+
+					</sql>
+					<!-- 生成excel文件时，excel字段的样式设置，index表示该字段在excel中的列号，从1开始（这个一定要填对，不然没法对齐），filed表示字段名，type表示该字段的类型（整形，小数，时间等），sytle表示样式 -->
+				    <excel sheet="小区" version="2007">
+				    <formart index="7" filed="LAC" type="float"/>
+                    <formart index="8" filed="CI" type="float" />
+				    <formart index="10" filed="无线资源利用率" type="float"/>
+				    <formart index="11" filed="TCH话务量" type="float" />
+				    <formart index="12" filed="TCH每线话务量" type="float"/>
+				    </excel>
+			</mapping>
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.94</property>
+		<property name="port">21</property>
+		<property name="username">admin</property>
+		<property name="password">admin</property>
+		<property name="path">/CCH/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--?????-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>

@@ -1,0 +1,5 @@
+版本号,时间,省份,地市,预警级别,1X网络Walsh码峰值占用率的载扇数量,1X网络接入信道峰值利用率的载扇数量,1X网络寻呼信道峰值利用率的载扇数量,1X网络CE峰值占用率的基站数量,DO网络MACIndex峰值占用率的载扇数量,DO网络反向接入信道峰值利用率的载扇数量,DO网络前向控制信道峰值利用率的载扇数量,DO网络前向业务信道峰值利用率的载扇数量,DO网络反向CE峰值占用率的基站数量,反向链路繁忙率的载扇数量,反向ROT的载扇数量,Abis带宽峰值利用率的基站数量,阿朗RNC TP板件负荷的RNC数量,阿朗RNC AP板件负荷的RNC数量,阿朗MGW SM负荷的MGW数量,阿朗MGW外部中继群每线话务量的MGW数量,阿朗MGW内部中继群每线话务量的MGW数量,阿朗MGW硬切换中继峰值负荷的MGW数量,中兴BSC BCTM板件峰值负荷的BSC数量,中兴BSC 1XCMP板件负荷的BSC数量,中兴BSC DOCMP板件负荷的BSC数量,中兴BSC SPCF的BSC数量,中兴BSC 1X选择器负荷的BSC数量,中兴BSC DO选择器负荷的BSC数量,中兴BSC声码器的BSC数量,中兴BSC地面电路（CIC）负荷的BSC数量,中兴基站CBM板负荷的基站数量,中兴基站CCA板负荷的基站数量,中兴基站CCM板负荷的基站数量,中兴基站CHV0板负荷的基站数量,中兴基站CHV1板负荷的基站数量,中兴基站CHV2板负荷的基站数量,中兴基站CHD0板件负荷的基站数量
+<#if o.datas["d1"]?size gt 1> 
+<#list o.datas.d1[1..] as onearray><#if onearray??><#assign len=onearray?size-1 /><#list 0..len as d>${onearray[d]}<#if d != len>,</#if></#list>
+</#if></#list>
+</#if>

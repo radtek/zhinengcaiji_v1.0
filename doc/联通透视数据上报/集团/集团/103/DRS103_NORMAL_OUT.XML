@@ -1,0 +1,11 @@
+<rnop_service_output_para>
+	<service_instance>
+		<service_id>DRS103</service_id>
+		<version>R1</version>
+		<service_name>文件开始上报通知</service_name>
+		<service_desc>指定获取的数据文件准备好开始上报通知</service_desc>
+        <service_content>
+			<resultNotifyFileReport>success</resultNotifyFileReport>
+		</service_content>
+	</service_instance>
+</rnop_service_output_para>

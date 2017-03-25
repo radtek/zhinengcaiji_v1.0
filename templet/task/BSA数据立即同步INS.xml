@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+			<ds id="1" type="410">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noapjs</property>
+		<property name="password">uwaysoft2009</property>							
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="EMGREQ_ADD_%%Y%%M%%D%%H%%m_${province_code}${index}.csv.zip" templet="BSA数据立即同步ADD.ftl"   >
+			    <sql> 
+			    select sync_sql from CFG_BSA_SYNC_UPLOAD_SQL where synctype='INS' and data_type='ADD' and sql_type=1
+				</sql>
+			</mapping>
+			
+		</resolve>
+	</to>
+	
+		<to id="2">
+		<resolve dsid="1">
+			<mapping name="EMGREQ_MOD_%%Y%%M%%D%%H%%m_${province_code}${index}.csv.zip" templet="BSA数据立即同步MOD.ftl"   >
+			    <sql>
+			    select sync_sql from CFG_BSA_SYNC_UPLOAD_SQL where synctype='INS' and data_type='MOD' and sql_type=1
+				</sql>
+			</mapping>
+		</resolve>
+	</to>
+	
+	
+		<to id="3">
+		<resolve dsid="1">
+			<mapping name="EMGREQ_DEL_%%Y%%M%%D%%H%%m_${province_code}${index}.csv.zip" templet="BSA数据立即同步DEL.ftl"   >
+			    <sql> 
+select sync_sql from CFG_BSA_SYNC_UPLOAD_SQL where synctype='INS' and data_type='DEL' and sql_type=1
+				</sql>
+			</mapping>
+			
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+ <ti id="1" after="1">
+	<property name="ftpip">132.33.13.1</property>
+		<property name="port">21</property>
+		<property name="username">chongqing1</property>
+		<property name="password">chongqing1</property>
+		<property name="path">/EMGREQ/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	
+	 <ti id="2" after="1">
+	<property name="ftpip">136.3.134.8</property>
+		<property name="port">21</property>
+		<property name="username">cqbsa</property>
+		<property name="password">cqbsa</property>
+		<property name="path">/EMGREQ/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+    
+<t>
+		<action id="1" toid="1" tiid="1" strategyid="2" /><!--数据库方式 -->
+		<action id="2" toid="2" tiid="1" strategyid="3" /><!--数据库方式 -->
+		<action id="3" toid="3" tiid="1" strategyid="4" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: --><!-- before ,after ,exception -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<strategy id="2">
+		<property name="ids">2</property>
+	</strategy>
+	<trigger id="2" class="cn.uway.nbi.task.triggerbean.BsaAddTriggerBean">
+	</trigger>
+	
+	
+	<strategy id="3">
+		<property name="ids">3</property>
+	</strategy>
+	<trigger id="3" class="cn.uway.nbi.task.triggerbean.BsaModTriggerBean">
+	</trigger>
+	
+	
+	<strategy id="4">
+		<property name="ids">4</property>
+	</strategy>
+	<trigger id="4" class="cn.uway.nbi.task.triggerbean.BsaDelTriggerBean">
+		<property name="sql"> select sync_sql from CFG_BSA_SYNC_UPLOAD_SQL where synctype='INS' and sql_type=2
+		</property>
+		
+	</trigger>
+</config>

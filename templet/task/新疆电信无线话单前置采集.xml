@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+ 	
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<!-- 如果是本地文件200，此处配置的路径只是为了进行非周期性的上报 -->
+	<ds id="1" type="200">
+	    <property name="localdir">/D/testfile/</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+	<!-- 每一个文件还可以打成不同的包，配置single_package_ext,只需要配置扩展名即可 如：.rar或者rar-->
+	<to id="1">
+		<resolve dsid="1">
+			<files><!--  name="${province_en}_CCH_WCDMA_%%Y%%M%%D.csv.tar.gz"此属性用于将所有文件打包，本地打包路径为config.xml中的currentpath -->
+				<property>/D/testfile/1x_5_%%Y%%M%%D_new.csv</property>
+				<property>/D/testfile/do_5_%%Y%%M%%D_new.csv</property>
+			</files>
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<!-- file -->
+		<property name="ftpip">192.168.15.249</property>
+		<property name="port">21</property>
+		<property name="username">ftpuser</property>
+		<property name="password">ftpuser</property>
+		<property name="path">/group_province/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+	</ti>
+
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--ftp文件方式 -->
+	</t>
+
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="ids">22</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="22" class="cn.uway.nbi.task.triggerbean.LogFileTriggerBean" >
+		<property name="conn_id">${xinjiang_logfile_ftp}</property>
+	</trigger>
+</config>

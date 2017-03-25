@@ -1,0 +1,1736 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nbi_perf_table order_by="数据时间点">
+    <tr id = "1" primary_key="数据时间点,场景编号">
+      <td left_join="true">
+      		      <![CDATA[
+   SELECT 
+       NVL(SUBSTR(S.SCENE_NAME, 1, INSTR(S.SCENE_NAME, '_', 1, 1) - 1),S.SCENE_NAME)||'_'||S.CITY_NAME||'_'||S.SCENE_LEVEL as "场景名称",
+       X.*
+  FROM cfg_province_city c,
+       ne_taizhang_scene s,
+       (select to_char(START_TIME, 'YYYY-MM-DD HH24:MI:SS') as 数据时间点,
+               SCENE_NO "场景编号",
+               '${province_cn}' as 省份,
+               CITY_NAME as 城市,
+               "MD1.6" as 载扇数量,
+               "MD1.1",
+               /**
+               "MD1.2",
+               "MD1.3",
+               "MD1.4",
+               "MD1.5",
+               **/
+               "MD1.6",
+               "MD1.10",
+               "MD1.11",
+               /**
+               "MD1.12",
+               **/
+               /**
+               "MD1.14",              
+               "MD1.15",
+               "MD1.16",
+               "MD1.17",
+               **/
+               "MD1.21",
+               "MD1.22",
+               "MD2.1",
+               "MD2.2",
+               "MD2.3",
+               "MD2.4",
+               "MD2.5",
+               "MD2.6",
+               "MD2.7",
+               "MD2.8",
+               "MD2.9",
+               "MD2.10",
+               "MD2.13",
+               "MD2.14",
+               "MD2.15",
+               "MD2.16",
+               "MD2.17",
+               "MD2.18",
+               "MD2.19",
+               "MD2.20",
+               "MD2.21",
+               "MD2.22",
+               "MD2.23",
+               "MD2.24",
+               "MD2.26",
+               "MD2.27",
+               "MD2.28",
+               "MD3.1",
+               "MD3.2",
+               "MD3.3",
+               "MD3.4",
+               "MD5.1",
+               "MD5.2",
+               "MD5.3",
+               "MD5.4",
+               "MD5.5",
+               "MD6.9",
+               "MD6.10",
+               "MD6.11",
+               "MD6.12",
+               "MD6.13",
+               "MD6.14",
+               "MD6.15",
+               "MD6.16",
+               "MD6.17",
+               "MD6.18",
+               "MD6.19",
+               "MD6.20",
+               "MD7.4",
+               "MD7.5",
+               "MD7.6",
+               "MD7.7",
+               "MD7.8",
+               "MD7.9",
+               "MD7.10",
+               "MD7.11",
+               "MD7.12",
+               "MD7.13",
+               "MD7.14",
+               "MD7.15",
+               "MO1.1",
+               "MO1.2",
+               "MO1.3",
+               "MO1.4",
+               "MO1.5",
+               "MO1.6",
+               "MO1.7",
+               "MO1.8",
+               "MO1.9",
+               "MO1.10",
+               "MO1.11",
+               "MO2.4",
+               "MO2.5",
+               "MO2.6",
+               "MO2.7",
+               "MO2.8",
+               "MO2.9",
+               "MO2.10",
+               "MO2.11",
+               "MO2.12",
+               "MO2.13",
+               "MO2.14",
+               "MO2.15",
+               "MO2.16",
+               "MO2.17"
+          from (select "START_TIME_DAY",
+                       "START_TIME_H",
+                       "PC"."CITY_ID",
+                       "PC"."CITY_NAME",
+                       "SCENE_NO",
+                       Round(PC1, 4) "MD1.1",
+                       Round(PC2, 4) "MD1.2",
+                       Round(PC3, 4) "MD1.3",
+                       Round(PC4, 4) "MD1.4",
+                       Round(PC5, 4) "MD1.5",
+                       Round(PC6, 4) "MD1.6",
+                       Round((decode(PC8, 0, 1, PC7 / PC8)) * 100, 4) "MD1.10",
+                       Round(PC9, 4) "MD1.11",
+                       Round(PC10, 4) "MD1.12",
+                       Round(PC11, 4) "MD1.14",
+                       Round(PC12, 4) "MD1.15",
+                       Round(PC13, 4) "MD1.16",
+                       Round(PC14, 4) "MD1.17",
+                       Round(PC15, 4) "MD1.21",
+                       Round(PC16, 4) "MD1.22",
+                       Round((decode(PC18, 0, 1, PC17 / PC18)) * 100, 4) "MD2.1",
+                       Round((decode(PC20, 0, 1, PC19 / PC20)) * 100, 4) "MD2.2",
+                       Round((decode(PC22, 0, 1, PC21 / PC22)) * 100, 4) "MD2.3",
+                       Round(PC23, 4) "MD2.4",
+                       Round(PC24, 4) "MD2.5",
+                       Round(PC25, 4) "MD2.6",
+                       Round(PC26, 4) "MD2.7",
+                       Round((decode(PC28, 0, 1, PC27 / PC28)) * 100, 4) "MD2.8",
+                       Round(PC29, 4) "MD2.9",
+                       Round(PC30, 4) "MD2.10",
+                       Round(PC31, 4) "MD2.13",
+                       Round(PC32, 4) "MD2.14",
+                       Round(PC33, 4) "MD2.15",
+                       Round(PC34, 4) "MD2.16",
+                       Round(PC35, 4) "MD2.17",
+                       Round(PC36, 4) "MD2.18",
+                       Round(PC37, 4) "MD2.19",
+                       Round(PC38, 4) "MD2.20",
+                       Round(PC39, 4) "MD2.21",
+                       Round((decode(PC41, 0, 0, PC40 / PC41)) * 100, 4) "MD2.22",
+                       Round((decode(PC43, 0, 0, PC42 / PC43)) * 100, 4) "MD2.23",
+                       Round(PC44, 4) "MD2.24",
+                       Round(PC45, 4) "MD2.26",
+                       Round(PC46, 4) "MD2.27",
+                       Round(PC47, 4) "MD2.28",
+                       Round((decode(PC49, 0, 1, PC48 / PC49)) * 100, 4) "MD3.1",
+                       Round(PC50, 4) "MD3.2",
+                       Round(PC51, 4) "MD3.3",
+                       Round(PC52, 4) "MD3.4",
+                       Round(PC53, 4) "MD5.1",
+                       Round(PC54, 4) "MD5.2",
+                       Round(PC55, 4) "MD5.3",
+                       Round(PC56, 4) "MD5.4",
+                       Round((decode(PC58, 0, 1, PC57 / PC58)) * 100, 4) "MD5.5",
+                       Round(PC59, 4) "MD6.9",
+                       Round((decode(PC61, 0, 0, PC60 / PC61)) * 100, 4) "MD6.10",
+                       Round(PC62, 4) "MD6.11",
+                       Round((decode(PC64, 0, 0, PC63 / PC64)) * 100, 4) "MD6.12",
+                       Round(PC65, 4) "MD6.13",
+                       Round(PC66, 4) "MD6.14",
+                       Round(PC67, 4) "MD6.15",
+                       Round(PC68, 4) "MD6.16",
+                       Round((decode(PC70, 0, 1, PC69 / PC70)) * 100, 4) "MD6.17",
+                       Round(PC71, 4) "MD6.18",
+                       Round(PC72, 4) "MD6.19",
+                       Round((decode(PC74, 0, 1, PC73 / PC74)) * 100, 4) "MD6.20",
+                       Round((decode(PC76, 0, 1, PC75 / PC76)) * 100, 4) "MD7.4",
+                       Round(PC77, 4) "MD7.5",
+                       Round(PC78, 4) "MD7.6",
+                       Round((decode(PC80, 0, 1, PC79 / PC80)) * 100, 4) "MD7.7",
+                       Round(PC81, 4) "MD7.8",
+                       Round(PC82, 4) "MD7.9",
+                       Round((decode(PC84, 0, 1, PC83 / PC84)) * 100, 4) "MD7.10",
+                       Round(PC85, 4) "MD7.11",
+                       Round(PC86, 4) "MD7.12",
+                       Round((decode(PC88, 0, 1, PC87 / PC88)) * 100, 4) "MD7.13",
+                       Round(PC89, 4) "MD7.14",
+                       Round(PC90, 4) "MD7.15",
+                       Round(PC91, 4) "MO1.1",
+                       Round(PC92, 4) "MO1.2",
+                       Round(PC93, 4) "MO1.3",
+                       Round(PC94, 4) "MO1.4",
+                       Round(PC95, 4) "MO1.5",
+                       Round(PC96, 4) "MO1.6",
+                       Round(PC97, 4) "MO1.7",
+                       Round(PC98, 4) "MO1.8",
+                       Round(PC99, 4) "MO1.9",
+                       Round(PC100, 4) "MO1.10",
+                       Round(PC101, 4) "MO1.11",
+                       Round(PC102, 4) "MO2.4",
+                       Round(PC103, 4) "MO2.5",
+                       Round(PC104, 4) "MO2.6",
+                       Round(PC105, 4) "MO2.7",
+                       Round(PC106, 4) "MO2.8",
+                       Round(PC107, 4) "MO2.9",
+                       Round(PC108, 4) "MO2.10",
+                       Round(PC109, 4) "MO2.11",
+                       Round(PC110, 4) "MO2.12",
+                       Round(PC111, 4) "MO2.13",
+                       Round(PC112, 4) "MO2.14",
+                       Round(PC113, 4) "MO2.15",
+                       Round(PC114, 4) "MO2.16",
+                       Round(PC115, 4) "MO2.17",
+                       "START_TIME"
+                  from (select "START_TIME_DAY",
+                               "START_TIME_H",
+                               "UN"."CITY_ID",
+                               "UN"."CITY_NAME",
+                               "SCENE_NO",
+                               SUM(PC1) "PC1",
+                               SUM(PC2) "PC2",
+                               SUM(PC3) "PC3",
+                               SUM(PC4) "PC4",
+                               SUM(PC5) "PC5",
+                               SUM(PC6) "PC6",
+                               SUM(PC7) "PC7",
+                               SUM(PC8) "PC8",
+                               SUM(PC9) "PC9",
+                               SUM(PC10) "PC10",
+                               SUM(PC11) "PC11",
+                               SUM(PC12) "PC12",
+                               SUM(PC13) "PC13",
+                               SUM(PC14) "PC14",
+                               SUM(PC15) "PC15",
+                               SUM(PC16) "PC16",
+                               SUM(PC17) "PC17",
+                               SUM(PC18) "PC18",
+                               SUM(PC19) "PC19",
+                               SUM(PC20) "PC20",
+                               SUM(PC21) "PC21",
+                               SUM(PC22) "PC22",
+                               SUM(PC23) "PC23",
+                               SUM(PC24) "PC24",
+                               SUM(PC25) "PC25",
+                               SUM(PC26) "PC26",
+                               SUM(PC27) "PC27",
+                               SUM(PC28) "PC28",
+                               SUM(PC29) "PC29",
+                               SUM(PC30) "PC30",
+                               SUM(PC31) "PC31",
+                               SUM(PC32) "PC32",
+                               SUM(PC33) "PC33",
+                               SUM(PC34) "PC34",
+                               SUM(PC35) "PC35",
+                               SUM(PC36) "PC36",
+                               SUM(PC37) "PC37",
+                               SUM(PC38) "PC38",
+                               SUM(PC39) "PC39",
+                               SUM(PC40) "PC40",
+                               SUM(PC41) "PC41",
+                               SUM(PC42) "PC42",
+                               SUM(PC43) "PC43",
+                               SUM(PC44) "PC44",
+                               AVG(PC45) "PC45",
+                               AVG(PC46) "PC46",
+                               AVG(PC47) "PC47",
+                               SUM(PC48) "PC48",
+                               SUM(PC49) "PC49",
+                               SUM(PC50) "PC50",
+                               SUM(PC51) "PC51",
+                               SUM(PC52) "PC52",
+                               SUM(PC53) "PC53",
+                               SUM(PC54) "PC54",
+                               SUM(PC55) "PC55",
+                               SUM(PC56) "PC56",
+                               SUM(PC57) "PC57",
+                               SUM(PC58) "PC58",
+                               SUM(PC59) "PC59",
+                               SUM(PC60) "PC60",
+                               SUM(PC61) "PC61",
+                               SUM(PC62) "PC62",
+                               SUM(PC63) "PC63",
+                               SUM(PC64) "PC64",
+                               SUM(PC65) "PC65",
+                               SUM(PC66) "PC66",
+                               SUM(PC67) "PC67",
+                               SUM(PC68) "PC68",
+                               SUM(PC69) "PC69",
+                               SUM(PC70) "PC70",
+                               AVG(PC71) "PC71",
+                               SUM(PC72) "PC72",
+                               SUM(PC73) "PC73",
+                               SUM(PC74) "PC74",
+                               SUM(PC75) "PC75",
+                               SUM(PC76) "PC76",
+                               SUM(PC77) "PC77",
+                               SUM(PC78) "PC78",
+                               SUM(PC79) "PC79",
+                               SUM(PC80) "PC80",
+                               SUM(PC81) "PC81",
+                               SUM(PC82) "PC82",
+                               SUM(PC83) "PC83",
+                               SUM(PC84) "PC84",
+                               SUM(PC85) "PC85",
+                               SUM(PC86) "PC86",
+                               SUM(PC87) "PC87",
+                               SUM(PC88) "PC88",
+                               SUM(PC89) "PC89",
+                               SUM(PC90) "PC90",
+                               SUM(PC91) "PC91",
+                               SUM(PC92) "PC92",
+                               SUM(PC93) "PC93",
+                               SUM(PC94) "PC94",
+                               SUM(PC95) "PC95",
+                               SUM(PC96) "PC96",
+                               SUM(PC97) "PC97",
+                               SUM(PC98) "PC98",
+                               SUM(PC99) "PC99",
+                               SUM(PC100) "PC100",
+                               SUM(PC101) "PC101",
+                               SUM(PC102) "PC102",
+                               SUM(PC103) "PC103",
+                               SUM(PC104) "PC104",
+                               SUM(PC105) "PC105",
+                               SUM(PC106) "PC106",
+                               SUM(PC107) "PC107",
+                               SUM(PC108) "PC108",
+                               SUM(PC109) "PC109",
+                               SUM(PC110) "PC110",
+                               SUM(PC111) "PC111",
+                               SUM(PC112) "PC112",
+                               SUM(PC113) "PC113",
+                               SUM(PC114) "PC114",
+                               SUM(PC115) "PC115",
+                               "START_TIME"
+                          from (select "START_TIME_DAY",
+                                       "START_TIME_H",
+                                       "COUNTER"."CITY_ID",
+                                       "COUNTER"."CITY_NAME",
+                                       "SCENE_NO",
+                                       Round(0, 4) "PC1",
+                                       Round(0, 4) "PC2",
+                                       Round(0, 4) "PC3",
+                                       Round(0, 4) "PC4",
+                                       Round(0, 4) "PC5",
+                                       Round(0, 4) "PC6",
+                                       Round((SUM(C1)), 4) "PC7",
+                                       Round((SUM(C2)), 4) "PC8",
+                                       Round(SUM(C1), 4) "PC9",
+                                       Round(0, 4) "PC10",
+                                       Round(0, 4) "PC11",
+                                       Round(0, 4) "PC12",
+                                       Round((decode((0), 0, 1, (0) / (0))) * 100, 4) "PC13",
+                                       Round((decode((0), 0, 1, (0) / (0))) * 100, 4) "PC14",
+                                       Round(0, 4) "PC15",
+                                       Round(0, 4) "PC16",
+                                       Round((SUM(C3) + SUM(C4) + SUM(C5) + SUM(C6) + SUM(C7) + SUM(C8)),
+                                             4) "PC17",
+                                       Round((SUM(C3) + SUM(C9) + SUM(C10) + SUM(C11) + SUM(C12) +
+                                             SUM(C13) + SUM(C4) + SUM(C14) + SUM(C15) + SUM(C16) +
+                                             SUM(C17) + SUM(C18) + SUM(C19) + SUM(C20) + SUM(C21) +
+                                             SUM(C5) + SUM(C22) + SUM(C23) + SUM(C24) + SUM(C25) +
+                                             SUM(C26) + SUM(C6) + SUM(C27) + SUM(C28) + SUM(C29) +
+                                             SUM(C30) + SUM(C31) + SUM(C32) + SUM(C33) + SUM(C34) +
+                                             SUM(C7) + SUM(C35) + SUM(C36) + SUM(C37) + SUM(C38) +
+                                             SUM(C39) + SUM(C8) + SUM(C40) + SUM(C41) + SUM(C42) +
+                                             SUM(C43) + SUM(C44) + SUM(C45) + SUM(C46) + SUM(C47)),
+                                             4) "PC18",
+                                       Round((SUM(C3) + SUM(C4)), 4) "PC19",
+                                       Round((SUM(C3) + SUM(C9) + SUM(C10) + SUM(C11) + SUM(C12) +
+                                             SUM(C13) + SUM(C4) + SUM(C14) + SUM(C15) + SUM(C16) +
+                                             SUM(C17) + SUM(C18) + SUM(C19) + SUM(C20) + SUM(C21)),
+                                             4) "PC20",
+                                       Round((SUM(C5) + SUM(C6) + SUM(C7) + SUM(C8)), 4) "PC21",
+                                       Round((SUM(C5) + SUM(C22) + SUM(C23) + SUM(C24) + SUM(C25) +
+                                             SUM(C26) + SUM(C6) + SUM(C27) + SUM(C28) + SUM(C29) +
+                                             SUM(C30) + SUM(C31) + SUM(C32) + SUM(C33) + SUM(C34) +
+                                             SUM(C7) + SUM(C35) + SUM(C36) + SUM(C37) + SUM(C38) +
+                                             SUM(C39) + SUM(C8) + SUM(C40) + SUM(C41) + SUM(C42) +
+                                             SUM(C43) + SUM(C44) + SUM(C45) + SUM(C46) + SUM(C47)),
+                                             4) "PC22",
+                                       Round(SUM(C3) + SUM(C9) + SUM(C10) + SUM(C11) + SUM(C12) +
+                                             SUM(C13) + SUM(C4) + SUM(C14) + SUM(C15) + SUM(C16) +
+                                             SUM(C17) + SUM(C18) + SUM(C19) + SUM(C20) + SUM(C21),
+                                             4) "PC23",
+                                       Round(SUM(C5) + SUM(C22) + SUM(C23) + SUM(C24) + SUM(C25) +
+                                             SUM(C26) + SUM(C6) + SUM(C27) + SUM(C28) + SUM(C29) +
+                                             SUM(C30) + SUM(C31) + SUM(C32) + SUM(C33) + SUM(C34) +
+                                             SUM(C7) + SUM(C35) + SUM(C36) + SUM(C37) + SUM(C38) +
+                                             SUM(C39) + SUM(C8) + SUM(C40) + SUM(C41) + SUM(C42) +
+                                             SUM(C43) + SUM(C44) + SUM(C45) + SUM(C46) + SUM(C47),
+                                             4) "PC24",
+                                       Round(SUM(C3) + SUM(C4), 4) "PC25",
+                                       Round(SUM(C5) + SUM(C6) + SUM(C7) + SUM(C8), 4) "PC26",
+                                       Round((SUM(C48) + SUM(C49) + SUM(C50) + SUM(C51)), 4) "PC27",
+                                       Round((SUM(C3) + SUM(C9) + SUM(C10) + SUM(C13) + SUM(C11) +
+                                             SUM(C12) + SUM(C4) + SUM(C14) + SUM(C15) + SUM(C18) +
+                                             SUM(C16) + SUM(C17) + SUM(C5) + SUM(C22) + SUM(C23) +
+                                             SUM(C26) + SUM(C24) + SUM(C25) + SUM(C6) + SUM(C27) +
+                                             SUM(C28) + SUM(C31) + SUM(C29) + SUM(C30) + SUM(C7) +
+                                             SUM(C35) + SUM(C36) + SUM(C39) + SUM(C37) + SUM(C38) +
+                                             SUM(C8) + SUM(C40) + SUM(C41) + SUM(C44) + SUM(C42) +
+                                             SUM(C43)),
+                                             4) "PC28",
+                                       Round((SUM(C48) + SUM(C49) + SUM(C50) + SUM(C51)), 4) "PC29",
+                                       Round((SUM(C3) + SUM(C9) + SUM(C10) + SUM(C11) + SUM(C12) +
+                                             SUM(C13) + SUM(C4) + SUM(C14) + SUM(C15) + SUM(C16) +
+                                             SUM(C17) + SUM(C18) + SUM(C19) + SUM(C20) + SUM(C21) +
+                                             SUM(C5) + SUM(C22) + SUM(C23) + SUM(C24) + SUM(C25) +
+                                             SUM(C26) + SUM(C6) + SUM(C27) + SUM(C28) + SUM(C29) +
+                                             SUM(C30) + SUM(C31) + SUM(C32) + SUM(C33) + SUM(C34) +
+                                             SUM(C7) + SUM(C35) + SUM(C36) + SUM(C37) + SUM(C38) +
+                                             SUM(C39) + SUM(C8) + SUM(C40) + SUM(C41) + SUM(C42) +
+                                             SUM(C43) + SUM(C44) + SUM(C45) + SUM(C46) + SUM(C47)),
+                                             4) "PC30",
+                                       Round(SUM(C10) + SUM(C15) + SUM(C20) + SUM(C23) + SUM(C28) +
+                                             SUM(C33) + SUM(C36) + SUM(C41) + SUM(C46),
+                                             4) "PC31",
+                                       Round(SUM(C11) + SUM(C16) + SUM(C24) + SUM(C29) + SUM(C37) +
+                                             SUM(C42),
+                                             4) "PC32",
+                                       Round(SUM(C12) + SUM(C17) + SUM(C25) + SUM(C30) + SUM(C38) +
+                                             SUM(C43),
+                                             4) "PC33",
+                                       Round((SUM(C52) + SUM(C53)), 4) "PC34",
+                                       Round((SUM(C52) + SUM(C53) - SUM(C53)), 4) "PC35",
+                                       Round((SUM(C53)), 4) "PC36",
+                                       Round((SUM(C54)), 4) "PC37",
+                                       Round((SUM(C55)), 4) "PC38",
+                                       Round((SUM(C56)), 4) "PC39",
+                                       Round((SUM(C54) + SUM(C55) + SUM(C56)), 4) "PC40",
+                                       Round((SUM(C54) + SUM(C55) + SUM(C56) + SUM(C52) + SUM(C53)), 4) "PC41",
+                                       Round(((SUM(C53) + SUM(C54) + SUM(C55) + SUM(C56))), 4) "PC42",
+                                       Round(((SUM(C52) + SUM(C53) + SUM(C54) + SUM(C55) + SUM(C56))),
+                                             4) "PC43",
+                                       Round((decode(((SUM(C3) + SUM(C4)) +
+                                                     (SUM(C5) + SUM(C6) + SUM(C7) + SUM(C8))),
+                                                     0,
+                                                     1,
+                                                     (SUM(C57) + SUM(C58)) /
+                                                     ((SUM(C3) + SUM(C4)) +
+                                                     (SUM(C5) + SUM(C6) + SUM(C7) + SUM(C8))))),
+                                             4) "PC44",
+                                       Round((100 *
+                                             (decode((SUM(C59) + SUM(C60) + SUM(C61) + SUM(C62)),
+                                                      0,
+                                                      1,
+                                                      SUM(C59) /
+                                                      (SUM(C59) + SUM(C60) + SUM(C61) + SUM(C62))))),
+                                             4) "PC45",
+                                       Round((100 *
+                                             (decode((SUM(C59) + SUM(C60) + SUM(C61) + SUM(C62)),
+                                                      0,
+                                                      1,
+                                                      (SUM(C60) + SUM(C61)) /
+                                                      (SUM(C59) + SUM(C60) + SUM(C61) + SUM(C62))))),
+                                             4) "PC46",
+                                       Round((100 *
+                                             (decode((SUM(C59) + SUM(C60) + SUM(C61) + SUM(C62)),
+                                                      0,
+                                                      1,
+                                                      SUM(C62) /
+                                                      (SUM(C59) + SUM(C60) + SUM(C61) + SUM(C62))))),
+                                             4) "PC47",
+                                       Round((SUM(C63)), 4) "PC48",
+                                       Round((SUM(C64)), 4) "PC49",
+                                       Round((SUM(C64)), 4) "PC50",
+                                       Round((SUM(C63)), 4) "PC51",
+                                       Round(SUM(C64) - SUM(C63), 4) "PC52",
+                                       Round((SUM(C65)), 4) "PC53",
+                                       Round((SUM(C66) / 3600), 4) "PC54",
+                                       Round(((SUM(C66) + SUM(C67)) / 3600), 4) "PC55",
+                                       Round(((SUM(C66) + SUM(C67)) / 3600) - (SUM(C66) / 3600), 4) "PC56",
+                                       Round((((SUM(C66) + SUM(C67)) / 3600) - (SUM(C66) / 3600)), 4) "PC57",
+                                       Round(((SUM(C66) / 3600)), 4) "PC58",
+                                       Round(((SUM(C68) + SUM(C69)) * 8 *
+                                             (decode((3600 * AVG(C70)),
+                                                      0,
+                                                      1,
+                                                      (1024 / 1000) / (3600 * AVG(C70))))),
+                                             4) "PC59",
+                                       Round((SUM(C69) * 1024), 4) "PC60",
+                                       Round((SUM(C68) * 1024 - SUM(C69) * 1024 + SUM(C69) * 1024), 4) "PC61",
+                                       Round(((SUM(C71) + SUM(C72)) *
+                                             (decode((3600 * AVG(C70)),
+                                                      0,
+                                                      1,
+                                                      (8 / 1000) / (3600 * AVG(C70))))),
+                                             4) "PC62",
+                                       Round((SUM(C73)), 4) "PC63",
+                                       Round((SUM(C71) + SUM(C72) - SUM(C73) + SUM(C73)), 4) "PC64",
+                                       Round((SUM(C74) + SUM(C75)) * ((8 / 1000) / 1800), 4) "PC65",
+                                       Round((SUM(C74) + SUM(C75)) *
+                                             (decode(((AVG(C76) + AVG(C77)) * 1.667),
+                                                     0,
+                                                     1,
+                                                     8 / ((AVG(C76) + AVG(C77)) * 1.667))),
+                                             4) "PC66",
+                                       Round((SUM(C78) + SUM(C79)) * ((8 / 1000) / 1800), 4) "PC67",
+                                       Round(((decode((AVG(C80) * 1.667 / 1000),
+                                                      0,
+                                                      1,
+                                                      ((SUM(C78) + SUM(C79)) * 8) /
+                                                      (AVG(C80) * 1.667 / 1000))) / 1000),
+                                             4) "PC68",
+                                       Round(((AVG(C76) + AVG(C77)) *
+                                             (decode((3600000 * AVG(C70)),
+                                                      0,
+                                                      1,
+                                                      1.667 / (3600000 * AVG(C70)))) * 100),
+                                             4) "PC69",
+                                       Round(100, 4) "PC70",
+                                       Round((100 * AVG(C81) *
+                                             (decode((1000 * 3600 * AVG(C70)),
+                                                      0,
+                                                      1,
+                                                      1.667 / (1000 * 3600 * AVG(C70))))),
+                                             4) "PC71",
+                                       Round((100 * (AVG(C82) + AVG(C83)) * AVG(C84) *
+                                             (decode((1000 * 3600 * AVG(C70)),
+                                                      0,
+                                                      1,
+                                                      1.667 / (1000 * 3600 * AVG(C70))))),
+                                             4) "PC72",
+                                       Round(SUM(C85), 4) "PC73",
+                                       Round((SUM(C85) + SUM(C86)), 4) "PC74",
+                                       Round(((SUM(C87) + SUM(C88) + SUM(C89) + SUM(C90) + SUM(C91) +
+                                             SUM(C92))),
+                                             4) "PC75",
+                                       Round(((SUM(C93) + SUM(C94) + SUM(C95) + SUM(C96) + SUM(C97) +
+                                             SUM(C98))),
+                                             4) "PC76",
+                                       Round((SUM(C93) + SUM(C94) + SUM(C95) + SUM(C96) + SUM(C97) +
+                                             SUM(C98)),
+                                             4) "PC77",
+                                       Round((SUM(C87) + SUM(C88) + SUM(C89) + SUM(C90) + SUM(C91) +
+                                             SUM(C92)),
+                                             4) "PC78",
+                                       Round((SUM(C99) + SUM(C100)), 4) "PC79",
+                                       Round((SUM(C101) + SUM(C102)), 4) "PC80",
+                                       Round((SUM(C101) + SUM(C102)), 4) "PC81",
+                                       Round((SUM(C99) + SUM(C100)), 4) "PC82",
+                                       Round(((SUM(C103) + SUM(C104))), 4) "PC83",
+                                       Round(((SUM(C105) + SUM(C106))), 4) "PC84",
+                                       Round((SUM(C105) + SUM(C106)), 4) "PC85",
+                                       Round((SUM(C103) + SUM(C104)), 4) "PC86",
+                                       Round(((SUM(C107))), 4) "PC87",
+                                       Round(((SUM(C107) + SUM(C108) + SUM(C109) + SUM(C110) +
+                                             SUM(C111))),
+                                             4) "PC88",
+                                       Round((SUM(C107) + SUM(C108) + SUM(C109) + SUM(C110) + SUM(C111)),
+                                             4) "PC89",
+                                       Round((SUM(C107)), 4) "PC90",
+                                       Round(0, 4) "PC91",
+                                       Round(0, 4) "PC92",
+                                       Round(0, 4) "PC93",
+                                       Round(0, 4) "PC94",
+                                       Round(0, 4) "PC95",
+                                       Round(0, 4) "PC96",
+                                       Round(0, 4) "PC97",
+                                       Round(0, 4) "PC98",
+                                       Round(0, 4) "PC99",
+                                       Round(0, 4) "PC100",
+                                       Round(0, 4) "PC101",
+                                       Round(SUM(C69), 4) "PC102",
+                                       Round(SUM(C69) + SUM(C68), 4) "PC103",
+                                       Round(SUM(C73), 4) "PC104",
+                                       Round(SUM(C71) + SUM(C72), 4) "PC105",
+                                       Round(SUM(C85), 4) "PC106",
+                                       Round(SUM(C86), 4) "PC107",
+                                       Round(SUM(C2), 4) "PC108",
+                                       Round(SUM(C59), 4) "PC109",
+                                       Round(SUM(C60) + SUM(C61), 4) "PC110",
+                                       Round(SUM(C62), 4) "PC111",
+                                       Round((SUM(C74) + SUM(C75)) * 8, 4) "PC112",
+                                       Round((AVG(C76) + AVG(C77)) * (1.667 / 1000), 4) "PC113",
+                                       Round((SUM(C78) + SUM(C79)) * 8, 4) "PC114",
+                                       Round(AVG(C80) * (1.667 / 1000), 4) "PC115",
+                                       "START_TIME"
+                                  from (select "S1"."START_TIME",
+                                               to_char(S1.START_TIME, 'YYYY-MM-DD') "START_TIME_DAY",
+                                               to_char(S1.START_TIME, 'HH24') "START_TIME_H",
+                                               "S1"."CITY_ID",
+                                               "S1"."CITY_NAME",
+                                               "SCENE_NO",
+                                               "S1"."P821_USERNUM" "C1",
+                                               "S1"."MACINDEX" "C2",
+                                               "S1"."P801_CMO_CALLSNUM" "C3",
+                                               "S1"."P819_CMO_CALLSUCCESSNUM" "C4",
+                                               "S1"."P801_CMT_CALLSNUM" "C5",
+                                               "S1"."P819_CMT_CALLSUCCESSNUM" "C6",
+                                               "S1"."P801_FMT_CALLSNUM" "C7",
+                                               "S1"."P819_FMT_CALLSUCCESSNUM" "C8",
+                                               "S1"."P801_CMO_EXTINTERRUPTNUM" "C9",
+                                               "S1"."P801_CMO_BLOCKFNUM" "C10",
+                                               "S1"."P801_CMO_RTCHCAPFNUM" "C11",
+                                               "S1"."P801_CMO_TCCTIMEOUTFNUM" "C12",
+                                               "S1"."P801_CMO_OTHERFNUM" "C13",
+                                               "S1"."P819_CMO_EXTINTERRUPTNUM" "C14",
+                                               "S1"."P819_CMO_BLOCKFAILURENUM" "C15",
+                                               "S1"."P819_CMO_RTCHCAPFNUM" "C16",
+                                               "S1"."P819_CMO_TCCTIMEOUTFNUM" "C17",
+                                               "S1"."P819_CMO_OTHERFAILURENUM" "C18",
+                                               "S1"."P822_CMO_EXTINTERRUPTNUM" "C19",
+                                               "S1"."P822_CMO_BLOCKFAILURENUM" "C20",
+                                               "S1"."P822_CMO_OTHERFAILURENUM" "C21",
+                                               "S1"."P801_CMT_EXTINTERRUPTNUM" "C22",
+                                               "S1"."P801_CMT_BLOCKFNUM" "C23",
+                                               "S1"."P801_CMT_RTCHCAPFNUM" "C24",
+                                               "S1"."P801_CMT_TCCTIMEOUTFNUM" "C25",
+                                               "S1"."P801_CMT_OTHERFNUM" "C26",
+                                               "S1"."P819_CMT_EXTINTERRUPTNUM" "C27",
+                                               "S1"."P819_CMT_BLOCKFAILURENUM" "C28",
+                                               "S1"."P819_CMT_RTCHCAPFNUM" "C29",
+                                               "S1"."P819_CMT_TCCTIMEOUTFNUM" "C30",
+                                               "S1"."P819_CMT_OTHERFAILURENUM" "C31",
+                                               "S1"."P822_CMT_EXTINTERRUPTNUM" "C32",
+                                               "S1"."P822_CMT_BLOCKFAILURENUM" "C33",
+                                               "S1"."P822_CMT_OTHERFAILURENUM" "C34",
+                                               "S1"."P801_FMT_EXTINTERRUPTNUM" "C35",
+                                               "S1"."P801_FMT_BLOCKFNUM" "C36",
+                                               "S1"."P801_FMT_RTCHCAPFNUM" "C37",
+                                               "S1"."P801_FMT_TCCTIMEOUTFNUM" "C38",
+                                               "S1"."P801_FMT_OTHERFNUM" "C39",
+                                               "S1"."P819_FMT_EXTINTERRUPTNUM" "C40",
+                                               "S1"."P819_FMT_BLOCKFAILURENUM" "C41",
+                                               "S1"."P819_FMT_RTCHCAPFNUM" "C42",
+                                               "S1"."P819_FMT_TCCTIMEOUTFNUM" "C43",
+                                               "S1"."P819_FMT_OTHERFAILURENUM" "C44",
+                                               "S1"."P822_FMT_EXTINTERRUPTNUM" "C45",
+                                               "S1"."P822_FMT_BLOCKFAILURENUM" "C46",
+                                               "S1"."P822_FMT_OTHERFAILURENUM" "C47",
+                                               "S1"."P801_MO_WIRENETCALLSUCNUM" "C48",
+                                               "S1"."P801_MT_WIRENETSUCNUM" "C49",
+                                               "S1"."P819_MO_WIRENETCALLSUCNUM" "C50",
+                                               "S1"."P819_MT_WIRENETSUCNUM" "C51",
+                                               "S1"."P803_RLSSNUM" "C52",
+                                               "S1"."P803_PDSNRELEASENUM" "C53",
+                                               "S1"."P803_AIRLINKLOSTDROPNUM" "C54",
+                                               "S1"."P803_HHODROPNUM" "C55",
+                                               "S1"."P803_OTHERDROPNUM" "C56",
+                                               "S1"."P801_SETUPTIME" "C57",
+                                               "S1"."P819_SETUPTIME" "C58",
+                                               "S1"."P840_RANGE1REQNUM" "C59",
+                                               "S1"."P840_RANGE2REQNUM" "C60",
+                                               "S1"."P840_RANGE3REQNUM" "C61",
+                                               "S1"."P840_RANGE4REQNUM" "C62",
+                                               "S1"."P820_SETUPSUCCESSNUM" "C63",
+                                               "S1"."P820_SETUPATTEMPTNUM" "C64",
+                                               "S1"."P815_EQUUSERNUM" "C65",
+                                               "S1"."P804_CALLDURATION" "C66",
+                                               "S1"."P804_SHODURATION" "C67",
+                                               "S1"."P821_TXBYTENUM" "C68",
+                                               "S1"."P821_RETXBYTENUM" "C69",
+                                               "S2"."CARR_TSUM_NAVG" "C70",
+                                               "S1"."P807_REVAREVTCHMACBYTES" "C71",
+                                               "S1"."P807_RLS0REVTCHMACBYTES" "C72",
+                                               "S1"."P821_REREBYTENUM" "C73",
+                                               "S1"."P806_REVAFWDTCHPHYBYTES" "C74",
+                                               "S1"."P806_RLS0FWDTCHPHYBYTES" "C75",
+                                               "S1"."P806_REVAFWDTCHSENDSLOTNUM" "C76",
+                                               "S1"."P806_RLS0FWDTCHSENDSLOTNUM" "C77",
+                                               "S1"."P807_REVAREVTCHPHYBYTES" "C78",
+                                               "S1"."P807_RLS0REVTCHPHYBYTES" "C79",
+                                               "S1"."P815_REVSLOTNUM" "C80",
+                                               "S1"."P806_FWDCCHSENDSLOTNUM" "C81",
+                                               "S1"."P815_SUCCESSCAPSULENUM" "C82",
+                                               "S1"."P815_FAILURECAPSULENUM" "C83",
+                                               "S2"."ACHDURATIONFOR" "C84",
+                                               "S1"."P815_RABBUSYNUM" "C85",
+                                               "S1"."P815_RABFREENUM" "C86",
+                                               "S1"."P802_SRCANTGTHO_SFTSUCCESSNUM" "C87",
+                                               "S1"."P802_SRCANTGTHO_SFRSUCCESSNUM" "C88",
+                                               "S1"."P802_SRCANTGTHO_AFRSUCCESSNUM" "C89",
+                                               "S1"."P826_TGTANTGTHO_SFTSUCCESSNUM" "C90",
+                                               "S1"."P826_TGTANTGTHO_SFRSUCCESSNUM" "C91",
+                                               "S1"."P826_TGTANTGTHO_AFRSUCCESSNUM" "C92",
+                                               "S1"."P802_SRCANTGTHO_SFTREQUESTNUM" "C93",
+                                               "S1"."P802_SRCANTGTHO_SFRREQUESTNUM" "C94",
+                                               "S1"."P802_SRCANTGTHO_AFRREQESTNUM" "C95",
+                                               "S1"."P826_TGTANTGTHO_SFTREQESTNUM" "C96",
+                                               "S1"."P826_TGTANTGTHO_SFRREQESTNUM" "C97",
+                                               "S1"."P826_TGTANTGTHO_AFRREQESTNUM" "C98",
+                                               "S1"."P802_INTERANSRCHOOUT_SUCCESSNU" "C99",
+                                               "S1"."P826_INTERANTGTHOIN_SUCCESSNUM" "C100",
+                                               "S1"."P802_INTERANSRCHOOUT_REQUESTNU" "C101",
+                                               "S1"."P826_INTERANTGTHOIN_REQESTNUM" "C102",
+                                               "S1"."P802_SRCANTGTHO_IFRSUCCESSNUM" "C103",
+                                               "S1"."P826_TGTANTGTHO_IFRSUCCESSNUM" "C104",
+                                               "S1"."P802_SRCANTGTHO_IFRREQUESTNUM" "C105",
+                                               "S1"."P826_TGTANTGTHO_IFRREQESTNUM" "C106",
+                                               "S1"."P825_HARDHOADD_SUCCESSNUM" "C107",
+                                               "S1"."P825_HARDHOADD_BLOCKNUM" "C108",
+                                               "S1"."P825_HARDHO_RTCHCAPFNUM" "C109",
+                                               "S1"."P825_HARDHO_TCCTIMEOUTFNUM" "C110",
+                                               "S1"."P825_HARDHOADD_OTHERFAILURENUM" "C111"
+                                          from "DS_COUNTER_GROUP_ZTE_TC_DO_1" "S1"
+                                         inner join "DS_COUNTER_GROUP_ZTE_TC_PU_1" "S2"
+                                            on ("S1"."NE_SYS_ID" = "S2"."NE_SYS_ID" and
+                                               "S1"."START_TIME" = "S2"."START_TIME" and
+                                               "S1"."CITY_ID" = "S2"."CITY_ID")
+                                         inner join ne_taizhang_scene_switch "NEGROUP"
+                                            on ("S1"."NE_SYS_ID" = "NEGROUP"."RELATED_CELL")
+                                         where ((S1.START_TIME >=
+                                               TO_DATE('@@YY-@@MM-@@DD @@HH:@@MI:@@SS',
+                                                         'YYYY-MM-DD HH24:MI:SS') AND
+                                               S1.START_TIME <
+                                               TO_DATE('@@YY-@@MM-@@DD @@HH:@@MI:@@SS',
+                                                         'YYYY-MM-DD HH24:MI:SS') + 1))) "COUNTER"
+                                 group by "START_TIME_H",
+                                          "START_TIME_DAY",
+                                          "CITY_ID",
+                                          "CITY_NAME",
+                                          "SCENE_NO",
+                                          "START_TIME"
+                                union all
+                                select "START_TIME_DAY",
+                                       "START_TIME_H",
+                                       "COUNTER"."CITY_ID",
+                                       "COUNTER"."CITY_NAME",
+                                       "SCENE_NO",
+                                       Round(0, 4) "PC1",
+                                       Round(0, 4) "PC2",
+                                       Round(0, 4) "PC3",
+                                       Round(0, 4) "PC4",
+                                       Round(0, 4) "PC5",
+                                       Round(0, 4) "PC6",
+                                       Round((SUM(C1) + SUM(C2)), 4) "PC7",
+                                       Round((SUM(C3)), 4) "PC8",
+                                       Round(SUM(C1) + SUM(C2), 4) "PC9",
+                                       Round(0, 4) "PC10",
+                                       Round(0, 4) "PC11",
+                                       Round(0, 4) "PC12",
+                                       Round((decode((0), 0, 1, (0) / (0))) * 100, 4) "PC13",
+                                       Round((decode((0), 0, 1, (0) / (0))) * 100, 4) "PC14",
+                                       Round(0, 4) "PC15",
+                                       Round(0, 4) "PC16",
+                                       Round((SUM(C4) + SUM(C5)), 4) "PC17",
+                                       Round((SUM(C6) + SUM(C7)), 4) "PC18",
+                                       Round(SUM(C4), 4) "PC19",
+                                       Round(SUM(C6), 4) "PC20",
+                                       Round(SUM(C5), 4) "PC21",
+                                       Round(SUM(C7), 4) "PC22",
+                                       Round(SUM(C6), 4) "PC23",
+                                       Round(SUM(C7), 4) "PC24",
+                                       Round(SUM(C4), 4) "PC25",
+                                       Round(SUM(C5), 4) "PC26",
+                                       Round((SUM(C8)), 4) "PC27",
+                                       Round((SUM(C9)), 4) "PC28",
+                                       Round((SUM(C8)), 4) "PC29",
+                                       Round((SUM(C9)), 4) "PC30",
+                                       Round(SUM(C10) + SUM(C11), 4) "PC31",
+                                       Round(SUM(C12) + SUM(C13), 4) "PC32",
+                                       Round(SUM(C14) + SUM(C15), 4) "PC33",
+                                       Round((SUM(C16)), 4) "PC34",
+                                       Round((SUM(C16) - SUM(C17)), 4) "PC35",
+                                       Round((SUM(C17)), 4) "PC36",
+                                       Round((SUM(C18)), 4) "PC37",
+                                       Round((SUM(C19)), 4) "PC38",
+                                       Round((SUM(C20)), 4) "PC39",
+                                       Round((SUM(C18) + SUM(C19) + SUM(C20)), 4) "PC40",
+                                       Round((SUM(C18) + SUM(C19) + SUM(C20) + SUM(C16)), 4) "PC41",
+                                       Round(((SUM(C17) + SUM(C18) + SUM(C19) + SUM(C20))), 4) "PC42",
+                                       Round(((SUM(C16) + SUM(C18) + SUM(C19) + SUM(C20))), 4) "PC43",
+                                       Round(AVG(C21), 4) "PC44",
+                                       Round((100 *
+                                             (decode((SUM(C22) + SUM(C23) + SUM(C24) + SUM(C25) +
+                                                      SUM(C26) + SUM(C27) + SUM(C28) + SUM(C29) +
+                                                      SUM(C30) + SUM(C31) + SUM(C32) + SUM(C33) +
+                                                      SUM(C34) + SUM(C35) + SUM(C36) + SUM(C37) +
+                                                      SUM(C38) + SUM(C39) + SUM(C40) + SUM(C41) +
+                                                      SUM(C42) + SUM(C43) + SUM(C44) + SUM(C45) +
+                                                      SUM(C46) + SUM(C47) + SUM(C48) + SUM(C49) +
+                                                      SUM(C50) + SUM(C51) + SUM(C52) + SUM(C53) +
+                                                      SUM(C54) + SUM(C55) + SUM(C56) + SUM(C57) +
+                                                      SUM(C58) + SUM(C59) + SUM(C60) + SUM(C61) +
+                                                      SUM(C62) + SUM(C63) + SUM(C64) + SUM(C65) +
+                                                      SUM(C66) + SUM(C67) + SUM(C68) + SUM(C69) +
+                                                      SUM(C70) + SUM(C71) + SUM(C72) + SUM(C73)),
+                                                      0,
+                                                      1,
+                                                      (SUM(C22) + SUM(C23) + SUM(C24) + SUM(C25) +
+                                                      SUM(C26) + SUM(C27) + SUM(C28) + SUM(C29) +
+                                                      SUM(C30)) /
+                                                      (SUM(C22) + SUM(C23) + SUM(C24) + SUM(C25) +
+                                                      SUM(C26) + SUM(C27) + SUM(C28) + SUM(C29) +
+                                                      SUM(C30) + SUM(C31) + SUM(C32) + SUM(C33) +
+                                                      SUM(C34) + SUM(C35) + SUM(C36) + SUM(C37) +
+                                                      SUM(C38) + SUM(C39) + SUM(C40) + SUM(C41) +
+                                                      SUM(C42) + SUM(C43) + SUM(C44) + SUM(C45) +
+                                                      SUM(C46) + SUM(C47) + SUM(C48) + SUM(C49) +
+                                                      SUM(C50) + SUM(C51) + SUM(C52) + SUM(C53) +
+                                                      SUM(C54) + SUM(C55) + SUM(C56) + SUM(C57) +
+                                                      SUM(C58) + SUM(C59) + SUM(C60) + SUM(C61) +
+                                                      SUM(C62) + SUM(C63) + SUM(C64) + SUM(C65) +
+                                                      SUM(C66) + SUM(C67) + SUM(C68) + SUM(C69) +
+                                                      SUM(C70) + SUM(C71) + SUM(C72) + SUM(C73))))),
+                                             4) "PC45",
+                                       Round((100 *
+                                             (decode((SUM(C22) + SUM(C23) + SUM(C24) + SUM(C25) +
+                                                      SUM(C26) + SUM(C27) + SUM(C28) + SUM(C29) +
+                                                      SUM(C30) + SUM(C31) + SUM(C32) + SUM(C33) +
+                                                      SUM(C34) + SUM(C35) + SUM(C36) + SUM(C37) +
+                                                      SUM(C38) + SUM(C39) + SUM(C40) + SUM(C41) +
+                                                      SUM(C42) + SUM(C43) + SUM(C44) + SUM(C45) +
+                                                      SUM(C46) + SUM(C47) + SUM(C48) + SUM(C49) +
+                                                      SUM(C50) + SUM(C51) + SUM(C52) + SUM(C53) +
+                                                      SUM(C54) + SUM(C55) + SUM(C56) + SUM(C57) +
+                                                      SUM(C58) + SUM(C59) + SUM(C60) + SUM(C61) +
+                                                      SUM(C62) + SUM(C63) + SUM(C64) + SUM(C65) +
+                                                      SUM(C66) + SUM(C67) + SUM(C68) + SUM(C69) +
+                                                      SUM(C70) + SUM(C71) + SUM(C72) + SUM(C73)),
+                                                      0,
+                                                      1,
+                                                      (SUM(C31) + SUM(C32) + SUM(C33) + SUM(C34) +
+                                                      SUM(C35) + SUM(C36) + SUM(C37) + SUM(C38) +
+                                                      SUM(C39) + SUM(C40) + SUM(C41) + SUM(C42) +
+                                                      SUM(C43) + SUM(C44) + SUM(C45) + SUM(C46) +
+                                                      SUM(C47) + SUM(C48) + SUM(C49) + SUM(C50) +
+                                                      SUM(C51) + SUM(C52) + SUM(C53) + SUM(C54) +
+                                                      SUM(C55) + SUM(C56) + SUM(C57)) /
+                                                      (SUM(C22) + SUM(C23) + SUM(C24) + SUM(C25) +
+                                                      SUM(C26) + SUM(C27) + SUM(C28) + SUM(C29) +
+                                                      SUM(C30) + SUM(C31) + SUM(C32) + SUM(C33) +
+                                                      SUM(C34) + SUM(C35) + SUM(C36) + SUM(C37) +
+                                                      SUM(C38) + SUM(C39) + SUM(C40) + SUM(C41) +
+                                                      SUM(C42) + SUM(C43) + SUM(C44) + SUM(C45) +
+                                                      SUM(C46) + SUM(C47) + SUM(C48) + SUM(C49) +
+                                                      SUM(C50) + SUM(C51) + SUM(C52) + SUM(C53) +
+                                                      SUM(C54) + SUM(C55) + SUM(C56) + SUM(C57) +
+                                                      SUM(C58) + SUM(C59) + SUM(C60) + SUM(C61) +
+                                                      SUM(C62) + SUM(C63) + SUM(C64) + SUM(C65) +
+                                                      SUM(C66) + SUM(C67) + SUM(C68) + SUM(C69) +
+                                                      SUM(C70) + SUM(C71) + SUM(C72) + SUM(C73))))),
+                                             4) "PC46",
+                                       Round((100 *
+                                             (decode((SUM(C22) + SUM(C23) + SUM(C24) + SUM(C25) +
+                                                      SUM(C26) + SUM(C27) + SUM(C28) + SUM(C29) +
+                                                      SUM(C30) + SUM(C31) + SUM(C32) + SUM(C33) +
+                                                      SUM(C34) + SUM(C35) + SUM(C36) + SUM(C37) +
+                                                      SUM(C38) + SUM(C39) + SUM(C40) + SUM(C41) +
+                                                      SUM(C42) + SUM(C43) + SUM(C44) + SUM(C45) +
+                                                      SUM(C46) + SUM(C47) + SUM(C48) + SUM(C49) +
+                                                      SUM(C50) + SUM(C51) + SUM(C52) + SUM(C53) +
+                                                      SUM(C54) + SUM(C55) + SUM(C56) + SUM(C57) +
+                                                      SUM(C58) + SUM(C59) + SUM(C60) + SUM(C61) +
+                                                      SUM(C62) + SUM(C63) + SUM(C64) + SUM(C65) +
+                                                      SUM(C66) + SUM(C67) + SUM(C68) + SUM(C69) +
+                                                      SUM(C70) + SUM(C71) + SUM(C72) + SUM(C73)),
+                                                      0,
+                                                      1,
+                                                      (SUM(C58) + SUM(C59) + SUM(C60) + SUM(C61) +
+                                                      SUM(C62) + SUM(C63) + SUM(C64) + SUM(C65) +
+                                                      SUM(C66) + SUM(C67) + SUM(C68) + SUM(C69) +
+                                                      SUM(C70) + SUM(C71) + SUM(C72) + SUM(C73)) /
+                                                      (SUM(C22) + SUM(C23) + SUM(C24) + SUM(C25) +
+                                                      SUM(C26) + SUM(C27) + SUM(C28) + SUM(C29) +
+                                                      SUM(C30) + SUM(C31) + SUM(C32) + SUM(C33) +
+                                                      SUM(C34) + SUM(C35) + SUM(C36) + SUM(C37) +
+                                                      SUM(C38) + SUM(C39) + SUM(C40) + SUM(C41) +
+                                                      SUM(C42) + SUM(C43) + SUM(C44) + SUM(C45) +
+                                                      SUM(C46) + SUM(C47) + SUM(C48) + SUM(C49) +
+                                                      SUM(C50) + SUM(C51) + SUM(C52) + SUM(C53) +
+                                                      SUM(C54) + SUM(C55) + SUM(C56) + SUM(C57) +
+                                                      SUM(C58) + SUM(C59) + SUM(C60) + SUM(C61) +
+                                                      SUM(C62) + SUM(C63) + SUM(C64) + SUM(C65) +
+                                                      SUM(C66) + SUM(C67) + SUM(C68) + SUM(C69) +
+                                                      SUM(C70) + SUM(C71) + SUM(C72) + SUM(C73))))),
+                                             4) "PC47",
+                                       Round((SUM(C74)), 4) "PC48",
+                                       Round((SUM(C75)), 4) "PC49",
+                                       Round((SUM(C75)), 4) "PC50",
+                                       Round((SUM(C74)), 4) "PC51",
+                                       Round(SUM(C76) + SUM(C77) + SUM(C78) + SUM(C79), 4) "PC52",
+                                       Round(((decode((3600 * AVG(C81)),
+                                                      0,
+                                                      1,
+                                                      (SUM(C80) * 0.001667) / (3600 * AVG(C81))))),
+                                             4) "PC53",
+                                       Round((((SUM(C82) + ((SUM(C83) + SUM(C84)) / 2) +
+                                             ((SUM(C85) + SUM(C86) + SUM(C87)) / 3) +
+                                             ((SUM(C88) + SUM(C89) + SUM(C90) + SUM(C91)) / 4) +
+                                             (SUM(C92) / 5) + (SUM(C93) / 6)) +
+                                             (SUM(C94) + ((SUM(C95) + SUM(C96)) / 2) +
+                                             ((SUM(C97) + SUM(C98) + SUM(C99)) / 3) +
+                                             ((SUM(C100) + SUM(C101) + SUM(C102) + SUM(C103)) / 4) +
+                                             (SUM(C104) / 5) + (SUM(C105) / 6)) +
+                                             (SUM(C106) + (SUM(C107) / 10) + (SUM(C108) / 11) +
+                                             (SUM(C109) / 12) + (SUM(C110) / 13) + (SUM(C111) / 14) +
+                                             (SUM(C112) / 15) + (SUM(C113) / 16) + (SUM(C114) / 17) +
+                                             (SUM(C115) / 18))) / 3600),
+                                             4) "PC54",
+                                       Round((((SUM(C116) + (SUM(C117) / 2) +
+                                             ((SUM(C85) + SUM(C89) + SUM(C118) + SUM(C119)) / 3) +
+                                             ((SUM(C88) + SUM(C120) + SUM(C121)) / 4) +
+                                             ((SUM(C122) + SUM(C123)) / 5) + (SUM(C124) / 6)) +
+                                             (SUM(C125) + (SUM(C126) / 2) +
+                                             ((SUM(C97) + SUM(C101) + SUM(C127) + SUM(C128)) / 3) +
+                                             ((SUM(C100) + SUM(C129) + SUM(C130)) / 4) +
+                                             ((SUM(C131) + SUM(C132)) / 5) + (SUM(C133) / 6)) +
+                                             (SUM(C134) / 30)) / 3600),
+                                             4) "PC55",
+                                       Round((((SUM(C116) + (SUM(C117) / 2) +
+                                             ((SUM(C85) + SUM(C89) + SUM(C118) + SUM(C119)) / 3) +
+                                             ((SUM(C88) + SUM(C120) + SUM(C121)) / 4) +
+                                             ((SUM(C122) + SUM(C123)) / 5) + (SUM(C124) / 6)) +
+                                             (SUM(C125) + (SUM(C126) / 2) +
+                                             ((SUM(C97) + SUM(C101) + SUM(C127) + SUM(C128)) / 3) +
+                                             ((SUM(C100) + SUM(C129) + SUM(C130)) / 4) +
+                                             ((SUM(C131) + SUM(C132)) / 5) + (SUM(C133) / 6)) +
+                                             (SUM(C134) / 30)) / 3600) -
+                                             (((SUM(C82) + ((SUM(C83) + SUM(C84)) / 2) +
+                                             ((SUM(C85) + SUM(C86) + SUM(C87)) / 3) +
+                                             ((SUM(C88) + SUM(C89) + SUM(C90) + SUM(C91)) / 4) +
+                                             (SUM(C92) / 5) + (SUM(C93) / 6)) +
+                                             (SUM(C94) + ((SUM(C95) + SUM(C96)) / 2) +
+                                             ((SUM(C97) + SUM(C98) + SUM(C99)) / 3) +
+                                             ((SUM(C100) + SUM(C101) + SUM(C102) + SUM(C103)) / 4) +
+                                             (SUM(C104) / 5) + (SUM(C105) / 6)) +
+                                             (SUM(C106) + (SUM(C107) / 10) + (SUM(C108) / 11) +
+                                             (SUM(C109) / 12) + (SUM(C110) / 13) + (SUM(C111) / 14) +
+                                             (SUM(C112) / 15) + (SUM(C113) / 16) + (SUM(C114) / 17) +
+                                             (SUM(C115) / 18))) / 3600),
+                                             4) "PC56",
+                                       Round(((((SUM(C116) + (SUM(C117) / 2) +
+                                             ((SUM(C85) + SUM(C89) + SUM(C118) + SUM(C119)) / 3) +
+                                             ((SUM(C88) + SUM(C120) + SUM(C121)) / 4) +
+                                             ((SUM(C122) + SUM(C123)) / 5) + (SUM(C124) / 6)) +
+                                             (SUM(C125) + (SUM(C126) / 2) +
+                                             ((SUM(C97) + SUM(C101) + SUM(C127) + SUM(C128)) / 3) +
+                                             ((SUM(C100) + SUM(C129) + SUM(C130)) / 4) +
+                                             ((SUM(C131) + SUM(C132)) / 5) + (SUM(C133) / 6)) +
+                                             (SUM(C134) / 30)) / 3600) -
+                                             (((SUM(C82) + ((SUM(C83) + SUM(C84)) / 2) +
+                                             ((SUM(C85) + SUM(C86) + SUM(C87)) / 3) +
+                                             ((SUM(C88) + SUM(C89) + SUM(C90) + SUM(C91)) / 4) +
+                                             (SUM(C92) / 5) + (SUM(C93) / 6)) +
+                                             (SUM(C94) + ((SUM(C95) + SUM(C96)) / 2) +
+                                             ((SUM(C97) + SUM(C98) + SUM(C99)) / 3) +
+                                             ((SUM(C100) + SUM(C101) + SUM(C102) + SUM(C103)) / 4) +
+                                             (SUM(C104) / 5) + (SUM(C105) / 6)) +
+                                             (SUM(C106) + (SUM(C107) / 10) + (SUM(C108) / 11) +
+                                             (SUM(C109) / 12) + (SUM(C110) / 13) + (SUM(C111) / 14) +
+                                             (SUM(C112) / 15) + (SUM(C113) / 16) + (SUM(C114) / 17) +
+                                             (SUM(C115) / 18))) / 3600)),
+                                             4) "PC57",
+                                       Round(((((SUM(C82) + ((SUM(C83) + SUM(C84)) / 2) +
+                                             ((SUM(C85) + SUM(C86) + SUM(C87)) / 3) +
+                                             ((SUM(C88) + SUM(C89) + SUM(C90) + SUM(C91)) / 4) +
+                                             (SUM(C92) / 5) + (SUM(C93) / 6)) +
+                                             (SUM(C94) + ((SUM(C95) + SUM(C96)) / 2) +
+                                             ((SUM(C97) + SUM(C98) + SUM(C99)) / 3) +
+                                             ((SUM(C100) + SUM(C101) + SUM(C102) + SUM(C103)) / 4) +
+                                             (SUM(C104) / 5) + (SUM(C105) / 6)) +
+                                             (SUM(C106) + (SUM(C107) / 10) + (SUM(C108) / 11) +
+                                             (SUM(C109) / 12) + (SUM(C110) / 13) + (SUM(C111) / 14) +
+                                             (SUM(C112) / 15) + (SUM(C113) / 16) + (SUM(C114) / 17) +
+                                             (SUM(C115) / 18))) / 3600)),
+                                             4) "PC58",
+                                       Round(((SUM(C135) + SUM(C136)) *
+                                             (decode((3600 * AVG(C81)),
+                                                      0,
+                                                      1,
+                                                      (8 / 1000) / (3600 * AVG(C81))))),
+                                             4) "PC59",
+                                       Round((SUM(C136)), 4) "PC60",
+                                       Round((SUM(C135) + SUM(C136)), 4) "PC61",
+                                       Round((SUM(C137) *
+                                             (decode((3600 * AVG(C81)), 0, 1, 8 / (3600 * AVG(C81))))),
+                                             4) "PC62",
+                                       Round((SUM(C138)), 4) "PC63",
+                                       Round((SUM(C137) * 1024), 4) "PC64",
+                                       Round((SUM(C139) / 3600), 4) "PC65",
+                                       Round((decode((0.001667 * SUM(C140)),
+                                                     0,
+                                                     1,
+                                                     SUM(C139) / (0.001667 * SUM(C140)))),
+                                             4) "PC66",
+                                       Round((decode((1000 * 3600),
+                                                     0,
+                                                     1,
+                                                     ((SUM(C141) + SUM(C142) + SUM(C143) + SUM(C144)) * 256 +
+                                                     (SUM(C145) + SUM(C146) + SUM(C147) + SUM(C148)) * 512 +
+                                                     (SUM(C149) + SUM(C150) + SUM(C151) + SUM(C152)) * 1024 +
+                                                     (SUM(C153) + SUM(C154) + SUM(C155) + SUM(C156)) * 2048 +
+                                                     (SUM(C157) + SUM(C158) + SUM(C159) + SUM(C160)) * 4096 +
+                                                     SUM(C161) * 128 + SUM(C162) * 256 +
+                                                     SUM(C163) * 512 + SUM(C164) * 768 +
+                                                     SUM(C165) * 1024 + SUM(C166) * 1536 +
+                                                     SUM(C167) * 2048 + SUM(C168) * 3072 +
+                                                     SUM(C169) * 4096 + SUM(C170) * 6144 +
+                                                     SUM(C171) * 8192 + SUM(C172) * 12288 +
+                                                     SUM(C173) * 128 + SUM(C174) * 256 +
+                                                     SUM(C175) * 512 + SUM(C176) * 768 +
+                                                     SUM(C177) * 1024 + SUM(C178) * 1536 +
+                                                     SUM(C179) * 2048 + SUM(C180) * 3072 +
+                                                     SUM(C181) * 4096 + SUM(C182) * 6144 +
+                                                     SUM(C183) * 8192 + SUM(C184) * 12288) /
+                                                     (1000 * 3600))),
+                                             4) "PC67",
+                                       Round((decode((1000 * SUM(C185)),
+                                                     0,
+                                                     1,
+                                                     ((SUM(C141) + SUM(C142) + SUM(C143) + SUM(C144)) * 256 +
+                                                     (SUM(C145) + SUM(C146) + SUM(C147) + SUM(C148)) * 512 +
+                                                     (SUM(C149) + SUM(C150) + SUM(C151) + SUM(C152)) * 1024 +
+                                                     (SUM(C153) + SUM(C154) + SUM(C155) + SUM(C156)) * 2048 +
+                                                     (SUM(C157) + SUM(C158) + SUM(C159) + SUM(C160)) * 4096 +
+                                                     SUM(C161) * 128 + SUM(C162) * 256 +
+                                                     SUM(C163) * 512 + SUM(C164) * 768 +
+                                                     SUM(C165) * 1024 + SUM(C166) * 1536 +
+                                                     SUM(C167) * 2048 + SUM(C168) * 3072 +
+                                                     SUM(C169) * 4096 + SUM(C170) * 6144 +
+                                                     SUM(C171) * 8192 + SUM(C172) * 12288 +
+                                                     SUM(C173) * 128 + SUM(C174) * 256 +
+                                                     SUM(C175) * 512 + SUM(C176) * 768 +
+                                                     SUM(C177) * 1024 + SUM(C178) * 1536 +
+                                                     SUM(C179) * 2048 + SUM(C180) * 3072 +
+                                                     SUM(C181) * 4096 + SUM(C182) * 6144 +
+                                                     SUM(C183) * 8192 + SUM(C184) * 12288) /
+                                                     (1000 * SUM(C185)))),
+                                             4) "PC68",
+                                       Round(((AVG(C186) / 100)), 4) "PC69",
+                                       Round(100, 4) "PC70",
+                                       Round((AVG(C187) + AVG(C188)), 4) "PC71",
+                                       Round((AVG(C189)), 4) "PC72",
+                                       Round(AVG(C190), 4) "PC73",
+                                       Round(100, 4) "PC74",
+                                       Round(((SUM(C191))), 4) "PC75",
+                                       Round(((SUM(C192))), 4) "PC76",
+                                       Round((SUM(C192)), 4) "PC77",
+                                       Round((SUM(C191)), 4) "PC78",
+                                       Round(((SUM(C193))), 4) "PC79",
+                                       Round(((SUM(C194))), 4) "PC80",
+                                       Round((SUM(C194)), 4) "PC81",
+                                       Round((SUM(C193)), 4) "PC82",
+                                       Round((SUM(C195)), 4) "PC83",
+                                       Round((SUM(C196)), 4) "PC84",
+                                       Round((SUM(C196)), 4) "PC85",
+                                       Round((SUM(C195)), 4) "PC86",
+                                       Round((SUM(C197)), 4) "PC87",
+                                       Round((SUM(C198)), 4) "PC88",
+                                       Round((SUM(C198)), 4) "PC89",
+                                       Round((SUM(C197)), 4) "PC90",
+                                       Round(0, 4) "PC91",
+                                       Round(0, 4) "PC92",
+                                       Round(0, 4) "PC93",
+                                       Round(0, 4) "PC94",
+                                       Round(0, 4) "PC95",
+                                       Round(0, 4) "PC96",
+                                       Round(0, 4) "PC97",
+                                       Round(0, 4) "PC98",
+                                       Round(0, 4) "PC99",
+                                       Round(0, 4) "PC100",
+                                       Round(0, 4) "PC101",
+                                       Round(SUM(C136), 4) "PC102",
+                                       Round(SUM(C135) + SUM(C136), 4) "PC103",
+                                       Round(SUM(C138), 4) "PC104",
+                                       Round(SUM(C137) * 1024, 4) "PC105",
+                                       Round(0, 4) "PC106",
+                                       Round(0, 4) "PC107",
+                                       Round(SUM(C3), 4) "PC108",
+                                       Round(SUM(C22) + SUM(C23) + SUM(C24), 4) "PC109",
+                                       Round(SUM(C31) + SUM(C32) + SUM(C33) + SUM(C34) + SUM(C35) +
+                                             SUM(C36) + SUM(C37),
+                                             4) "PC110",
+                                       Round(SUM(C58) + SUM(C59), 4) "PC111",
+                                       Round(SUM(C139), 4) "PC112",
+                                       Round(0.001667 * SUM(C140), 4) "PC113",
+                                       Round((SUM(C141) + SUM(C142) + SUM(C143) + SUM(C144)) * 256 +
+                                             (SUM(C145) + SUM(C146) + SUM(C147) + SUM(C148)) * 512 +
+                                             (SUM(C149) + SUM(C150) + SUM(C151) + SUM(C152)) * 1024 +
+                                             (SUM(C153) + SUM(C154) + SUM(C155) + SUM(C156)) * 2048 +
+                                             (SUM(C157) + SUM(C158) + SUM(C159) + SUM(C160)) * 4096 +
+                                             SUM(C161) * 128 + SUM(C162) * 256 + SUM(C163) * 512 +
+                                             SUM(C164) * 768 + SUM(C165) * 1024 + SUM(C166) * 1536 +
+                                             SUM(C167) * 2048 + SUM(C168) * 3072 + SUM(C169) * 4096 +
+                                             SUM(C170) * 6144 + SUM(C171) * 8192 + SUM(C172) * 12288 +
+                                             SUM(C173) * 128 + SUM(C174) * 256 + SUM(C175) * 512 +
+                                             SUM(C176) * 768 + SUM(C177) * 1024 + SUM(C178) * 1536 +
+                                             SUM(C179) * 2048 + SUM(C180) * 3072 + SUM(C181) * 4096 +
+                                             SUM(C182) * 6144 + SUM(C183) * 8192 + SUM(C184) * 12288,
+                                             4) "PC114",
+                                       Round(1000 * SUM(C185), 4) "PC115",
+                                       "START_TIME"
+                                  from (select "S1"."START_TIME",
+                                               to_char(S1.START_TIME, 'YYYY-MM-DD') "START_TIME_DAY",
+                                               to_char(S1.START_TIME, 'HH24') "START_TIME_H",
+                                               "S1"."CITY_ID",
+                                               "S1"."CITY_NAME",
+                                               "SCENE_NO",
+                                               "S1"."COUNTER_1166017335" "C1",
+                                               "S1"."COUNTER_1166017337" "C2",
+                                               "S1"."COUNTER_1166017334" "C3",
+                                               "S1"."COUNTER_1157633256" "C4",
+                                               "S1"."COUNTER_1157633257" "C5",
+                                               "S1"."COUNTER_1157631096" "C6",
+                                               "S1"."COUNTER_1157631102" "C7",
+                                               "S1"."COUNTER_1157631249" "C8",
+                                               "S1"."COUNTER_1157631248" "C9",
+                                               "S1"."COUNTER_1157631098" "C10",
+                                               "S1"."COUNTER_1157631104" "C11",
+                                               "S1"."COUNTER_1157631099" "C12",
+                                               "S1"."COUNTER_1157631105" "C13",
+                                               "S1"."COUNTER_1157631100" "C14",
+                                               "S1"."COUNTER_1157631106" "C15",
+                                               "S1"."COUNTER_1157633262" "C16",
+                                               "S1"."COUNTER_1157633259" "C17",
+                                               "S1"."COUNTER_1157633261" "C18",
+                                               "S1"."COUNTER_1157631124" "C19",
+                                               "S1"."COUNTER_1157633260" "C20",
+                                               "S1"."COUNTER_1157633274" "C21",
+                                               "S1"."COUNTER_1166017251" "C22",
+                                               "S1"."COUNTER_1166017252" "C23",
+                                               "S1"."COUNTER_1166017253" "C24",
+                                               "S1"."COUNTER_1166017514" "C25",
+                                               "S1"."COUNTER_1166017515" "C26",
+                                               "S1"."COUNTER_1166017516" "C27",
+                                               "S1"."COUNTER_1166022217" "C28",
+                                               "S1"."COUNTER_1166022218" "C29",
+                                               "S1"."COUNTER_1166022219" "C30",
+                                               "S1"."COUNTER_1166017254" "C31",
+                                               "S1"."COUNTER_1166017255" "C32",
+                                               "S1"."COUNTER_1166017256" "C33",
+                                               "S1"."COUNTER_1166017257" "C34",
+                                               "S1"."COUNTER_1166017258" "C35",
+                                               "S1"."COUNTER_1166017259" "C36",
+                                               "S1"."COUNTER_1166017260" "C37",
+                                               "S1"."COUNTER_1166017517" "C38",
+                                               "S1"."COUNTER_1166017518" "C39",
+                                               "S1"."COUNTER_1166017519" "C40",
+                                               "S1"."COUNTER_1166017520" "C41",
+                                               "S1"."COUNTER_1166017521" "C42",
+                                               "S1"."COUNTER_1166017522" "C43",
+                                               "S1"."COUNTER_1166017523" "C44",
+                                               "S1"."COUNTER_1166022220" "C45",
+                                               "S1"."COUNTER_1166022221" "C46",
+                                               "S1"."COUNTER_1166022222" "C47",
+                                               "S1"."COUNTER_1166022223" "C48",
+                                               "S1"."COUNTER_1166022224" "C49",
+                                               "S1"."COUNTER_1166022225" "C50",
+                                               "S1"."COUNTER_1166022226" "C51",
+                                               "S1"."COUNTER_1166022338" "C52",
+                                               "S1"."COUNTER_1166022339" "C53",
+                                               "S1"."COUNTER_1166022340" "C54",
+                                               "S1"."COUNTER_1166022341" "C55",
+                                               "S1"."COUNTER_1166022342" "C56",
+                                               "S1"."COUNTER_1166022343" "C57",
+                                               "S1"."COUNTER_1166017261" "C58",
+                                               "S1"."COUNTER_1166017262" "C59",
+                                               "S1"."COUNTER_1166017524" "C60",
+                                               "S1"."COUNTER_1166017525" "C61",
+                                               "S1"."COUNTER_1166017526" "C62",
+                                               "S1"."COUNTER_1166017527" "C63",
+                                               "S1"."COUNTER_1166022227" "C64",
+                                               "S1"."COUNTER_1166022228" "C65",
+                                               "S1"."COUNTER_1166022229" "C66",
+                                               "S1"."COUNTER_1166022230" "C67",
+                                               "S1"."COUNTER_1166022344" "C68",
+                                               "S1"."COUNTER_1166022345" "C69",
+                                               "S1"."COUNTER_1166022346" "C70",
+                                               "S1"."COUNTER_1166022347" "C71",
+                                               "S1"."COUNTER_1166022348" "C72",
+                                               "S1"."COUNTER_1166022349" "C73",
+                                               "S1"."COUNTER_1157629100" "C74",
+                                               "S1"."COUNTER_1157629099" "C75",
+                                               "S1"."COUNTER_1157629101" "C76",
+                                               "S1"."COUNTER_1157629102" "C77",
+                                               "S1"."COUNTER_1157629103" "C78",
+                                               "S1"."COUNTER_1157629104" "C79",
+                                               "S1"."COUNTER_1166017533" "C80",
+                                               "S2"."CARR_TSUM_NAVG" "C81",
+                                               "S1"."COUNTER_1157630435" "C82",
+                                               "S1"."COUNTER_1157630436" "C83",
+                                               "S1"."COUNTER_1157630441" "C84",
+                                               "S1"."COUNTER_1157630437" "C85",
+                                               "S1"."COUNTER_1157630442" "C86",
+                                               "S1"."COUNTER_1157630446" "C87",
+                                               "S1"."COUNTER_1157630438" "C88",
+                                               "S1"."COUNTER_1157630443" "C89",
+                                               "S1"."COUNTER_1157630447" "C90",
+                                               "S1"."COUNTER_1157630450" "C91",
+                                               "S1"."COUNTER_1157631898" "C92",
+                                               "S1"."COUNTER_1157631899" "C93",
+                                               "S1"."COUNTER_1157630456" "C94",
+                                               "S1"."COUNTER_1157630457" "C95",
+                                               "S1"."COUNTER_1157630462" "C96",
+                                               "S1"."COUNTER_1157630458" "C97",
+                                               "S1"."COUNTER_1157630463" "C98",
+                                               "S1"."COUNTER_1157630467" "C99",
+                                               "S1"."COUNTER_1157630459" "C100",
+                                               "S1"."COUNTER_1157630464" "C101",
+                                               "S1"."COUNTER_1157630468" "C102",
+                                               "S1"."COUNTER_1157630471" "C103",
+                                               "S1"."COUNTER_1157631902" "C104",
+                                               "S1"."COUNTER_1157631903" "C105",
+                                               "S1"."COUNTER_1157632844" "C106",
+                                               "S1"."COUNTER_1157632728" "C107",
+                                               "S1"."COUNTER_1157632729" "C108",
+                                               "S1"."COUNTER_1157632730" "C109",
+                                               "S1"."COUNTER_1157632731" "C110",
+                                               "S1"."COUNTER_1157632732" "C111",
+                                               "S1"."COUNTER_1157632733" "C112",
+                                               "S1"."COUNTER_1157632734" "C113",
+                                               "S1"."COUNTER_1157632735" "C114",
+                                               "S1"."COUNTER_1157632736" "C115",
+                                               "S1"."COUNTER_1157631896" "C116",
+                                               "S1"."COUNTER_1157631897" "C117",
+                                               "S1"."COUNTER_1157630448" "C118",
+                                               "S1"."COUNTER_1157630452" "C119",
+                                               "S1"."COUNTER_1157630444" "C120",
+                                               "S1"."COUNTER_1157630449" "C121",
+                                               "S1"."COUNTER_1157630439" "C122",
+                                               "S1"."COUNTER_1157630445" "C123",
+                                               "S1"."COUNTER_1157630440" "C124",
+                                               "S1"."COUNTER_1157631900" "C125",
+                                               "S1"."COUNTER_1157631901" "C126",
+                                               "S1"."COUNTER_1157630469" "C127",
+                                               "S1"."COUNTER_1157630472" "C128",
+                                               "S1"."COUNTER_1157630465" "C129",
+                                               "S1"."COUNTER_1157630470" "C130",
+                                               "S1"."COUNTER_1157630460" "C131",
+                                               "S1"."COUNTER_1157630466" "C132",
+                                               "S1"."COUNTER_1157630461" "C133",
+                                               "S1"."COUNTER_1157632680" "C134",
+                                               "S1"."COUNTER_1166017164" "C135",
+                                               "S1"."COUNTER_1166017165" "C136",
+                                               "S1"."COUNTER_1157631494" "C137",
+                                               "S1"."COUNTER_1157631495" "C138",
+                                               "S3"."COUNTER_1166022435" "C139",
+                                               "S1"."COUNTER_1166017534" "C140",
+                                               "S3"."COUNTER_1166016809" "C141",
+                                               "S3"."COUNTER_1166016813" "C142",
+                                               "S3"."COUNTER_1166016815" "C143",
+                                               "S3"."COUNTER_1166016819" "C144",
+                                               "S3"."COUNTER_1166016821" "C145",
+                                               "S3"."COUNTER_1166016825" "C146",
+                                               "S3"."COUNTER_1166016827" "C147",
+                                               "S3"."COUNTER_1166016831" "C148",
+                                               "S3"."COUNTER_1166016833" "C149",
+                                               "S3"."COUNTER_1166016837" "C150",
+                                               "S3"."COUNTER_1166016839" "C151",
+                                               "S3"."COUNTER_1166016843" "C152",
+                                               "S3"."COUNTER_1166016845" "C153",
+                                               "S3"."COUNTER_1166016849" "C154",
+                                               "S3"."COUNTER_1166016851" "C155",
+                                               "S3"."COUNTER_1166016855" "C156",
+                                               "S3"."COUNTER_1166016857" "C157",
+                                               "S3"."COUNTER_1166016861" "C158",
+                                               "S3"."COUNTER_1166016863" "C159",
+                                               "S3"."COUNTER_1166016867" "C160",
+                                               "S3"."COUNTER_1166017269" "C161",
+                                               "S3"."COUNTER_1166017271" "C162",
+                                               "S3"."COUNTER_1166017273" "C163",
+                                               "S3"."COUNTER_1166017275" "C164",
+                                               "S3"."COUNTER_1166017277" "C165",
+                                               "S3"."COUNTER_1166017279" "C166",
+                                               "S3"."COUNTER_1166017281" "C167",
+                                               "S3"."COUNTER_1166017283" "C168",
+                                               "S3"."COUNTER_1166017285" "C169",
+                                               "S3"."COUNTER_1166017287" "C170",
+                                               "S3"."COUNTER_1166017289" "C171",
+                                               "S3"."COUNTER_1166017291" "C172",
+                                               "S3"."COUNTER_1166022231" "C173",
+                                               "S3"."COUNTER_1166022233" "C174",
+                                               "S3"."COUNTER_1166022235" "C175",
+                                               "S3"."COUNTER_1166022237" "C176",
+                                               "S3"."COUNTER_1166022239" "C177",
+                                               "S3"."COUNTER_1166022241" "C178",
+                                               "S3"."COUNTER_1166022243" "C179",
+                                               "S3"."COUNTER_1166022245" "C180",
+                                               "S3"."COUNTER_1166022247" "C181",
+                                               "S3"."COUNTER_1166022249" "C182",
+                                               "S3"."COUNTER_1166022251" "C183",
+                                               "S3"."COUNTER_1166022253" "C184",
+                                               "S1"."COUNTER_1166022267" "C185",
+                                               "S1"."COUNTER_1166017182" "C186",
+                                               "S1"."COUNTER_1166017219" "C187",
+                                               "S1"."COUNTER_1166017225" "C188",
+                                               "S1"."COUNTER_1166017341" "C189",
+                                               "S1"."COUNTER_1166022301" "C190",
+                                               "S1"."COUNTER_1157632244" "C191",
+                                               "S1"."COUNTER_1157632242" "C192",
+                                               "S1"."COUNTER_1157632248" "C193",
+                                               "S1"."COUNTER_1157632246" "C194",
+                                               "S1"."COUNTER_1157632127" "C195",
+                                               "S1"."COUNTER_1157632126" "C196",
+                                               "S1"."COUNTER_1157631536" "C197",
+                                               "S1"."COUNTER_1157631535" "C198"
+                                          from "DS_COUNTER_GROUP_HW_TC_DO_1" "S1"
+                                         inner join "DS_COUNTER_GROUP_HW_TC_PU_1" "S2"
+                                            on ("S1"."NE_SYS_ID" = "S2"."NE_SYS_ID" and
+                                               "S1"."START_TIME" = "S2"."START_TIME" and
+                                               "S1"."CITY_ID" = "S2"."CITY_ID")
+                                         inner join "DS_COUNTER_GROUP_HW_TC_DO_2" "S3"
+                                            on ("S1"."NE_SYS_ID" = "S3"."NE_SYS_ID" and
+                                               "S1"."START_TIME" = "S3"."START_TIME" and
+                                               "S1"."CITY_ID" = "S3"."CITY_ID")
+                                         inner join ne_taizhang_scene_switch "NEGROUP"
+                                            on ("S1"."NE_SYS_ID" = "NEGROUP"."RELATED_CELL")
+                                         where ((S1.START_TIME >=
+                                               TO_DATE('@@YY-@@MM-@@DD @@HH:@@MI:@@SS',
+                                                         'YYYY-MM-DD HH24:MI:SS') AND
+                                               S1.START_TIME <
+                                               TO_DATE('@@YY-@@MM-@@DD @@HH:@@MI:@@SS',
+                                                         'YYYY-MM-DD HH24:MI:SS') + 1))) "COUNTER"
+                                 group by "START_TIME_H",
+                                          "START_TIME_DAY",
+                                          "CITY_ID",
+                                          "CITY_NAME",
+                                          "SCENE_NO",
+                                          "START_TIME") "UN"
+                         group by "CITY_ID",
+                                  "CITY_NAME",
+                                  "SCENE_NO",
+                                  "START_TIME_H",
+                                  "START_TIME_DAY",
+                                  "START_TIME") "PC")) X
+ WHERE S.SCENE_NO = X."场景编号"
+   AND S.CITY_NAME = X."城市"
+   AND C.CITY_NAME = S.CITY_NAME
+	
+  	
+  	 	  ]]>
+  	 	  
+  	 	  
+      </td>
+      <td>	      <![CDATA[
+  SELECT 
+               NVL(SUBSTR(S.SCENE_NAME, 1, INSTR(S.SCENE_NAME, '_', 1, 1) - 1),S.SCENE_NAME)||'_'||S.CITY_NAME||'_'||S.SCENE_LEVEL as "场景名称",
+               X.*
+          FROM cfg_province_city c,
+               ne_taizhang_scene s,
+               (select /*+ no_merge(NEGROUP) leading(NEGROUP,RES,PERF) */
+                 to_char("PERF".START_TIME, 'YYYY-MM-DD HH24:MI:SS') "数据时间点",
+                 CITY_NAME "城市",
+                 SCENE_NO "场景编号",
+                 SUM(DO_CARR_TOTAL_NUM) "载扇数量",
+                 SUM(DO_CARR_TOTAL_NUM) "MD1.6",
+                 SUM(CARR_37_NUM) "MO1.1",
+                 SUM(CARR_78_NUM) "MO1.2",
+                 SUM(CARR_119_NUM) "MO1.3",
+                 SUM(DO_CARR_TOTAL_NUM) "MO1.4",
+                 SUM("MO1.5") "MO1.5",
+                 SUM("MO1.6") "MO1.6",
+                 SUM("MO1.7") "MO1.7",
+                 SUM(DO_1CARR_CELL_NUM) "MO1.8",
+                 SUM(DO_2CARR_CELL_NUM) "MO1.9",
+                 SUM(DO_3CARR_CELL_NUM) "MO1.10",
+                 SUM(DO_CELL_TOTAL_NUM) "MO1.11",
+                 /**
+                 0 as "MD1.7",
+                 0 as "MD1.8",
+                 0 as "MD1.9",
+                 **/
+                 /**
+                 0 as "MD1.13",
+                 **/
+                 0 as "MD1.18",
+                 0 as "MD1.19",
+                 0 as "MD1.20",
+                 0 as "MD2.11",
+                 0 as "MD2.12",
+                 0 as "MD3.10",
+                 0 as "MD3.11",
+                 0 as "MD3.12",
+                 0 as "MD3.13",
+                 0 as "MD3.14",
+                 0 as "MD3.15",
+                 0 as "MD3.16",
+                 0 as "MD3.17",
+                 0 as "MD3.19",
+                 0 as "MD4.1",
+                 0 as "MD4.2",
+                 0 as "MD4.3",
+                 0 as "MD4.4",
+                 0 as "MD4.5",
+                 0 as "MD4.6",
+                 0 as "MD4.7",
+                 0 as "MD4.8",
+                 0 as "MD4.9",
+                 0 as "MD4.10",
+                 0 as "MD4.11",
+                 /**
+                 0 as "MD6.1",
+                 0 as "MD6.2",
+                 0 as "MD6.3",
+                 0 as "MD6.4",
+                 0 as "MD6.5",
+                 0 as "MD6.6",
+                 0 as "MD6.7",
+                 0 as "MD6.8",
+                 **/
+                 0 as "MD7.1",
+                 0 as "MD7.2",
+                 0 as "MD7.3",
+                 0 as "MD8.1",
+                 0 as "MD8.2",
+                 0 as "MD8.3",
+                 0 as "MD3.5",
+                 0 as "MD3.6",
+                 0 as "MD3.7",
+                 0 as "MD3.8",
+                 0 as "MD3.9",
+                 0 as "MD3.18",
+                 0 as "MD2.25",
+                 0 as "MO2.1",
+                 0 as "MO2.2",
+                 0 as "MO2.3",
+                 0 as "MD2.26",
+                 0 as "MD2.27",
+                 0 as "MD2.28",
+                 0 as "MO2.11",
+                 0 as "MO2.12",
+                 0 as "MO2.13"
+                  from (select /*+ use_hash(ne,n,g)*/
+                         n.SCENE_NO,
+                         (case
+                           when CITY_NAME = '江汉' and replace(county_name, '区', '') = '天门' then
+                            '天门'
+                           when CITY_NAME = '江汉' and replace(county_name, '区', '') = '潜江' then
+                            '潜江'
+                           when CITY_NAME = '江汉' and replace(county_name, '区', '') = '仙桃' then
+                            '仙桃'
+                           else
+                            CITY_NAME
+                         END) AS CITY_NAME,
+                         n.RELATED_CELL
+                          from ne_taizhang_scene_switch n,
+                               NE_CELL_C                ne
+                         where n.RELATED_CELL = ne.ne_sys_id) "NEGROUP",
+                       (SELECT RELATED_CELL,
+                               CITY_ID,
+                               SUM(DECODE(DECODE(BUSTYPE, 'DO', CARRIER_ID, 0), 37, 1, 0)) CARR_37_NUM,
+                               SUM(DECODE(DECODE(BUSTYPE, 'DO', CARRIER_ID, 0), 78, 1, 0)) CARR_78_NUM,
+                               SUM(DECODE(DECODE(BUSTYPE, 'DO', CARRIER_ID, 0), 119, 1, 0)) CARR_119_NUM,
+                               MAX(DECODE(BUSTYPE, 'DO', 1, 0)) DO_CELL_TOTAL_NUM,
+                               SUM(DECODE(BUSTYPE, 'DO', 1, 0)) DO_CARR_TOTAL_NUM,
+                               DECODE(SUM(DECODE(BUSTYPE, 'DO', 1, 0)), 1, 1, 0) DO_1CARR_CELL_NUM,
+                               DECODE(SUM(DECODE(BUSTYPE, 'DO', 1, 0)), 2, 1, 0) DO_2CARR_CELL_NUM,
+                               DECODE(SUM(DECODE(BUSTYPE, 'DO', 1, 0)), 3, 1, 0) DO_3CARR_CELL_NUM,
+                               DECODE(SUM(DECODE(BUSTYPE, 'DO', 1, 0)), 4, 1, 0) DO_4CARR_CELL_NUM
+                          FROM NE_CARRIER_C
+                         GROUP BY RELATED_CELL,
+                                  CITY_ID) "RES",
+                       (select "PC"."CITY_ID",
+                               "PC"."RELATED_CELL",
+                               Round(PC1_37, 4) "MO1.5",
+                               Round(PC1_78, 4) "MO1.6",
+                               Round(PC1_119, 4) "MO1.7",
+                               "START_TIME"
+                          from (select "COUNTER"."CITY_ID",
+                                       "COUNTER"."RELATED_CELL",
+                                       Round(SUM(decode("CARR", 37, ((C1 + C2 + C3) / 3600), 0)), 4) "PC1_37",
+                                       Round(SUM(decode("CARR", 78, ((C1 + C2 + C3) / 3600), 0)), 4) "PC1_78",
+                                       Round(SUM(decode("CARR", 119, ((C1 + C2 + C3) / 3600), 0)), 4) "PC1_119",
+                                       "START_TIME"
+                                  from (select /*+ leading(s) use_nl(s,s1) */
+                                         "S1"."START_TIME",
+                                         "S1"."CITY_ID",
+                                         "S1"."RELATED_CELL",
+                                         "S1"."CARR",
+                                         "S1"."P804_CALLDURATION" "C1",
+                                         "S1"."P804_SHODURATION"  "C2",
+                                         "S1"."P804_SSHODURATION" "C3"
+                                          from "DS_COUNTER_GROUP_ZTE_TT_DO_1" "S1",
+                                               ne_taizhang_scene_switch       s
+                                         where s.related_cell = s1.related_cell
+                                           and START_TIME >=
+                                               TO_DATE('@@YY-@@MM-@@DD @@HH:@@MI:@@SS',
+                                                       'YYYY-MM-DD HH24:MI:SS')
+                                           and START_TIME <
+                                               TO_DATE('@@YY-@@MM-@@DD @@HH:@@MI:@@SS',
+                                                       'YYYY-MM-DD HH24:MI:SS') + 1) "COUNTER"
+                                 group by "CITY_ID",
+                                          "RELATED_CELL",
+                                          "START_TIME"
+                                union all
+                                select "COUNTER"."CITY_ID",
+                                       "COUNTER"."RELATED_CELL",
+                                       Round(SUM(decode("CARR",
+                                                        37,
+                                                        (((C1 + (C2 / 2) + ((C3 + C4 + C5 + C6) / 3) +
+                                                        ((C7 + C8 + C9) / 4) + ((C10 + C11) / 5) +
+                                                        (C12 / 6)) + (C13 + (C14 / 2) +
+                                                        ((C15 + C16 + C17 + C18) / 3) +
+                                                        ((C19 + C20 + C21) / 4) +
+                                                        ((C22 + C23) / 5) + (C24 / 6)) +
+                                                        (C25 + (C26 / 2) +
+                                                        ((C27 + C28 + C29 + C30) / 3) +
+                                                        ((C31 + C32 + C33) / 4) + ((C34 + C35) / 5) +
+                                                        (C36 / 6)) + (C37 + (C38 / 2) +
+                                                        ((C39 + C40 + C41 + C42) / 3) +
+                                                        ((C43 + C44 + C45) / 4) +
+                                                        ((C46 + C47) / 5) + (C48 / 6)) +
+                                                        (C49 + (C50 / 2) +
+                                                        ((C51 + C52 + C53 + C54) / 3) +
+                                                        ((C55 + C56 + C57) / 4) + ((C58 + C59) / 5) +
+                                                        (C60 / 6)) + (C61 + (C62 / 2) +
+                                                        ((C63 + C64 + C65 + C66) / 3) +
+                                                        ((C67 + C68 + C69) / 4) +
+                                                        ((C70 + C71) / 5) + (C72 / 6)) +
+                                                        (C73 + (C74 / 2) +
+                                                        ((C75 + C76 + C77 + C78) / 3) +
+                                                        ((C79 + C80 + C81) / 4) + ((C82 + C83) / 5) +
+                                                        (C84 / 6)) + (C85 + (C86 / 2) +
+                                                        ((C87 + C88 + C89 + C90) / 3) +
+                                                        ((C91 + C92 + C93) / 4) +
+                                                        ((C94 + C95) / 5) + (C96 / 6))) / 3600),
+                                                        0)),
+                                             4) "PC1_37",
+                                       Round(SUM(decode("CARR",
+                                                        78,
+                                                        (((C1 + (C2 / 2) + ((C3 + C4 + C5 + C6) / 3) +
+                                                        ((C7 + C8 + C9) / 4) + ((C10 + C11) / 5) +
+                                                        (C12 / 6)) + (C13 + (C14 / 2) +
+                                                        ((C15 + C16 + C17 + C18) / 3) +
+                                                        ((C19 + C20 + C21) / 4) +
+                                                        ((C22 + C23) / 5) + (C24 / 6)) +
+                                                        (C25 + (C26 / 2) +
+                                                        ((C27 + C28 + C29 + C30) / 3) +
+                                                        ((C31 + C32 + C33) / 4) + ((C34 + C35) / 5) +
+                                                        (C36 / 6)) + (C37 + (C38 / 2) +
+                                                        ((C39 + C40 + C41 + C42) / 3) +
+                                                        ((C43 + C44 + C45) / 4) +
+                                                        ((C46 + C47) / 5) + (C48 / 6)) +
+                                                        (C49 + (C50 / 2) +
+                                                        ((C51 + C52 + C53 + C54) / 3) +
+                                                        ((C55 + C56 + C57) / 4) + ((C58 + C59) / 5) +
+                                                        (C60 / 6)) + (C61 + (C62 / 2) +
+                                                        ((C63 + C64 + C65 + C66) / 3) +
+                                                        ((C67 + C68 + C69) / 4) +
+                                                        ((C70 + C71) / 5) + (C72 / 6)) +
+                                                        (C73 + (C74 / 2) +
+                                                        ((C75 + C76 + C77 + C78) / 3) +
+                                                        ((C79 + C80 + C81) / 4) + ((C82 + C83) / 5) +
+                                                        (C84 / 6)) + (C85 + (C86 / 2) +
+                                                        ((C87 + C88 + C89 + C90) / 3) +
+                                                        ((C91 + C92 + C93) / 4) +
+                                                        ((C94 + C95) / 5) + (C96 / 6))) / 3600),
+                                                        0)),
+                                             4) "PC1_78",
+                                       Round(SUM(decode("CARR",
+                                                        119,
+                                                        (((C1 + (C2 / 2) + ((C3 + C4 + C5 + C6) / 3) +
+                                                        ((C7 + C8 + C9) / 4) + ((C10 + C11) / 5) +
+                                                        (C12 / 6)) + (C13 + (C14 / 2) +
+                                                        ((C15 + C16 + C17 + C18) / 3) +
+                                                        ((C19 + C20 + C21) / 4) +
+                                                        ((C22 + C23) / 5) + (C24 / 6)) +
+                                                        (C25 + (C26 / 2) +
+                                                        ((C27 + C28 + C29 + C30) / 3) +
+                                                        ((C31 + C32 + C33) / 4) + ((C34 + C35) / 5) +
+                                                        (C36 / 6)) + (C37 + (C38 / 2) +
+                                                        ((C39 + C40 + C41 + C42) / 3) +
+                                                        ((C43 + C44 + C45) / 4) +
+                                                        ((C46 + C47) / 5) + (C48 / 6)) +
+                                                        (C49 + (C50 / 2) +
+                                                        ((C51 + C52 + C53 + C54) / 3) +
+                                                        ((C55 + C56 + C57) / 4) + ((C58 + C59) / 5) +
+                                                        (C60 / 6)) + (C61 + (C62 / 2) +
+                                                        ((C63 + C64 + C65 + C66) / 3) +
+                                                        ((C67 + C68 + C69) / 4) +
+                                                        ((C70 + C71) / 5) + (C72 / 6)) +
+                                                        (C73 + (C74 / 2) +
+                                                        ((C75 + C76 + C77 + C78) / 3) +
+                                                        ((C79 + C80 + C81) / 4) + ((C82 + C83) / 5) +
+                                                        (C84 / 6)) + (C85 + (C86 / 2) +
+                                                        ((C87 + C88 + C89 + C90) / 3) +
+                                                        ((C91 + C92 + C93) / 4) +
+                                                        ((C94 + C95) / 5) + (C96 / 6))) / 3600),
+                                                        0)),
+                                             4) "PC1_119",
+                                       "START_TIME"
+                                  from (select /*+ leading(s) use_nl(s,s1) */
+                                         "S1"."START_TIME",
+                                         "S1"."CITY_ID",
+                                         "S1"."RELATED_CELL",
+                                         "S1"."CARR",
+                                         "S1"."COUNTER_1157631896" "C1",
+                                         "S1"."COUNTER_1157631897" "C2",
+                                         "S1"."COUNTER_1157630437" "C3",
+                                         "S1"."COUNTER_1157630443" "C4",
+                                         "S1"."COUNTER_1157630448" "C5",
+                                         "S1"."COUNTER_1157630452" "C6",
+                                         "S1"."COUNTER_1157630438" "C7",
+                                         "S1"."COUNTER_1157630444" "C8",
+                                         "S1"."COUNTER_1157630449" "C9",
+                                         "S1"."COUNTER_1157630439" "C10",
+                                         "S1"."COUNTER_1157630445" "C11",
+                                         "S1"."COUNTER_1157630440" "C12",
+                                         "S1"."COUNTER_1157631900" "C13",
+                                         "S1"."COUNTER_1157631901" "C14",
+                                         "S1"."COUNTER_1157630458" "C15",
+                                         "S1"."COUNTER_1157630464" "C16",
+                                         "S1"."COUNTER_1157630469" "C17",
+                                         "S1"."COUNTER_1157630472" "C18",
+                                         "S1"."COUNTER_1157630459" "C19",
+                                         "S1"."COUNTER_1157630465" "C20",
+                                         "S1"."COUNTER_1157630470" "C21",
+                                         "S1"."COUNTER_1157630460" "C22",
+                                         "S1"."COUNTER_1157630466" "C23",
+                                         "S1"."COUNTER_1157630461" "C24",
+                                         "S1"."COUNTER_1157631904" "C25",
+                                         "S1"."COUNTER_1157631905" "C26",
+                                         "S1"."COUNTER_1157630478" "C27",
+                                         "S1"."COUNTER_1157630484" "C28",
+                                         "S1"."COUNTER_1157630489" "C29",
+                                         "S1"."COUNTER_1157630493" "C30",
+                                         "S1"."COUNTER_1157630479" "C31",
+                                         "S1"."COUNTER_1157630485" "C32",
+                                         "S1"."COUNTER_1157630490" "C33",
+                                         "S1"."COUNTER_1157630480" "C34",
+                                         "S1"."COUNTER_1157630486" "C35",
+                                         "S1"."COUNTER_1157630481" "C36",
+                                         "S1"."COUNTER_1157631908" "C37",
+                                         "S1"."COUNTER_1157631909" "C38",
+                                         "S1"."COUNTER_1157630499" "C39",
+                                         "S1"."COUNTER_1157630505" "C40",
+                                         "S1"."COUNTER_1157630510" "C41",
+                                         "S1"."COUNTER_1157630514" "C42",
+                                         "S1"."COUNTER_1157630500" "C43",
+                                         "S1"."COUNTER_1157630506" "C44",
+                                         "S1"."COUNTER_1157630511" "C45",
+                                         "S1"."COUNTER_1157630501" "C46",
+                                         "S1"."COUNTER_1157630507" "C47",
+                                         "S1"."COUNTER_1157630502" "C48",
+                                         "S1"."COUNTER_1157631912" "C49",
+                                         "S1"."COUNTER_1157631913" "C50",
+                                         "S1"."COUNTER_1157630520" "C51",
+                                         "S1"."COUNTER_1157630526" "C52",
+                                         "S1"."COUNTER_1157630531" "C53",
+                                         "S1"."COUNTER_1157630535" "C54",
+                                         "S1"."COUNTER_1157630521" "C55",
+                                         "S1"."COUNTER_1157630527" "C56",
+                                         "S1"."COUNTER_1157630532" "C57",
+                                         "S1"."COUNTER_1157630522" "C58",
+                                         "S1"."COUNTER_1157630528" "C59",
+                                         "S1"."COUNTER_1157630523" "C60",
+                                         "S1"."COUNTER_1157631916" "C61",
+                                         "S1"."COUNTER_1157631917" "C62",
+                                         "S1"."COUNTER_1157630541" "C63",
+                                         "S1"."COUNTER_1157630547" "C64",
+                                         "S1"."COUNTER_1157630552" "C65",
+                                         "S1"."COUNTER_1157630556" "C66",
+                                         "S1"."COUNTER_1157630542" "C67",
+                                         "S1"."COUNTER_1157630548" "C68",
+                                         "S1"."COUNTER_1157630553" "C69",
+                                         "S1"."COUNTER_1157630543" "C70",
+                                         "S1"."COUNTER_1157630549" "C71",
+                                         "S1"."COUNTER_1157630544" "C72",
+                                         "S1"."COUNTER_1157631920" "C73",
+                                         "S1"."COUNTER_1157631921" "C74",
+                                         "S1"."COUNTER_1157630562" "C75",
+                                         "S1"."COUNTER_1157630568" "C76",
+                                         "S1"."COUNTER_1157630573" "C77",
+                                         "S1"."COUNTER_1157630577" "C78",
+                                         "S1"."COUNTER_1157630563" "C79",
+                                         "S1"."COUNTER_1157630569" "C80",
+                                         "S1"."COUNTER_1157630574" "C81",
+                                         "S1"."COUNTER_1157630564" "C82",
+                                         "S1"."COUNTER_1157630570" "C83",
+                                         "S1"."COUNTER_1157630565" "C84",
+                                         "S1"."COUNTER_1157631924" "C85",
+                                         "S1"."COUNTER_1157631925" "C86",
+                                         "S1"."COUNTER_1157630583" "C87",
+                                         "S1"."COUNTER_1157630589" "C88",
+                                         "S1"."COUNTER_1157630594" "C89",
+                                         "S1"."COUNTER_1157630598" "C90",
+                                         "S1"."COUNTER_1157630584" "C91",
+                                         "S1"."COUNTER_1157630590" "C92",
+                                         "S1"."COUNTER_1157630595" "C93",
+                                         "S1"."COUNTER_1157630585" "C94",
+                                         "S1"."COUNTER_1157630591" "C95",
+                                         "S1"."COUNTER_1157630586" "C96"
+                                          from "DS_COUNTER_GROUP_HW_TT_DO_1" "S1",
+                                               ne_taizhang_scene_switch      s
+                                         where s.related_cell = s1.related_cell
+                                           and START_TIME >=
+                                               TO_DATE('@@YY-@@MM-@@DD @@HH:@@MI:@@SS',
+                                                       'YYYY-MM-DD HH24:MI:SS')
+                                           and START_TIME <
+                                               TO_DATE('@@YY-@@MM-@@DD @@HH:@@MI:@@SS',
+                                                       'YYYY-MM-DD HH24:MI:SS') + 1) "COUNTER"
+                                 group by "CITY_ID",
+                                          "RELATED_CELL",
+                                          "START_TIME"
+                                union all
+                                select "COUNTER"."CITY_ID",
+                                       "COUNTER"."RELATED_CELL",
+                                       Round(SUM(decode("CARR", 37, C1 * 0.001, 0)), 4) "PC1_37",
+                                       Round(SUM(decode("CARR", 78, C1 * 0.001, 0)), 4) "PC1_78",
+                                       Round(SUM(decode("CARR", 119, C1 * 0.001, 0)), 4) "PC1_119",
+                                       "START_TIME"
+                                  from (select /*+ leading(s) use_nl(s,s1) */
+                                         "S1"."START_TIME",
+                                         "S1"."CITY_ID",
+                                         "S1"."RELATED_CELL",
+                                         "S1"."CARR",
+                                         "S1"."EVM_AVG_DRC_POINTED_USERS" "C1"
+                                          from "DS_COUNTER_GROUP_LUC_TT_DO" "S1",
+                                               ne_taizhang_scene_switch     s
+                                         where s.related_cell = s1.related_cell
+                                           and START_TIME >=
+                                               TO_DATE('@@YY-@@MM-@@DD @@HH:@@MI:@@SS',
+                                                       'YYYY-MM-DD HH24:MI:SS')
+                                           and START_TIME <
+                                               TO_DATE('@@YY-@@MM-@@DD @@HH:@@MI:@@SS',
+                                                       'YYYY-MM-DD HH24:MI:SS') + 1) "COUNTER"
+                                 group by "CITY_ID",
+                                          "RELATED_CELL",
+                                          "START_TIME") "PC") "PERF"
+                 WHERE "NEGROUP".RELATED_CELL = "PERF"."RELATED_CELL"
+                   and "NEGROUP".RELATED_CELL = "RES"."RELATED_CELL"
+                 group by "PERF".START_TIME,
+                          CITY_NAME,
+                          SCENE_NO) X
+         WHERE S.SCENE_NO = X."场景编号"
+           AND S.CITY_NAME = X."城市"
+           AND C.CITY_NAME = S.CITY_NAME
+ 	 	  ]]>
+ 	 	  
+ 	 	  
+</td>
+
+    </tr>
+</nbi_perf_table>                                                        

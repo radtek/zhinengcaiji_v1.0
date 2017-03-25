@@ -1,0 +1,528 @@
+
+--MSC
+select '2011-03-14' as ID1001,
+       bb.MSCNAME as ID1002,
+       '' as ID1003,
+       '广东' as ID1004,
+       '' as ID1005,
+       (case bb.vendor
+         when 'ZY0808' then
+          '华为'
+         when 'ZY0810' then
+          '阿朗'
+         when 'ZY0804' then
+          '中兴'
+       
+       end) as ID1006,
+       '' as ID1007,
+       '' as ID1008,
+       '' as ID1009,
+       '' as ID1010,
+       '' as ID1011,
+       '' as ID1012,
+       '' as ID1013,
+       '' as ID1014,
+       '' as ID1015,
+       '' as ID1016,
+       '' as ID1017,
+       '' as ID1018,
+       '' as ID1019,
+       '' as ID1020,
+       '' as ID1021,
+       '' as ID1022,
+       '' as ID1023,
+       '' as ID1024,
+       '' as ID1025,
+       '' as ID1026
+  from cfg_bsc_map_city bb
+ where bb.rowid = any
+ (select max(rowid) from cfg_bsc_map_city group by mscname)
+ order by bb.mscname
+
+ 
+--BSC
+
+select '2011-03-14' as ID2001,
+       case T1.VENDOR
+         when 'ZY0808' THEN
+          CITY.ENNAME || '.' || OMC.MSCNAME || '.' || T1.china_name
+         when 'ZY0810' THEN
+          CITY.ENNAME || '.' || OMC.MSCNAME || '.' || T1.china_name
+         whEN 'ZY0804' THEN
+          CITY.ENNAME || '.' || OMC.MSCNAME || '.' || T1.china_name
+         ELSE
+          'ASS'
+       END as ID2002,
+       '' as ID2003,
+       '广东' as ID2004,
+       CITY.CITY_NAME as ID2005,
+       OMC.MSCNAME as ID2006,
+       '' as ID2007,
+       case T1.vendor
+         when 'ZY0808' THEN
+          '华为'
+         when 'ZY0810' THEN
+          '阿朗'
+         when 'ZY0804' THEN
+          '中兴'
+       end as ID2008,
+       '' as ID2009,
+       '' as ID2010,
+       CITY.CITY_NAME || '.' || OMC.MSCNAME || '.' || OMC.BSCNAME as ID2011,
+       '' as ID2012,
+       '' as ID2013,
+       '' as ID2014,
+       '' as ID2015,
+       '' as ID2016,
+       '' as ID2017,
+       (select count(*) bts_num
+          from ne_bts_c d
+         where d.related_bsc = T1. ne_sys_id) as ID2018,
+       '' as ID2019,
+       '' as ID2020,
+       '' as ID2021,
+       '' as ID2022,
+       '' as ID2023,
+       '' as ID2024,
+       '' as ID2025,
+       '' as ID2026,
+       '' as ID2027,
+       '' as ID2028,
+       '' as ID2029,
+       '' as ID2030,
+       '' as ID2031,
+       '' as ID2032
+  from NE_BSC_C T1, CFG_BSC_MAP_CITY OMC, CFG_CITY CITY
+ where OMC.NE_BSC_ID = T1.NE_SYS_ID
+   AND T1.CITY_ID = CITY.CITY_ID
+ order by T1.city_id, ne_sys_id
+
+ 
+--BTS
+
+select '2011-03-14' as ID3001,
+       case BSC.vendor
+         when 'ZY0808' then
+          CITY.ENNAME || '.' || replace(msc.mscname, 'MSC', 'OMC') || '.' ||
+          BSC.CHINA_NAME || '.' || BTS.BTS_ID
+         when 'ZY0804' then
+          CITY.ENNAME || '.' || replace(msc.mscname, 'MSC', 'OMC') || '.' ||
+          BSC.CHINA_NAME || '.' || BTS.BTS_ID
+         when 'ZY0810' then
+          CITY.ENNAME || '.' || replace(msc.mscname, 'MSC', 'OMC') || '.' ||
+          BSC.CHINA_NAME || '.' || BTS.BTS_ID
+         else
+          'ASS'
+       end as ID3002,
+       '' as ID3003,
+       bts.bts_id as ID3004,
+       bts.equip_name as ID3005,
+       replace(bts.china_name, ',', '.') as ID3006,
+       '' as ID3007,
+       '' as ID3008,
+       '广东' as ID3009,
+       CITY.CITY_NAME as ID3010,
+       replace(ADM.COUNTY_NAME, '区', '') as ID3011,
+       '' as ID3012,
+       MSC.MSCNAME as ID3013,
+       '' as ID3014,
+       CASE BSC.vendor
+         when 'ZY0808' then
+          CITY.ENNAME || '.' || MSC.MSCNAME || '.' || MSC.BSCNAME
+         when 'ZY0810' then
+          CITY.ENNAME || '.' || MSC.MSCNAME || '.' || MSC.BSCNAME
+         when 'ZY0804' then
+          CITY.ENNAME || '.' || MSC.MSCNAME || '.' || MSC.BSCNAME
+         else
+          'MSC标识'
+       end as ID3015,
+       case BSC.vendor
+         when 'ZY0808' THEN
+          '华为'
+         when 'ZY0810' THEN
+          '阿朗'
+         when 'ZY0804' THEN
+          '中兴'
+       end as ID3016,
+       case BSC.vendor
+         when 'ZY0808' then
+          'BSC6680'
+         when 'ZY0804' then
+          'V8'
+         when 'ZY0810' then
+          'R32'
+         else
+          'softVersion'
+       end as ID3017,
+       BTS.EQUIP_MODEL as ID3018,
+       '' as ID3019,
+       BTS.LAC as ID3020,
+       '' as ID3021,
+       '' as ID3022,
+       '' as ID3023,
+       '' as ID3024,
+       '' as ID3025,
+       '' as ID3026,
+       '' as ID3027,
+       '' as ID3028,
+       '' as ID3029,
+       '' as ID3030,
+       1 as ID3031,
+       case
+         when (carr.bus_1x + carr.bus_do) = 2 then
+          1
+         else
+          case
+            when carr.bus_1x = 1 then
+             0
+            else
+             2
+          end
+       end as ID3032,
+       '' as ID3033,
+       '' as ID3034,
+       '' as ID3035,
+       '' as ID3036,
+       1 as ID3037,
+       '' as ID3038,
+       '' as ID3039,
+       '' as ID3040,
+       '' as ID3041,
+       '' as ID3042,
+       '' as ID3043,
+       '' as ID3044,
+       '' as ID3045,
+       '' as ID3046,
+       '' as ID3047,
+       '' as ID3048,
+       substr(replace(BTS.ADDRESS, ',', '.'), 0, 30) as ID3049,
+       '' as ID3050,
+       BTS.LONGITUDE as ID3051,
+       BTS.LATITUDE as ID3052,
+       '' as ID3053,
+       '' as ID3054,
+       '' as ID3055,
+       BTS.WIRE_LOAD as ID3056,
+       BTS.WIRE_LOAD_P as ID3057,
+       '' as ID3058,
+       '' as ID3059,
+       BTS.ARCHITECTURE as ID3060,
+       '' as ID3061,
+       BTS.TRANSFERS as ID3062,
+       '' as ID3063,
+       BTS.ISRELATED as ID3064,
+       '' as ID3065,
+       '' as ID3066,
+       '' as ID3067,
+       '' as ID3068,
+       '' as ID3069,
+       '' as ID3070,
+       '' as ID3071,
+       '' as ID3072,
+       '' as ID3073
+  FROM NE_BTS_C BTS,
+       NE_BSC_C BSC,
+       CFG_BSC_MAP_CITY MSC,
+       CFG_CITY CITY,
+       CFG_COUNTY ADM,
+       (select related_bts, sum(BUS_1X) as BUS_1X, sum(BUS_DO) as BUS_DO
+          from (select related_bts, 1 BUS_1X, 0 BUS_DO
+                  from ne_carrier_c carrier
+                 where BUSTYPE = '1X'
+                    or bustype = '0'
+                    or bustype is null
+                 group by related_bts
+                UNION ALL
+                select related_bts, 0 BUS_1X, 1 BUS_DO
+                  from ne_carrier_c carrier
+                 where BUSTYPE = 'DO'
+                    or bustype = '0'
+                    or bustype is null
+                 group by related_bts)
+         group by related_bts) carr
+ WHERE longitude is not null
+   and latitude is not null
+   and longitude > 74
+   and latitude > 3
+   and longitude < 135
+   and latitude < 53
+   AND BTS.RELATED_BSC = BSC.NE_SYS_ID
+   and BSC.NE_SYS_ID = MSC.NE_BSC_ID
+   AND BTS.CITY_ID = CITY.CITY_ID
+   AND BTS.CITY_ID = BSC.CITY_ID
+   AND BTS.CITY_ID = MSC.CITY_ID
+   and bts.ne_sys_id = carr.related_bts
+   AND ADM.COUNTY_ID(+) = BTS.ADM_AREA
+ order by city.city_id, bsc.ne_sys_id, bts.bts_id
+
+ 
+ 
+--SECTOR
+
+select '2011-03-14' as ID4001,
+       case BSC.vendor
+         when 'ZY0808' then
+          CITY.ENNAME || '_' || MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||
+          BTS.BTS_ID || '.' || SECTOR.SECTOR_ID
+         when 'ZY0804' then
+          BSC.CHINA_NAME || '.' || BTS.BTS_ID || '.' || SECTOR.SECTOR_ID
+         when 'ZY0810' then
+          CITY.ENNAME || '_' || MSC.MSCNAME || '.' || BSC.CHINA_NAME || '.' ||
+          BTS.BTS_ID || '.' || SECTOR.SECTOR_ID
+       end as ID4002,
+       '' as ID4003,
+       '广东' as ID4004,
+       CITY.CITY_NAME as ID4005,
+       replace(ADM.COUNTY_NAME, '区', '') as ID4006,
+       '' as ID4007,
+       case BSC.vendor
+         when 'ZY0808' then
+          BTS.BTS_ID
+         when 'ZY0804' then
+          BTS.BTS_ID
+         when 'ZY0810' then
+          BTS.BTS_ID
+       end as ID4008,
+       case BSC.vendor
+         when 'ZY0808' then
+          SECTOR.SECTOR_ID
+         when 'ZY0804' then
+          BTS.BTS_ID
+         when 'ZY0810' then
+          SECTOR.SECTOR_ID
+       end as ID4009,
+       case BSC.vendor
+         when 'ZY0808' then
+          SECTOR.SECTOR_ID
+         when 'ZY0804' then
+          SECTOR.SECTOR_ID
+         when 'ZY0810' then
+          SECTOR.SECTOR_ID
+       end as ID4010,
+       case BSC.vendor
+         when 'ZY0808' then
+          replace('0x' ||
+                  to_char(BTS.BTS_ID * 16 + SECTOR.SECTOR_ID, 'XXXXXXXX'),
+                  ' ',
+                  '')
+         when 'ZY0804' then
+          to_char(SECTOR.CI)
+         when 'ZY0810' then
+          replace('0x' ||
+                  to_char(BTS.BTS_ID * 16 + SECTOR.SECTOR_ID, 'XXXXXXXX'),
+                  ' ',
+                  '')
+       end as ID4011,
+       case BSC.vendor
+         when 'ZY0808' then
+          replace('0x' ||
+                  to_char(BTS.BTS_ID * 16 + SECTOR.SECTOR_ID, 'XXXXXXXX'),
+                  ' ',
+                  '')
+         when 'ZY0804' then
+          to_char(SECTOR.CI)
+         when 'ZY0810' then
+          replace('0x' ||
+                  to_char(BTS.BTS_ID * 16 + SECTOR.SECTOR_ID, 'XXXXXXXX'),
+                  ' ',
+                  '')
+       end as ID4012,
+       case BSC.vendor
+         when 'ZY0808' then
+          replace(SECTOR.CHINA_NAME, ',', '，')
+         when 'ZY0804' then
+          replace(SECTOR.CHINA_NAME, ',', '，')
+         when 'ZY0810' then
+          replace(SECTOR.CHINA_NAME, ',', '，')
+       end as ID4013,
+       SECTOR.LONGITUDE as ID4014,
+       SECTOR.LATITUDE as ID4015,
+       SECTOR.PN as ID4016,
+       DECODE(SECTOR.SITE_TYPE,
+              '1',
+              '标准小区',
+              '2',
+              '微蜂窝',
+              '3',
+              'RRU',
+              SECTOR.SITE_TYPE) as ID4017,
+       DECODE(SECTOR.ISINDOOR, 0, '否', 1, '是') as ID4018,
+       DECODE(SECTOR.SITE_TYPE, '3', '是', '否') as ID4019,
+       '' as ID4020,
+       SECTOR.ISCELLSPLIT as ID4021,
+       SECTOR.WIRE_LOAD_P as ID4022,
+       CASE BSC.vendor
+         when 'ZY0808' then
+          CITY.ENNAME || '_' || MSC.MSCNAME
+         when 'ZY0810' then
+          CITY.ENNAME || '_' || MSC.MSCNAME
+         when 'ZY0804' then
+          CITY.ENNAME || '_' || MSC.MSCNAME
+       end as ID4023,
+       '' as ID4024,
+       CASE BSC.vendor
+         when 'ZY0808' then
+          CITY.ENNAME || '_' || MSC.MSCNAME || '.' || MSC.BSCNAME
+         when 'ZY0810' then
+          CITY.ENNAME || '_' || MSC.MSCNAME || '.' || MSC.BSCNAME
+         when 'ZY0804' then
+          MSC.BSCNAME
+       end as ID4025,
+       CASE BSC.vendor
+         when 'ZY0808' then
+          CITY.ENNAME || '_' || MSC.BSCNAME || '.' || BTS.BTS_ID
+         when 'ZY0810' then
+          MSC.BSCNAME || '.' || BTS.BTS_ID
+         when 'ZY0804' then
+          CITY.ENNAME || '_' || MSC.BSCNAME || '.' || BTS.BTS_ID
+       end as ID4026,
+       SECTOR.LAC as ID4027,
+       SECTOR.PROJECT_STATE as ID4028,
+       SECTOR.LONGITUDE as ID4029,
+       SECTOR.LATITUDE as ID4030,
+       SECTOR.ANT_FRAME_HIGH as ID4031,
+       SECTOR.ANT_HIGH as ID4032,
+       SECTOR.ANT_AZIMUTH as ID4033,
+       SECTOR.ANT_ANGLE as ID4034,
+       SECTOR.ANT_ELECTRON_ANGLE as ID4035,
+       SECTOR.ANT_ENGINE_ANGLE as ID4036,
+       SECTOR.ISELECADJUST as ID4037,
+       SECTOR.ANT_NUM as ID4038,
+       SECTOR.HORIZONTAL as ID4039,
+       SECTOR.VERTICAL as ID4040,
+       SECTOR.ISCELLSPLIT as ID4041,
+       case BSC.vendor
+         when 'ZY0808' THEN
+          '华为'
+         when 'ZY0810' THEN
+          '阿朗'
+         when 'ZY0804' THEN
+          '中兴'
+       end as ID4042,
+       case BSC.vendor
+         when 'ZY0808' then
+          'BSC6680'
+         when 'ZY0804' then
+          'V8'
+         when 'ZY0810' then
+          'R32'
+       end as ID4043,
+       DECODE(SECTOR.ISDO, 0, SECTOR.CARRIER_NUM, 1, NULL) as ID4044,
+       DECODE(BTS.ISDO, 0, BTS.TCH_COUNT, 1, NULL) as ID4045,
+       '' as ID4046,
+       DECODE(BTS.ISDO, 0, BTS.SITE_MODEL, 1, NULL) as ID4047,
+       BTS.SITE_TYPE as ID4048,
+       DECODE(SECTOR.ISDO, 0, '否', 1, '是') as ID4049,
+       DECODE(SECTOR.ISDO, 1, SECTOR.CARRIER_NUM, 0, NULL) as ID4050,
+       DECODE(BTS.ISDO, 1, BTS.TCH_COUNT, 0, NULL) as ID4051,
+       '' as ID4052,
+       DECODE(BTS.ISDO, 1, BTS.SITE_MODEL, 0, NULL) as ID4053,
+       SECTOR.BORDERSECTOR as ID4054,
+       '' as ID4055,
+       '' as ID4056,
+       '' as ID4057,
+       DECODE(SECTOR.FAKEPILOT, NULL, '否', '是') as ID4058,
+       SECTOR.FAKEPILOT as ID4059,
+       SECTOR.ISTOWER as ID4060,
+       SECTOR.ISAMPLIFIER as ID4061,
+       '' as ID4062,
+       '' as ID4063,
+       '' as ID4064,
+       '' as ID4065,
+       '' as ID4066,
+       '' as ID4067,
+       BTS.ARCHITECTURE as ID4068,
+       BTS.ADDRESS as ID4069,
+       '' as ID4070,
+       '' as ID4071,
+       '' as ID4072,
+       '' as ID4073,
+       '' as ID4074,
+       '' as ID4075
+  from ne_cell_c        sector,
+       ne_bts_c         bts,
+       ne_bsc_c         bsc,
+       cfg_bsc_map_city msc,
+       cfg_city         city,
+       cfg_county       adm
+ where sector.related_bts = bts.ne_sys_id
+   and BTS.RELATED_BSC = BSC.NE_SYS_ID
+   and BSC.NE_SYS_ID = MSC.NE_BSC_ID
+   and sector.city_id = city.city_id
+   and sector.city_id = bts.city_id
+   and sector.city_id = bsc.city_id
+   and sector.city_id = msc.city_id
+   and adm.COUNTY_ID(+) = sector.ADM_AREA
+ order by city.city_id, bsc.ne_sys_id, bts.bts_id, sector.sector_id
+ 
+ --WLAN热点
+ select '2011-5-19' as ID5001,
+       HOT.HOTMARK as ID5002,
+       '广东' as ID5003,
+       CITY.CITY_NAME as ID5004,
+       HOT.HOTNAME as ID5005,
+       HOT.HOTADDR as ID5006,
+       HOT.LONGITUDE as ID5007,
+       HOT.LATITUDE as ID5008,
+       HOT.HOTUSEAPNUM as ID5009,
+       HOT.HOTUSEACNUM as ID5010,
+       to_char(HOT.CELLIDONE) as ID5011,
+       to_char(HOT.CELLIDTWO) as ID5012,
+       to_char(HOT.CELLIDTHREE) as ID5013,
+       '' as ID5014,
+       '' as ID5015,
+       '' as ID5016,
+       '' as ID5017,
+       '' as ID5018
+  from ne_uway_hotdatacollect hot, cfg_city city
+ where hot.city_id = city.city_id
+
+ --盲点
+ select '2011-5-19' as ID6001,
+       BLIND.BLINDID as ID6002,
+       '广东' as ID6003,
+       CITY.CITY_NAME as ID6004,
+       BLIND.BLINDADDRESS as ID6005,
+       BLIND.SERIAL_ID as ID6006,
+       BLIND.CREATETIME as ID6007,
+       BLIND.BLINDAREAID as ID6008,
+       BLIND.BLINDNAME as ID6009,
+       BLIND.BLINDPROPERTYCITY as ID6010,
+       BLIND.BLINDPROPERTYCITYTOWN as ID6011,
+       BLIND.BLINDADDNAME as ID6012,
+       BLIND.MARKBUILD as ID6013,
+       BLIND.BLINDLEVEL as ID6014,
+       BLIND.LONGITUDE as ID6015,
+       BLIND.LATITUDE as ID6015,
+       BLIND.AREATYPE as ID6016,
+       BLIND.BLINDINOROUT as ID6017,
+       BLIND.IS1XBLIND as ID6018,
+       BLIND.ISDOCELL as ID6019,
+       BLIND.FORMREASON as ID6020,
+       BLIND.RADIUS as ID6021,
+       BLIND.SETPLAN as ID6022,
+       BLIND.ISHASPLAN as ID6023,
+       BLIND.PLANSITE as ID6024,
+       BLIND.PLANSITELONGITUDE as ID6025,
+       BLIND.PLANSITELATITUDE as ID6026,
+       BLIND.PLANADDRESS as ID6027,
+       BLIND.PLANINDOROUT as ID6028,
+       BLIND.EQUIPMENTTYPE as ID6029,
+       BLIND.ONEXDEPLOY as ID6030,
+       BLIND.DODEPLOY as ID6031,
+       BLIND.BUILDREASON as ID6032,
+       BLIND.PUTONLIST as ID6033,
+       BLIND.PLANBUILDTIME as ID6034,
+       BLIND.FILLINMAN as ID6035,
+       TO_CHAR(BLIND.FILLTIME, 'YYYY-MM-DD HH24:MI:SS') as ID6036,
+       BLIND.RESOLVE as ID6037,
+       TO_CHAR(BLIND.SETTIME, 'YYYY-MM-DD HH24:MI:SS') as ID6038,
+       BLIND.LASTSETPLAN as ID6039,
+       '' as ID6040,
+       '' as ID6041,
+       '' as ID6042,
+       '' as ID6043,
+       '' as ID6044
+  from ne_uway_blindinfor blind, cfg_city city
+ where blind.city_id = city.city_id
+

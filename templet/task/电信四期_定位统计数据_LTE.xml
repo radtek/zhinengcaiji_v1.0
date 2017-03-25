@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:test10
+		</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">test_cnoap</property>
+		<property name="password">test_cnoap</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="${province_en}_WORK_BSASTAT_%%Y%%M%%D.csv"
+				templet="电信四期_定位统计数据_LTE.ftl">
+				<sql>
+					<![CDATA[
+					select '1.42.02b_SP0' "版本号",
+					       pc.province_name "省份",
+					       gk.city_name "地市",
+					       '%%Y-%%M-%%D' "日期",
+					       nvl(gk.bsquerysuc, 0) / nvl(gk.bsquerysucrate, 1) "BS查找总次数",
+					       gk.bsquerysuc "BS查找成功次数",
+					       gk.bsquerysucrate "BS查找成功率",
+					       gk.pnquerynum "PN查找总次数",
+					       gk.pnquerysuc "PN查找成功次数",
+					       gk.pnquerynum - gk.pnquerysuc "PN查找失败次数",
+					       gk.pnquerysucrate "PN查找成功率",
+					       0 "I_001错误次数",
+					       0 "I_028错误次数",
+					       0 "I_029错误次数"
+					  from MOD_GPS_KPI gk
+					  left join CFG_PROVINCE_CITY pc
+					    on gk.city_name = pc.city_name
+					]]>
+				</sql>
+			</mapping>
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.43</property>
+		<property name="port">21</property>
+		<property name="username">ftp</property>
+		<property name="password">1</property>
+		<property name="path">/WORK/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

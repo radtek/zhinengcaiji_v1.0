@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+        <include>
+			<property name="mapping">mapping.xml</property>
+			<property name="loop">false</property>
+        </include>
+
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.101.106:1521:noap1</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noap</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+	<to id="1">
+		<resolve dsid="1">
+
+			
+		 
+		   <mapping name="${province_en}_PERF_SCENE_LTE_%%Y%%M%%D.csv" templet="LTE-场景类型.ftl"    >
+			
+				<sql>
+				<![CDATA[
+				 select 
+'1.41_SP1'  as "版本号", 	
+				 "场景级别",
+ to_char("数据时间点",'yyyy-mm-dd hh24:mi:ss') as "数据时间点",
+"场景类型",
+"省份",
+"城市",
+"载扇数量",
+"RRC连接建立成功率",
+"RRC连接建立成功次数",
+"RRC连接建立请求次数",
+"E-RAB建立成功率",
+"E-RAB建立成功次数",
+"E-RAB建立请求次数",
+"E-RAB掉线率",
+"E-RAB异常释放次数",
+"E-RAB正常释放次数",
+"UE上下文建立成功率",
+"UE上下文建立成功次数",
+"UE上下文建立尝试次数",
+"UE上下文掉线率",
+"UE上下文异常释放次数",
+"UE上下文正常释放次数",
+"空口上行用户面流量（MB）",
+"空口下行用户面流量（MB）",
+"用户面PDCP层上行平均吞吐率",
+"用户面PDCP层下行平均吞吐率",
+"空口上行用户面丢包数",
+"空口下行用户面丢包数",
+"空口上行用户面弃包数",
+"空口下行用户面弃包数",
+"空口上行用户面总包数",
+"空口下行用户面总包数",
+"小区PDCP接收上行数据的总时长",
+"小区PDCP发送下行数据的总时长",
+"用户面下行平均时延",
+"平均激活用户数",
+"最大激活用户数",
+"最大RRC连接用户数",
+"平均用户数",
+"预留字段1",
+"预留字段2",
+"预留字段3",
+"预留字段4",
+"预留字段5"
+				  from VRPT_TMP_PERF_SCENE_LTE where "数据时间点"  >=  trunc(to_date('%%Y-%%M-%%D','YYYY-MM-DD')) and  "数据时间点" <  trunc(to_date('%%Y-%%M-%%D','YYYY-MM-DD')+1)
+				]]>
+		        </sql>
+		    </mapping>
+		    
+ 
+		    
+		</resolve>
+	</to>
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">132.63.5.83</property>
+		<property name="port">21</property>
+		<property name="username">jsftp</property>
+		<property name="password">ExZp^yNz</property>
+		<property name="path">/LTEPERF/</property><!--可以配置通配符 -->
+		<property name="encode">utf-8</property><!--可以配置通配符 -->
+		
+	</ti>
+
+
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--ftp文件方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

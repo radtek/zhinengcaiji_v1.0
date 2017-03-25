@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.1.12:1521:noap</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">CNOAP</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="HB_CONF_BTS_%%Y%%M%%D.txt" templet="WLAN网管与网优平台接口-BTS.ftl" >
+				<sql>
+				select b.city_id as cityid,
+				       b.bsc_id as Bscid,
+				       b.bts_id as BtsId,
+				       b.china_name as 基站名称,
+				       b.china_name as 中文名称,
+				       case b.vendor
+				         when 'ZY0808' THEN
+				          '华为'
+				         when 'ZY0804' THEN
+				          '中兴'
+				       end as 供应商,
+				       b.bsc_name as BSC名称,
+				       t.city_name as 城市,
+				       t.adm_area as 县区,
+				       t.TCH_COUNT as 信道单元数,
+				       t.CARRIERNUM as 载频个数,
+				       t.WIRE_LOAD_P as 基站的设计容量,
+				       t.NEW_COL_20111117_3233439 as BTS类型,
+				       t.LONGITUDE as 基站经度,
+				       t.LATITUDE as 基站纬度,
+				       t.ADDRESS as 位置,
+				       t.LAC as LAC,
+				       t.SITE_TYPE as 基站类型,
+				       '否' as 是否DO站, --error
+				       t.SITE_TYPE as 设备类型,
+				       t.CELLNUM as 扇区数量,
+				       t.ONEX_SITE_MODEL as 站型, --error
+				       t.TRANSFERS as 传输方式,
+				       t.ISRELATED as 是否级联,
+				       t.onex_2m_num + t.do_2m_num as "2M数量",
+				       t.PHYSIOGNOMY as 地貌,
+				       t.ARCHITECTURE as 建筑类型,
+				       t.FLOOR as 机房所在楼层,
+				       case
+				         when t.SHARED_WITH is null then
+				          null
+				         when instr(t.SHARED_WITH, '独有', 1, 1) &gt; 0 then
+				          '否'
+				         else
+				          '是'
+				       end as 是否与联通共站,
+				       t.EVDO_SITE_MODEL as cell_carrier_num_do,
+				       t.ONEX_SITE_MODEL as cell_carrier_num_1x,
+				       t.STATE as 基站状态
+				  from ne_bts_c b
+				  left join ne_taizhang_bts t
+				    on b.City_Id = T.CITY_ID
+				   AND b.bsc_id = t.bsc_id
+				   and b.bts_id = t.bts_id
+				 order by b.city_id, b.bsc_id, b.bts_id
+				</sql>
+			</mapping>
+			<mapping name="HB_CONF_CARR_%%Y%%M%%D.txt" templet="WLAN网管与网优平台接口-CARR.ftl" >
+				<sql>
+				select distinct city_id as cityid,
+		                BSC as Bscid,
+		                BTS as Btsid,
+		                CELL AS Cellid,
+		                CARR_SEQ as Carrierid,
+		                CITY_NAME,
+		                vendorname as 供应商,
+		                CARR as cdma_freq,
+		                case
+		                  when bustype = '1X' THEN
+		                   '1X'
+		                  ELSE
+		                   'DO'
+		                END AS CAR_TYPE
+		  FROM CFG_MAP_DEV_TO_NE M
+		 order by 供应商 desc, cityid, Bscid, Btsid, Cellid, cdma_freq
+				</sql>
+			</mapping>
+			<mapping name="HB_CONF_CELL_%%Y%%M%%D.txt" templet="WLAN网管与网优平台接口-CELL.ftl" >
+				<sql> 
+				select c.city_id as cityid,
+				       c.bsc_id as Bscid,
+				       c.bts_id as BtsId,
+				       c.sector_id as CellId,
+				       c.china_name as 小区名称,
+				       case c.vendor
+				         when 'ZY0808' THEN
+				          '华为'
+				         when 'ZY0804' THEN
+				          '中兴'
+				       end as 供应商,
+				       c.LAC,
+				       c.CI,
+				       t.city_name as 城市,
+				       c.bsc_name as BSC名称,
+				       c.bts_name as BTS名称,
+				       t.onex_carr_num as "1X载频数",
+				       t.WIRE_LOAD as 无线容量,
+				       c.pn as PN,
+				       t.onex_carr_num + t.evdo_carr_num as 总载频数,
+				       t.EQUIP_MODEL as 设备类型,
+				       t.ANT_HIGH as 天线挂高,
+				       t.ANTENNA_MODEL as 天线型号,
+				       '' as 天线增益,
+				       '' as 极化方式,
+				       t.HORIZONTAL as 水平波瓣,
+				       t.VERTICAL as 垂直波瓣,
+				       t.ANT_AZIMUTH as 方位角,
+				       t.DEFAULT_ELE_ANGLE as 天线电子倾角,
+				       t.ANT_ENGINE_ANGLE as 天线机械倾角,
+				       t.ANT_ENGINE_ANGLE as 天线倾角,
+				       t.ISELECADJUST as 是否可变电调,
+				       t.ANT_SPAN as 天线架设方式,
+				       t.ISCELLSPLIT as 是否扇区分裂,
+				       t.BORDERSECTOR as 多载频边界Border,
+				       c.sector_id as 扇区号,
+				       t.NET_TYPE as 扇区类型,
+				       t.OUTSIDE_REPEATER_NUM as 直放数量,
+				       t.LONGITUDE as 经度,
+				       t.LATITUDE as 纬度,
+				       t.NET_TYPE as 小区类型,
+				       t.OMC_NAME as 所属MSC名称,
+				       c.bts_id as 基站站号,
+				       t.EVDO_CARR_NUM as DO载频数量,
+				       t.ISDO as 是否DO小区
+				  from ne_cell_c c
+				  left join ne_taizhang_cell t
+				    on c.city_id = t.city_id
+				   and c.bsc_id = t.bsc_id
+				   and c.bts_id = t.bts_id
+				   and ((c.vendor = 'ZY0808' and c.local_cell_id = t.local_cell_id) or (c.vendor &lt;&gt; 'ZY0808'))
+				   and c.sector_id = t.sector_id
+				 order by c.vendor, c.city_id, c.bsc_id, c.bts_id, c.sector_id
+				</sql>
+			</mapping>
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">127.0.0.1</property>
+		<property name="port">21</property>
+		<property name="username">yinhl</property>
+		<property name="password">123</property>
+		<property name="path">/CONF/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

@@ -1,0 +1,16 @@
+<rnop_service_input_para>
+	<service_instance>
+		<service_id>DRS105</service_id>
+		<version>R1</version>
+		<service_name>文件异常通知</service_name>
+		<service_desc>指定获取的数据文件准备异常或上报异常发生后通知，上报异常说明和异常原因</service_desc>
+		<service_content>
+		    <DRS105service_content>
+				<serCaller>陕西</serCaller>
+				<domainType>GSM无线接入网</domainType>
+				<abnormalRemark>由于文件准备过程中,出现XXX错误</abnormalRemark>
+				<abnormalReason>详细说明错误的原因......</abnormalReason>
+			</DRS105service_content>
+		</service_content>
+	</service_instance>
+</rnop_service_input_para>

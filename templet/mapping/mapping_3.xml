@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mapping>
+    <province province_en="GD" province_cn="广东">
+      
+       <city city_id="762">
+					<property name="city_cn">河源</property>
+					<property name="city_en">HY</property>										
+       </city>
+       <city city_id="768">
+					<property name="city_cn">潮州</property>
+					<property name="city_en">CZ</property>										
+       </city>
+       <city city_id="663">
+					<property name="city_cn">揭阳</property>
+					<property name="city_en">JY</property>										
+       </city>
+       <city city_id="763">
+					<property name="city_cn">清远</property>
+					<property name="city_en">QY</property>										
+       </city>
+       <city city_id="753">
+					<property name="city_cn">梅州</property>
+					<property name="city_en">MZ</property>										
+       </city>
+    </province>
+</mapping>

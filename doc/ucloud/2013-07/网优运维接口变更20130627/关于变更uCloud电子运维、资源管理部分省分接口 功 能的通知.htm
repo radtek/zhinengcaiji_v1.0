@@ -1,0 +1,191 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--??????±??á??±ê?????°??·??ù?è????css??js???? 2008-10-06 by yswang-->
+
+<!--amcharts cj-->
+
+
+<link href="/eoms2006/css/main.css" rel="stylesheet" type="text/css">
+<link title="css0" href="/eoms2006/red/css/style.css" rel="stylesheet" type="text/css">
+<link title="css1" href="/eoms2006/blue/css/style.css" rel="stylesheet" type="text/css">
+<link title="css2" href="/eoms2006/green/css/style.css" rel="stylesheet" type="text/css">
+<link title="css3" href="/eoms2006/yellow/css/style.css" rel="stylesheet" type="text/css">
+<!--script type="text/JavaScript" src="/eoms2006/js/leftmenu.js"></script-->
+<!--script type="text/JavaScript" src="/eoms2006/js/top_disp.js"></script-->
+<script type="text/JavaScript" src="/eoms2006/js/change.js"></script><!--??·?-->
+<script type="text/JavaScript" src="/eoms2006/js/disp_main.js"></script><!--?é??????????-->
+<script type="text/javascript" src="/eoms2006/js/AC_RunActiveContent.js"></script><!--×÷??????-->
+<script type="text/javascript" src="/eoms2006/_script/formatcheck.js"></script><!--????±í???é?¤-->
+<script type="text/javascript" src="/eoms2006/_script/DatePicker/WdatePicker.js"></script><!--???ú????-->
+<script language="JavaScript" src="/eoms2006/_script/time.jsp"></script>
+
+<script language="javascript">
+    var contextPath='/eoms2006';
+</script>
+<!--EXTJS v3.2-->
+<script type="text/javascript" src="/eoms2006/_script/ext0302/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/ext0302/ext-all.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/ext0302/ext-lang-zh_CN.js" charset="GB2312"></script>
+<script type="text/javascript" src="/eoms2006/_script/ext0302/TreeCheckNodeUI.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/ext0302/examples/ux/ComboBoxTree.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/ext0302/examples/ux/TableGrid.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/ext0302/examples/ux/TabCloseMenu.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/ext0302/examples/ux/DDView.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/ext0302/examples/ux/MultiSelect.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/ext0302/examples/ux/MonthPickerPlugin.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/TreeFilter/PinyinFilter.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/TreeFilter/TreeFilter.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/DeptComboWindow.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/DeptTreePanel.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/UserTreePanel.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/DeptUserTreePanel.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/DeptComboExt.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/DeptWindow.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/DeptUserWindow.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/GroupWindow.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/GroupTreePanel.js"></script>
+<script type="text/javascript" src="/eoms2006/_script/exttree/CommonContactTreePanel.js"></script>
+<script type="text/javascript" src="/eoms2006/_include/sysconstants-zh_cn.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/eoms2006/css/icon-all.css"/>
+<link rel="stylesheet" type="text/css" href="/eoms2006/_script/ext0302/resources/css/ext-all.css"/>
+
+ <link rel="stylesheet" type="text/css" href="/eoms2006/_script/exttree/css/exttree.css"/>
+
+
+
+<script>setStyleSheet('css1');</script>
+
+
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="0">
+<html>
+<head>
+    <title>工单</title>
+    <link rel="styleSheet" href="/eoms2006/css/general.css" type="text/css"/>
+    <link rel="styleSheet" href="/eoms2006/_css/css200603.css" type="text/css"/>
+
+    <script language="javascript" src="/eoms2006/_script/grobal_val.js"></script>
+    <script language="JavaScript" src="/eoms2006/form/jslibs/form.js"></script>
+    <script language="JavaScript" src="/eoms2006/form/special/DispatchForm.js"></script>
+    <script language="JavaScript" src="/eoms2006/fileUpload/fileUpload.js"></script>
+    <script language="javascript" src="/eoms2006/_script/submitDataWait.js"></script>
+
+    <script language="javascript">
+        function procForm(actionName, actionId, appHasDispatch) {
+            document.getElementById("submitButton").style.display = "none";
+            document.getElementById("waitTable").style.display = "";
+
+            window.event.cancelBubble = true;
+            window.open("/eoms2006/npform/procform.jsp?action_name=" + actionName + "&action_id=" + actionId + "&appHasDispatch=" + appHasDispatch + "&form_id=49010" + "&wf_name=DispatchForm" + "&function=0400" + "&specialty=008", "_blank", "toolbar=no,location=no,status=no,menubar=no,scrollbars=1,revisable=no,width=650px,height=400px,left=0,top=0");
+        }
+        function closeForm() {
+            window.close();
+        }
+
+       function showFormChart(formChartName) {
+        window.event.cancelBubble = true;
+        window.open("/eoms2006/form/showFormChart.jsp?formChartName=" + formChartName, "_blank", "toolbar=no,location=no,status=no,menubar=no,scrollbars=1,revisable=yes,width=650px,height=600px,left=0,top=0");
+       }
+        function showFormScout(wfName, form_id) {
+            window.event.cancelBubble = true;
+            window.open("/eoms2006/showFormScout.do?wf_name=" + wfName + "&form_id=" + form_id, "_blank", "toolbar=no,location=no,status=no,menubar=no,scrollbars=2,revisable=yes,width=800px,height=600px,left=0,top=0");
+        }
+
+          //add by qiulu
+        function flowTrack(form_id){
+          window.event.cancelBubble = true;
+          window.open("/eoms2006/form/showFormTrack.jsp?form_id="+form_id, "_blank", "toolbar=no,location=no,status=no,menubar=no,scrollbars=2,revisable=yes,width=800px,height=600px,left=0,top=0");
+        }
+        // add by jtwu
+        function newMessage(form_id) {
+            //window.event.cancelBubble = true;
+            window.open("/eoms2006/form/newMessage.jsp?wfName=" + 'DispatchForm' + "&form_type=npform&form_id=" + form_id + "&specialty=" + '008'+ "& function=" + '0400');
+        }
+        function showMessage(form_id) {
+            //window.event.cancelBubble = true;
+            window.open("/eoms2006/formMessage.do?action=show&formId=" + form_id + "&specialty=" + '008'+ "& function=" + '0400');
+        }
+        function trackList(form_id) {
+            window.event.cancelBubble = true;
+            window.open("/eoms2006/npTrackList.do?formId=" + form_id + "&wf_name=DispatchForm", "_blank", "toolbar=no,location=no,status=no,menubar=no,scrollbars=2,revisable=yes,width=950px,height=800px,left=0,top=0");
+        }
+        
+
+    </script>
+</head>
+
+<body topmargin="0" leftmargin="0" height="100%" onscroll="a1.style.top=document.body.scrollTop">
+
+<DIV id=a1 style='font:10pt;color:#000000;font-weight:bold;POSITION:absolute;left:25px;TOP:10px;background:white;'>
+<img onmouseover="this.style.border='2 #eeeeee outset';this.style.cursor='hand'" onmouseout="this.style.border='2 #ffffff'" onmousedown="this.style.border='2 #cccccc inset';" src='/eoms2006/images/print.gif' alt='打印' align='middle' onclick="printit()" />&nbsp;打印&nbsp;
+<img onmouseover="this.style.border='2 #eeeeee outset';this.style.cursor='hand'" onmouseout="this.style.border='2 #ffffff'" onmousedown="this.style.border='2 #cccccc inset';" src='/eoms2006/images/backHome.gif' alt='关闭' align='middle' onclick="closeForm()" />&nbsp;关闭&nbsp;
+<img onmouseover="this.style.border='2 #eeeeee outset';this.style.cursor='hand'" onmouseout="this.style.border='2 #ffffff'" onmousedown="this.style.border='2 #cccccc inset';" src='/eoms2006/images/form.gif' alt='流程跟踪' align='middle' onclick="flowTrack('49010')" />&nbsp;流程跟踪&nbsp;<img onmouseover="this.style.border='2 #eeeeee outset';this.style.cursor='hand'" onmouseout="this.style.border='2 #ffffff'" onmousedown="this.style.border='2 #cccccc inset';" src='/eoms2006/images/lcgz.gif' alt='流程图' align='middle' onclick="showFormChart('null')" />&nbsp;流程图&nbsp;
+<img onmouseover="this.style.border='2 #eeeeee outset';this.style.cursor='hand'" onmouseout="this.style.border='2 #ffffff'" onmousedown="this.style.border='2 #cccccc inset';" src='/eoms2006/images/form.gif' alt='流程列表' align='middle' onclick="trackList('49010','DispatchForm')" />&nbsp;流程列表&nbsp;
+<img onmouseover="this.style.border='2 #eeeeee outset';this.style.cursor='hand'" onmouseout="this.style.border='2 #ffffff'" onmousedown="this.style.border='2 #cccccc inset';" src='/eoms2006/images/form.gif' alt='添加留言' align='middle' onclick="newMessage('49010')" />&nbsp;添加留言&nbsp;
+<img onmouseover="this.style.border='2 #eeeeee outset';this.style.cursor='hand'" onmouseout="this.style.border='2 #ffffff'" onmousedown="this.style.border='2 #cccccc inset';" src='/eoms2006/images/form.gif' alt='查看留言' align='middle' onclick="showMessage('49010')" />&nbsp;查看留言&nbsp;
+</div>
+<br>
+<br>
+<br>
+<table  width="85%" border="0" align="center" cellpadding="0" cellspacing="0"><tr> <td width="50%" height="90"><img src="/eoms2006/pic/logo_to.gif" width="152" height="71"></td><td align="center" class="gdmainbt">任务调度调度单</td></tr><td height="20"><span class="bttxt"><span class="bttxt">工单编号:中国联通移维网调【2013】任务0286</span></td><td align="right"><span class="bttxt">派发时间:</span><span class="bttxt_tc">2013-06-27 16:10:19</span></td></tr></table>
+
+<table width="90%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolorlight="#bfceff"  bordercolordark="#FFFFFF" class="gdnewtable"><tbody><tr><TD colspan="2" width="50%"  noWrap class="title_box">工单编号:中国联通移维网调【2013】任务0286</td><TD colspan="2" align="right"  noWrap class="title_box">派发时间:2013-06-27 16:10:19<br></td></tr>
+<tr><td class="only_td" nowrap="true" width="20%" align="center">调度单主题</td><td  width="30%"colspan="3" style="word-break:break-all">关于变更uCloud电子运维、资源管理部分省分接口功能的通知<br></td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">要求反馈时间</td><td  width="30%"colspan="3" style="word-break:break-all">2013-06-28 17:00:00<br></td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">调度单编号</td><td  width="30%">中国联通移维网调【2013】任务0286<br></td><td class="only_td" nowrap="true" width="20%" align="center">签发时间</td><td style="word-break:break-all">2013-06-27 16:10:19<br></td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">所属调度功能</td><td  width="30%">任务调度<br></td><td class="only_td" nowrap="true" width="20%" align="center">所属专业域</td><td style="word-break:break-all">移动域<br></td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">拟稿人</td><td  width="30%">高扬:维护管理处:gaoyang@chinaunicom.cn:66258926:66258926:<br></td><td class="only_td" nowrap="true" width="20%" align="center">核稿人</td><td style="word-break:break-all"><br></td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">签发人</td><td  width="30%"colspan="3" style="word-break:break-all">高扬:ZOB:gaoyang@chinaunicom.cn:66258926:66258926:<br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">附件：</td><td colspan="3" nowrap="true">&nbsp;</td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">备注</td><td  width="30%"colspan="3" style="word-break:break-all">&nbsp<br></td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">总部审核人</td><td  width="30%">高扬<br></td><td class="only_td" nowrap="true" width="20%" align="center">总部审核时间</td><td style="word-break:break-all">2013-06-27 16:09:59<br></td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">总部审核人电话</td><td  width="30%">66258926<br></td><td class="only_td" nowrap="true" width="20%" align="center">总部审核人邮件</td><td style="word-break:break-all">gaoyang@chinaunicom.cn<br></td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">总部审核处理意见</td><td  width="30%"colspan="3" style="word-break:break-all">未填<br></td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">总部签发人</td><td  width="30%">高扬<br></td><td class="only_td" nowrap="true" width="20%" align="center">总部签发时间</td><td style="word-break:break-all">2013-06-27 16:10:19<br></td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">总部签发人电话</td><td  width="30%">66258926<br></td><td class="only_td" nowrap="true" width="20%" align="center">总部签发人邮件</td><td style="word-break:break-all">gaoyang@chinaunicom.cn<br></td></tr><tr><td class="only_td" nowrap="true" width="20%" align="center">总部签发意见</td><td  width="30%"colspan="3" style="word-break:break-all">未填<br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">申请单号</td><td  style="word-break:break-all"><br></td><td class="only_td" nowrap="true" width="150px" align="center">调度单编号</td><td  style="word-break:break-all">中国联通移维网调【2013】任务0286<br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">紧急程度</td><td  style="word-break:break-all"colspan="3">急<br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">申请任务开始时间</td><td  style="word-break:break-all">2013-06-27 08:30:00<br></td><td class="only_td" nowrap="true" width="150px" align="center">申请任务结束时间</td><td  style="word-break:break-all">2013-06-28 17:00:00<br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">要求反馈次数</td><td  style="word-break:break-all"colspan="3">1<br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">反馈次数</td><td  style="word-break:break-all">1<br></td><td class="only_td" nowrap="true" width="150px" align="center">要求反馈时间</td><td  style="word-break:break-all">2013-06-28 17:00:00<br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">任务摘要信息</td><td  style="word-break:break-all"colspan="3"><br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">主送单位</td><td  style="word-break:break-all"colspan="3">安徽、北京、重庆、福建、广东、甘肃、广西、贵州、河北、河南、黑龙江、海南、湖北、湖南、吉林、江苏、江西、辽宁、内蒙古、宁夏、青海、四川、山东、上海、陕西、山西、天津、新疆、西藏、云南、浙江<br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">抄送单位</td><td  style="word-break:break-all"colspan="3"><br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">任务内容描述</td><td  style="word-break:break-all"colspan="3">总部uCloud电子运维、资源管理应用在开发过程中由于需求变化导致设计方案调整，影响到与uCloud连接的部分省分和集团的系统接口，需要各省分协调相关网管厂家对这部分接口进行修改。具体要求如下：
+1、各省必须在7月5日前完成相关的接口开发改造工作，其中山东福建应完成资源管理、电子运维接口的开发改造，其他29省完成电子运维接口的开发改造。
+2、请各省运维部负责本省“uCloud省分配套接口更新改造项目”的负责人将相关要求和文档（附件）尽快传达给相关网管厂家。
+3、总部项目组支撑人员联系方式：
+项目组将利用与接口改造厂商的QQ群，进行本次修改说明，并从下周一开始在日报中跟踪，同时公布项目组接口人回答接口改造厂商问题。接口人联系信息如下：
+电子运维接口需求：李德超，brucli@deloitte.com.cn
+电子运维服务规范：万哲韬 waiteyou2009@gmail.com
+资源接口需求：刘淦，gliu@deloitte.com.cn
+资源服务规范：罗兵，luo.bing3@foxmail.com
+4、相关文档说明：
+修改内容包含在附件电子运维/资源接口变更文件包中，每个文件包内有3个目录和若干文件
+1)目录一：变更后的接口需求
+2)目录二：变更后的接口服务规范
+3)目录三：变更后的WSDL文件
+4)文件一：接口变更说明
+5)文件二：服务规范变更清单及追踪关系
+6)其他补充说明文件<br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">任务内容附件列表</td><td  style="word-break:break-all"colspan="3"><a onclick=downloadFile2('npDownload','1372322423274')  style="cursor:hand ">资源管理接口变更.20130627.z;电子运维接口变更 20130627.rar;&nbsp;</a><br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">其它附件列表</td><td  style="word-break:break-all"colspan="3"><br></td></tr><tr><td class="only_td" nowrap="true" width="150px" align="center">拟稿人姓名/电话</td><td  style="word-break:break-all"colspan="3">高扬:维护管理处:gaoyang@chinaunicom.cn:66258926:66258926:<br></td></tr>
+</TBODY></TABLE><Br/><Br/>
+</table>
+<br>
+<TABLE align="center" width="90%" border=1 cellpadding="0" cellspacing="0" borderColor=#636bb5 class=commonText  bordercolorlight="#FFFFFF">
+<tr id="submitButton"><td class="only_td" align="center" nowrap="true" width="150px">任务调度调度单</td><td nowrap="true" colspan="3"><table width="50" border="1" cellspacing="0" cellpadding="0" bordercolordark="#FFFFFF" bordercolorlight="#3399FF"  style="cursor:hand "><tr><td  nowrap class="button_2003"  onclick="procForm('reportackForm','11','0400','008')" >&nbsp;&nbsp;<img src="/eoms2006/images/add.gif"  border='0' >&nbsp;回执&nbsp;</td></tr></table></td></tr>
+</table><br>
+
+
+</body>
+</html>
+<script language="JavaScript">
+ waitAndGo(5000);
+</script>
+
+

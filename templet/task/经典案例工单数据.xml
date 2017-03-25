@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+        <include>
+			<property name="mapping">mapping.xml</property>
+			<property name="loop">false</property>
+        </include>
+
+	<!-- 数据库信息
+	   
+	 需要根据现场真实情况进行修改
+	 -->
+	<ds id="1" type="106">
+	<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:test10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">test_cnoap</property>
+		<property name="password">test_cnoap</property>
+	</ds>
+	 
+	 <!--
+	 省端 FTP信息， 
+	   存放用户上传的附件。
+	   通过如下SQL，查询FTP 地址、用户名、密码：select *  from cfg_dictitem where dict_type = 'FtpHander'
+	   此处 现场 需要进行修改
+	   -->
+		<ds id="2" type="201">
+			
+		<property name="ftpip">192.168.15.202</property>
+		<property name="port">21</property>
+		<property name="username">ftpuser</property>
+		<property name="password">!QAZxsw2#EDC</property>
+		<property name="path">/</property>
+		<property name="conn_ftp_passive">1</property>
+		<property name="encode">gbk</property><!--可以配置通配符 -->
+	
+	  </ds>
+	
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+  <!-- 下面mapping 中的 name  与 isrelated 属性 有特别用途，不能修改
+      name=1 代表 只会执行 Sql 语句，并取出  经典案例工单编号 的值， 用于替换 下面SQL中的变量。
+      isrelated="1"  代表会根据 SQL查出的FTP地址，去下载文件。
+   -->
+	<to id="1">
+		<resolve dsid="1">
+			
+			  <!--经典案例工单编号--> 
+	  <mapping name="1" templet=""  >
+			
+					<sql>
+					<![CDATA[
+					 
+			   select  distinct TO_CHAR(P.JOBNO) || TO_CHAR(I.ITEMNO) || w.WORKORDER_NO AS "经典案例工单编号",
+			     (case
+         when jt.jt_itemno is null then
+          'P2'
+         else
+          'P1'
+       end) as Object_type
+       
+  from mod_workorder                w,
+       mod_jt_jobplan_item_relation jt,
+       mod_workorder_tag_proc_info  r,
+       mod_attachment               att,
+       mod_jobplan_item             i,
+       CFG_JOBPLAN                  P
+ where w.id = r.workorder_id
+   and w.jobitem_id = i.id
+   and p.id = i.jobplan_id
+   and w.id = att.function_def_id2
+   and w.jobitem_id = jt.jobplan_item_id(+)
+   and r.status = 1 
+
+   and  r.approve_time>= to_date('%%Y-%%M-%%D 00:00:00','yyyy-mm-dd hh24:mi:ss')
+	 and r.approve_time < (to_date('%%Y-%%M-%%D 00:00:00','yyyy-mm-dd hh24:mi:ss')+1)   
+ 
+  
+					  ]]>
+			     </sql>
+		    </mapping>
+
+		    <!--案例附件列表-->
+		    <mapping name="${province_en}_WOCASELIST_${Object_type}_${经典案例工单编号}.CSV" templet="经典案例工单数据.ftl"  addHead="true" >
+			
+						<sql>
+						<![CDATA[
+					     
+			select  '1.41_SP0'  as "版本号", t.*   from  vrpt_woclassic    t  
+         where    t.经典案例工单编号='${经典案例工单编号}'
+
+
+				  ]]>
+				     </sql>
+		    </mapping>
+
+			 
+		   <!-- 案例信息WORD文件-->
+		    <mapping name="2" templet=""  isrelated="1"   >
+			 
+					  <filepara>
+					  	  <![CDATA[ 
+			            select TO_CHAR(P.JOBNO) || TO_CHAR(I.ITEMNO) || w.WORKORDER_NO AS "经典案例工单编号",
+       att.ftp_path || '//' || att.attachment_name as "FTP地址",
+       r.approve_time as "生成时间",
+       (case
+         when jt.jt_itemno is null then
+          'P2'
+         else
+          'P1'
+       end) as Object_type
+  from mod_workorder                w,
+       mod_jt_jobplan_item_relation jt,
+       mod_workorder_tag_proc_info  r,
+       mod_attachment               att,
+       mod_jobplan_item             i,
+       CFG_JOBPLAN                  P
+ where w.id = r.workorder_id
+   and w.jobitem_id = i.id
+   and p.id = i.jobplan_id
+   and w.id = att.function_def_id2
+   and w.jobitem_id = jt.jobplan_item_id(+)
+   and r.status = 1
+   and att.function_def_id1 = 7
+							   and  r.approve_time 	>=to_date('%%Y-%%M-%%D 00:00:00','yyyy-mm-dd hh24:mi:ss')
+									  and   r.approve_time <(to_date('%%Y-%%M-%%D 00:00:00','yyyy-mm-dd hh24:mi:ss')+1)
+								   and TO_CHAR(P.JOBNO) || TO_CHAR(I.ITEMNO) || w.WORKORDER_NO ='${经典案例工单编号}'
+ 
+								 ]]>
+		        </filepara>
+				
+					  <ftpsource  name ="${province_en}_WOCASEINFO_${Object_type}_${经典案例工单编号}.DOC"  ftp_dsid="2">
+					       	<property name="file">${FTP地址}</property>
+					  </ftpsource> 
+			 
+		    </mapping>
+		    
+		    
+		      <!--  	压缩文件-->
+		    <mapping name="3" templet=""  isrelated="1"   >
+			 
+					  <filepara>
+			             <![CDATA[  
+									
+									
+		select TO_CHAR(P.JOBNO) || TO_CHAR(I.ITEMNO) || w.WORKORDER_NO AS "经典案例工单编号",
+       att.ftp_path || '//' || att.attachment_name as "FTP地址",
+       r.approve_time as "生成时间",
+       (case
+         when jt.jt_itemno is null then
+          'P2'
+         else
+          'P1'
+       end) as Object_type
+  from mod_workorder                w,
+       mod_jt_jobplan_item_relation jt,
+       mod_workorder_tag_proc_info  r,
+       mod_attachment               att,
+       mod_jobplan_item             i,
+       CFG_JOBPLAN                  P
+ where w.id = r.workorder_id
+   and w.jobitem_id = i.id
+   and p.id = i.jobplan_id
+   and w.id = att.function_def_id2
+   and w.jobitem_id = jt.jobplan_item_id(+)
+   and r.status = 1 
+   and  r.approve_time 	>=to_date('%%Y-%%M-%%D 00:00:00','yyyy-mm-dd hh24:mi:ss')
+	  AND   r.approve_time 		<(to_date('%%Y-%%M-%%D 00:00:00','yyyy-mm-dd hh24:mi:ss')+1)									   
+		 and  TO_CHAR(P.JOBNO) || TO_CHAR(I.ITEMNO) || w.WORKORDER_NO='${经典案例工单编号}'
+ 
+ 
+					  	]]>
+		        </filepara>
+				
+						<ftpsource  name ="${province_en}_WOCASE_${Object_type}_${经典案例工单编号}.TAR"  ftp_dsid="2">
+					       	<property name="file">${FTP地址}</property>
+					  </ftpsource> 
+			 
+		    </mapping>
+		    
+		    
+ 
+		   
+		    
+		    
+		</resolve>
+	</to> 
+	<!--集团上传FTP 地址信息
+	此处 现场 需要进行修改
+	 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.249</property>
+		<property name="port">21</property>
+		<property name="username">zhaogt</property>
+		<property name="password">SZM0893</property>
+		<property name="path">/WOCASE/</property>
+		<property name="encode">utf-8</property> 
+		
+	</ti>
+
+
+	<t>
+		<action id="1" toid="1" tiid="1"   strategyid="1" /><!--ftp文件方式 -->
+	</t>
+	 
+ <!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<!-- 从数据库表中获取数据，便于产生csv文件 -->
+	<ds id="1" type="700">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10
+		</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noapjs</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+
+	<to id="1">
+		<resolve dsid="1">	
+		
+		<parameters>			
+   		  <parameter  name ="now"  format="%%Y%%M%%D%%H"></parameter>			
+   		  <parameter  name ="yesterday" format="%%Y%%M%%D%%H"></parameter>			
+		</parameters>
+
+		
+			<mapping
+				name="${province_en}_VERIFICATIONDETAIL_ACK_${yesterday}.csv"
+				templet="电信数据核查模板_数据错误类型_四期-detail.ftl" >
+
+				
+				<sql>
+
+SELECT T.PRO_NAME AS "省份",
+T.VER_NO AS "核查单号",
+T.RECEIPT_PERSON AS "回执人",
+TO_CHAR(T.RECEIPT_DATE,'YYYY-MM-DD HH24:MI:SS') AS "回执时间"
+FROM MOD_VERIFICATIONDETAIL_ACK  T   
+
+ where   trunc(T.RECEIPT_DATE,'hh') =to_date('%%Y-%%M-%%D %%H','yyyy-mm-dd hh24')  and  (nbi_ststus=0 or nbi_ststus is null) 
+ 
+				</sql>
+			</mapping>
+
+		</resolve>
+	</to>
+
+
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.223</property>
+		<property name="port">21</property>
+		<property name="username">rd</property>
+		<property name="password">uway_rd_good</property>
+		<property name="path">/VERIFICATION/</property>
+		<property name="encode">UTF-8</property>
+	</ti>
+
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="2" />
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure"></property>
+	</strategy>
+	
+	
+	<strategy id="2">
+		<property name="ids">1</property>
+	</strategy>
+	
+
+	<!-- before ,after ,exception -->
+	
+	<trigger id="1" class="cn.uway.nbi.task.trigger.TriggerAfter">
+		<property name="sql">
+			update  MOD_VERIFICATIONDETAIL_ACK  t  set nbi_ststus=1  where   trunc(T.RECEIPT_DATE,'hh') =to_date('%%Y-%%M-%%D %%H','yyyy-mm-dd hh24')  and (nbi_ststus=0 or nbi_ststus is null) 
+		</property>
+		
+	</trigger>
+</config>

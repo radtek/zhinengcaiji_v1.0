@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+	<!-- 文件请求g,w -->
+	<service xmlns="http://xfire.codehaus.org/config/1.0">
+		<name>FileServices</name>
+		<namespace>http://FileService.noss.chinaunicom.com.cn/</namespace>
+		<serviceClass>
+			cn.com.chinaunicom.noss.FileService.FileServices
+		</serviceClass>
+		<implementationClass>
+			cn.com.chinaunicom.noss.FileService.FileServicesImpl
+		</implementationClass>
+		<style>wrapped</style>
+		<use>literal</use>
+		<scope>application</scope>
+
+	</service>
+
+
+</beans>

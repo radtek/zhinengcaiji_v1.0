@@ -1,0 +1,3 @@
+city_id,bsc_id,bts_id,local_cell_id,sector_id,antenna_alti,antenna_loc_accu,sector_center_lati,sector_center_longi,sector_center_alti,max_antenna_range,terrain_average_height,terrain_height_standard_devi,potential_repeater,pn_in_gpsone,fwd_calib,fwd_calib_accu
+<#list o.datas.d1 as onearray><#if onearray??><#assign len=onearray?size-1 /><#list 0..len as d>${onearray[d]}<#if d != len>,</#if></#list>
+</#if></#list>

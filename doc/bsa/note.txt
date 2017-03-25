@@ -1,0 +1,17 @@
+
+create sequence SEQ_LOG_BSA_RECEIPT_FILE
+minvalue 1
+maxvalue 9999999999999
+start with 1
+increment by 1
+cache 4;
+
+
+
+create sequence SEQ_LOG_BSA_FAIL_DETAIL
+minvalue 1
+maxvalue 9999999999999
+start with 1
+increment by 1
+cache 4;
+

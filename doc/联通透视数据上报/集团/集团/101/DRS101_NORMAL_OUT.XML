@@ -1,0 +1,11 @@
+<rnop_service_output_para>
+	<service_instance>
+		<service_id>DRS101</service_id>
+		<version>R1</version>
+		<service_name>文件周期上报要求</service_name>
+		<service_desc>总部系统向省级系统设置数据文件周期上报的要求</service_desc>
+		<service_content>
+			<resultSetFileInterval>SUCCESS</resultSetFileInterval>
+		</service_content>
+	</service_instance>
+</rnop_service_output_para>

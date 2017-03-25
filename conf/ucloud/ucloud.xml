@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ucloud name="1">
+
+<ds id="1">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10
+		</property>
+		
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">gnoap</property>
+		<property name="password">uwaysoft</property>
+	</ds>
+
+	<ds id="2">
+		<property name="url">jdbc:oracle:thin:@134.54.160.77:1521:wcdma1
+		</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">wcdma</property>
+		<property name="password">uwaysoft2010</property>
+	</ds>
+
+	
+
+	<services>
+		<service_provide>
+			<service>
+				<service_id>ESB_SFWNOS_SFWNOS_90001</service_id>
+				<service_name_en>ESB_SFWNOS_SFWNOS_InquiryResInfoSrv
+				</service_name_en>
+				<service_url>
+					http://192.168.15.103:8000/nbi/services/ESB_SFWNOS_SFWNOS_InquiryResInfoSrv?wsdl
+				</service_url>
+				<service_name_cn>查询资源实体信息服务(ESB_SFWNOS_SFWNOS_InquiryResInfoSrv)
+				</service_name_cn>
+
+			</service>
+
+			<service>
+				<service_id>ESB_SFWNOS_SFWNOS_00005</service_id>
+				<service_name_en>ESB_SFWNOS_SFWNOS_ImportResChangeNoticeInfoSrv
+				</service_name_en>
+				<service_url>http://192.168.15.103:8000/nbi/services/ESB_SFWNOS_SFWNOS_ImportResChangeNoticeInfoSrv?wsdl
+				</service_url>
+				<service_name_cn>导入资源变更通知信息服务(ESB_SFWNOS_SFWNOS_ImportResChangeNoticeInfoSrv)
+				</service_name_cn>
+
+			</service>
+			
+			<service>
+				<service_id>ESB_RM_M22_90001</service_id>
+				<service_name_en>ESB_RM_M22_90001
+				</service_name_en>
+				<service_url>
+http://134.32.26.60:6001/ESB_RM_M22_InquiryResInfoSrvSD_ESB-ESB_RM_M22_InquiryResInfoSrvSD_ESB/ESBRMM22InquiryResInfoSrv_SD_ESB_Proxy?wsdl 
+				</service_url>
+				<service_name_cn>查询资源实体信息服务(ESB_RM_M22_90001, ESB_RM_M22_InquiryResInfoSrv)
+				</service_name_cn>
+
+			</service>
+			
+		</service_provide>
+		<service_consume>
+			<service>
+
+			</service>
+
+		</service_consume>
+	</services>
+
+	<templet service_id="ESB_SFWNOS_SFWNOS_00003" entity_name="SFWNOS_RM_CELL_REL"
+		mapping_service_id="ESB_SFWNOS_SFWNOS_90001">
+		<resultset id="1" ds="1">
+			<sql>
+			select  rownum      rowno,  r.*                                                                                                                                                     
+        from (                                                                                                                                                    
+                                                                                                                                                            
+        SELECT J.NE_SYS_ID CELL_ID, J.NEI_NE_SYS_ID RELATED_CELL_ID                                                                                         
+                                                                                                                                                            
+          FROM para_adj_g J                                                                                                                                 
+                                                                                                                                                            
+        union                                                                                                                                               
+        SELECT w.NE_cell_ID CELL_ID, w.NEI_NE_CELL_ID RELATED_CELL_ID                                                                                       
+                                                                                                                                                            
+          FROM para_adj_w w) r 
+           </sql>
+			
+		</resultset>
+	</templet>
+
+	<templet service_id="ESB_SFWNOS_SFWNOS_00001"  entity_name="SFWNOS_RM_ANTENNA_SYSTEM"
+		mapping_service_id="ESB_SFWNOS_SFWNOS_90001">
+		<resultset id="1" ds="1">
+			<sql>
+		select  rownum      rowno,  r.*                                                                                                                                              
+  from (select                                                                                                                               
+               t.ne_sys_id PHYSICAL_DEVICE_ID,                                                                                                              
+                  decode(t.GONG_ANT,                                                                                                                        
+                      'D',                                                                                                                                  
+                      1,                                                                                                                                    
+                      'G',                                                                                                                                  
+                      1,                                                                                                                                    
+                      'G/D',                                                                                                                                
+                      1,                                                                                                                                    
+                      '不',                                                                                                                                 
+                      1,                                                                                                                                    
+                      '否',                                                                                                                                 
+                      1,                                                                                                                                    
+                                                                                                                                                            
+                       'D/W',                                                                                                                               
+                      4,                                                                                                                                    
+                      'D/W共站',                                                                                                                            
+                      4,                                                                                                                                    
+                      'G/D/W',                                                                                                                              
+                      4,                                                                                                                                    
+                      'G/W',                                                                                                                                
+                      4,                                                                                                                                    
+                      'W/D',                                                                                                                                
+                      4,                                                                                                                                    
+                        'W/G',                                                                                                                              
+                      4,'C/D/W',5,'C/G网共站',5,'G/C',5,                                                                                                    
+                      -1)    TKSYS_NETWORK_BELONG_ENUM_ID,                                                                                                  
+               CASE  WHEN t.ANT_PITCHANGLE IS NULL  THEN  NULL  ELSE  t.ANT_PITCHANGLE  END  ANTENNA_PITCHING_ANGLE,                                        
+               t.NE_SYS_ID UPLINK_DEVICE_ID,                                                                                                                
+               t.ANT_HIGH ANTENNA_HEIGHT,                                                                                                                   
+               t.CELL_STATE MAINTENANCE_STATUS_ENUM_ID,--                                                                                                   
+               t.ANT_AZIMUTH POSITION_ANGLE,                                                                                                                
+              case  when  t.ANT_PLUS is null then  null else   t.ant_plus end   ANTENNA_GAIN,                                                               
+                                                                                                                                                            
+               '-1' ELECTRIC_REGULATING_FLAG,                                                                                                               
+               -1 FEEDER_MANUFACTURER_ID,                                                                                                                   
+               -1 REGULATING_RCU_POSITION,                                                                                                                  
+               t.ANT_EQUIPMODULE DEVICE_MODEL,                                                                                                              
+               FEEDER_TYPE FEEDER_MODEL,                                                                                                                    
+               COVERTYPE COVERAGE_AREA,                                                                                                                     
+                case                                                                                                                                        
+                 when substr(t.newconf, 1, 1) = 'S' then                                                                                                    
+                  2                                                                                                                                         
+                 when substr(t.newconf, 1, 1) = 'M' then                                                                                                    
+                  1                                                                                                                                         
+               end  ANTENNA_TYPE_ENUM_ID,                                                                                                                   
+                 decode(t.CELL_FRES,                                                                                                                        
+                      1,                                                                                                                                    
+                      900,                                                                                                                                  
+                      2,                                                                                                                                    
+                      1800,-1)   WORKING_FREQUENCY_BAND,--                                                                                                  
+               TXFEEDER_LENGTH FEEDER_LENGTH,                                                                                                               
+               POWER TRANSMITTING_POWER,                                                                                                                    
+               -1 POLARIZATION_MODE_ENUM_ID,                                                                                                                
+               null ANTENNA_MANUFACTURER_ID,                                                                                                                
+            CASE  WHEN ACCESS_NET_TIME  IS NULL THEN   '1900-01-01 00:00:00'  ELSE    to_char(t.ACCESS_NET_TIME, 'yyyy-MM-dd HH24:mi:ss') END  PRESENCE_DATE
+          from NE_CELL_G t                                                                                                                                  
+       <!--  union                                                                                                                                               
+                                                                                                                                                            
+        select                                                                                                                         
+               w.ne_cell_id PHYSICAL_DEVICE_ID,                                                                                                             
+                                                                                                                                                            
+               decode(w.ANT_SHARE,                                                                                                                          
+                      'W',                                                                                                                                  
+                      2,                                                                                                                                    
+                      'D+W',                                                                                                                                
+                      4,                                                                                                                                    
+                      'G+D+W',                                                                                                                              
+                      4,                                                                                                                                    
+                      'G+W',                                                                                                                                
+                      4,                                                                                                                                    
+                      'C+W',                                                                                                                                
+                      6,                                                                                                                                    
+                      -1) TKSYS_NETWORK_BELONG_ENUM_ID,                                                                                                     
+                                                                                                                                                            
+              case  when   w.ANT_PITCHANGLE is  null then  null  else to_char(w.ant_pitchangle)  end     ANTENNA_PITCHING_ANGLE,                            
+               w.NE_cell_ID     UPLINK_DEVICE_ID,                                                                                                           
+               w.ANT_HEIGHT     ANTENNA_HEIGHT,                                                                                                             
+                                                                                                                                                            
+               decode(w.STATE, 3, 1, 4, 2, 5, 2, 1, 3, 2, 4, -1) MAINTENANCE_STATUS_ENUM_ID,                                                                
+               DIR POSITION_ANGLE,                                                                                                                          
+                case when   ANT_GAIN  is null  then  null  else to_char( ant_gain) end  ANTENNA_GAIN,                                                       
+                                                                                                                                                            
+               ISMOVEBYELECT ELECTRIC_REGULATING_FLAG,                                                                                                      
+               -1 FEEDER_MANUFACTURER_ID,                                                                                                                   
+               -1 REGULATING_RCU_POSITION,                                                                                                                  
+               ANT_TYPE DEVICE_MODEL,                                                                                                                       
+               FEEDER_TYPE FEEDER_MODEL,                                                                                                                    
+               COVER_AREA_TYPE COVERAGE_AREA,                                                                                                               
+               case                                                                                                                                         
+                 when substr(w.newconf, 1, 1) = 'S' then                                                                                                    
+                  2                                                                                                                                         
+                 when substr(w.newconf, 1, 1) = 'M' then                                                                                                    
+                  1                                                                                                                                         
+               end ANTENNA_TYPE_ENUM_ID,                                                                                                                    
+               -1 WORKING_FREQUENCY_BAND,                                                                                                                   
+               TXFEEDER_LENGTH FEEDER_LENGTH,                                                                                                               
+               POWER TRANSMITTING_POWER,                                                                                                                    
+               -1 POLARIZATION_MODE_ENUM_ID,                                                                                                                
+               ANT_VENDOR ANTENNA_MANUFACTURER_ID,                                                                                                          
+               CASE  WHEN  SERVICE_DATE IS NULL THEN   '1900-01-01 00:00:00'  ELSE    to_char(SERVICE_DATE,'yyyy-MM-dd HH24:mi:ss') END                     
+                 PRESENCE_DATE                                                                                                                              
+          from NE_CELL_w w                                                                                                                                  
+                                -->                                                                                                                             
+        ) r
+ 
+ </sql>
+		
+		</resultset>
+	</templet>
+	<templet service_id="ESB_SFWNOS_SFWNOS_00002" entity_name ="SFWNOS_RM_CELL"
+		mapping_service_id="ESB_SFWNOS_SFWNOS_90001">
+		<resultset id="1" ds="1">
+			<sql>
+			
+			select rownum      rowno,  r.*                                                                                                                                                    
+         from (select                                                                                                                           
+               NE_SYS_ID   CELL_ID,                                                                                                                         
+               CHINA_NAME  ALIAS,                                                                                                                           
+               CARRIER_NUM CARRIER_FREQ_QUANTITY,                                                                                                           
+               LAC         LOCATION_AREA_CODE,                                                                                                              
+               CI          CELL_CI                                                                                                                          
+          from NE_CELL_G                                                                                                                                    
+        union                                                                                                                                               
+                                                                                                                                                            
+        select                                                                                                                            
+               ne_cell_id CELL_ID,                                                                                                                          
+               cell_NAME  ALIAS,                                                                                                                            
+               -1         CARRIER_FREQ_QUANTITY,                                                                                                            
+               LAC        LOCATION_AREA_CODE,                                                                                                               
+               CI         CELL_CI                                                                                                                           
+          from ne_cell_w                                                                                                                                    
+                                                                                                                                                            
+        )  r
+        
+          </sql>
+		
+		</resultset>
+	</templet>
+
+</ucloud>

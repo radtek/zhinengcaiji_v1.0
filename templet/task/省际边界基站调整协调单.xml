@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<!-- 从数据库表中获取数据，便于产生csv文件 -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10
+		</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noapjs</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+
+	<!--省ftp服务器InterfaceFiles目录，
+   步骤 1.	网优平台在平台前端建立省际边界协调单以及附件(附件上传到本省ftp服务器InterfaceFiles)，
+              并将数据记录入库到表 MOD_VSITE_VERGEORDER ，MOD_VSITE_VERGEORDER_SUB， MOD_VSITE_VERGEORDER_FILE
+    步骤2.	NBI每天凌晨3,4点左右上报前一天的数据协调单.
+		输入：
+		A.	数据源:MOD_VSITE_VERGEORDER ，MOD_VSITE_VERGEORDER_SUB， MOD_VSITE_VERGEORDER_FILE.
+		B.	省FTP 目录InterfaceFiles下的协调单
+		
+		输出： 对A数据源用NBI产生csv文件 
+		       对B数据源进行下载，并打包成zip文件
+    
+	-->
+	<ds id="2" type="201">
+		<property name="ftpip">127.0.0.1</property>
+		<property name="port">21</property>
+		<property name="username">test</property>
+		<property name="password">test</property>
+		<property name="path">/InterfaceFiles/</property>
+		<property name="encode">gbk</property>
+
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<!-- 获取上传的省际边界优化协调单,
+			数据源表MOD_VSITE_VERGEORDER ，MOD_VSITE_VERGEORDER_SUB， MOD_VSITE_VERGEORDER_FILE
+			 -->
+			<mapping
+				name="${local_pro_sign}_VERGEORDER_%%Y%%M%%D_${target_pro_sign}_${code}.csv"
+				templet="省际边界优化协调单_三期.ftl" isrelated="1" batchnum="300">
+
+				<filepara>
+					SELECT distinct code, l.pro_sign as local_pro_sign,
+					t.pro_sign as target_pro_sign
+
+					FROM MOD_VSITE_VERGEORDER v,
+					mod_vsite_city l, mod_vsite_city t
+					where v.local_pro = l.pro_name
+					and v.target_pro = t.pro_name
+					and ((order_attribute = 0 AND
+					ISPROVINCE = 1) OR
+					(order_attribute = 0 AND
+					ISPROVINCE IN (5, 7)) OR
+					(order_attribute = 1 AND
+					ISPROVINCE IN (2, 3, 7,8)))
+					AND
+					TRUNC(ACTION_TIME) =
+					to_date('%%Y-%%M-%%D 00:00:00', 'yyyy-mm-dd hh24:mi:ss')
+				</filepara>
+
+                <!-- 省FTP上zip文件 -->
+				<ftpsource
+					name="${local_pro_sign}_VERGEORDER_%%Y%%M%%D_${target_pro_sign}_${code}.zip"
+					ftp_dsid="2">
+					<property name="file">/InterfaceFiles/${code}/AS_${code}*
+					</property>
+					<property name="file">/InterfaceFiles/${code}/AR_${code}*
+					</property>
+				</ftpsource>
+
+				<sql>
+					SELECT to_char(ACTION_TIME,'yyyy-mm-dd') as 时间戳,
+					CODE AS 协调单编号,
+					order_type
+					AS 协调单类型,
+					local_pro AS 本地省份,
+					local_city AS 本地地市,
+					target_pro
+					AS 目标省份,
+					target_city AS 目标地市,
+					title AS 协调单标题,
+					order_desc AS 问题描述,
+					to_char(initi_time,'yyyy-mm-dd hh24:mi:ss') AS 协调单发起时间,
+					to_char(complete_time,'yyyy-mm-dd hh24:mi:ss') AS 协调单期望完成时间,
+					initiator AS 发起方人姓名,
+					initiator_contact AS 发起方人联系方式,
+					reciever AS
+					接收人姓名,
+					reciever_contact AS 接收人联系方式,
+					step_type AS 当前环节,
+					action_type AS
+					执行结果,
+					remark AS 备注,
+					to_char(actual_complete_time,'yyyy-mm-dd
+					hh24:mi:ss') AS 协调单实际完成时间
+					FROM MOD_VSITE_VERGEORDER
+					WHERE (
+					(order_attribute=0 AND ISPROVINCE=1)
+					OR (order_attribute=0 AND
+					ISPROVINCE IN (5,7) )
+					OR (order_attribute=1 AND ISPROVINCE IN
+					(2,3,7,8))
+					) AND TRUNC(ACTION_TIME)=to_date('%%Y-%%M-%%D
+					00:00:00','yyyy-mm-dd
+					hh24:mi:ss')
+
+				</sql>
+				<sql>
+					SELECT sub.SUB_CODE AS 子协调单编号,
+
+					sub.NE_TYPE AS 网元级别,
+					sub.NE_ID AS
+					网元标识,
+					sub.NE_CHNAME AS 网元名称,
+					sub.ADJUST_TYPE AS 边界优化调整类别,
+					sub.SUB_TITLE AS 子协调单标题,
+					sub.ADJUST_CONTENT AS 边界优化调整内容,
+					sub.ADJUST_RESULT AS 调整结果记录, sub.SUB_REMARK ,
+					(SELECT
+					REPLACE(wmsys.wm_concat(t.file_name), ',', '|') AS FILEATTACH
+					FROM
+					MOD_VSITE_VERGEORDER_FILE t
+					where t.order_code = sub.code and
+					t.order_subcode = sub.sub_code
+					GROUP BY t.order_code,
+					t.order_subcode) AS 附件 ,sub.FEEDBACK
+					FROM MOD_VSITE_VERGEORDER M,
+					MOD_VSITE_VERGEORDER_SUB Sub
+					WHERE M.Code = Sub.Code
+					AND
+					((M.order_attribute = 0 AND M.ISPROVINCE = 1) OR
+					(M.order_attribute
+					= 0 AND
+					M.ISPROVINCE IN (5, 7)) OR
+					(M.order_attribute = 1 AND
+					M.ISPROVINCE IN (2, 3, 7,8)))
+					AND TRUNC(M.ACTION_TIME) =
+					to_date('%%Y-%%M-%%D 00:00:00','yyyy-mm-dd
+					hh24:mi:ss')
+
+				</sql>
+
+			</mapping>
+
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+   <!-- 集团FTP 地址配置
+   步骤3.	对步骤2中的输出(csv文件，zip文件)上传到集团的FTP ORDER目录下.
+    -->
+	<ti id="1" after="1">
+		<property name="ftpip">127.0.0.1</property>
+		<property name="port">21</property>
+		<property name="username">test</property>
+		<property name="password">test</property>
+		<property name="path">/ORDER/</property>
+		<property name="encode">UTF-8</property>
+	</ti>
+
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--triggerid="3,4" -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

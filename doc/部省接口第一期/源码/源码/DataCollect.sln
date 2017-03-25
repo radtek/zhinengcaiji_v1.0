@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonDB", "CommonDB\CommonDB.csproj", "{F1353AD2-60A6-470D-948C-D2ECCCD6C089}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataCollect", "DataCollect\DataCollect.csproj", "{6764D527-DAFF-4681-9405-9DCFAA593E83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonFun", "CommonFun\CommonFun.csproj", "{D520A89E-C45D-48D3-BD84-4222B7E4DE29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FTP", "FTP\FTP.csproj", "{212B4F26-B400-4FED-8AA3-DC86A4D93BD0}"
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 5
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = CommonDB\\CommonDB.csproj
+		SccLocalPath1 = .
+		SccProjectFilePathRelativizedFromConnection1 = CommonDB\\
+		SccProjectUniqueName2 = CommonFun\\CommonFun.csproj
+		SccLocalPath2 = .
+		SccProjectFilePathRelativizedFromConnection2 = CommonFun\\
+		SccProjectUniqueName3 = DataCollect\\DataCollect.csproj
+		SccLocalPath3 = .
+		SccProjectFilePathRelativizedFromConnection3 = DataCollect\\
+		SccProjectUniqueName4 = FTP\\FTP.csproj
+		SccLocalPath4 = .
+		SccProjectFilePathRelativizedFromConnection4 = FTP\\
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F1353AD2-60A6-470D-948C-D2ECCCD6C089}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1353AD2-60A6-470D-948C-D2ECCCD6C089}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1353AD2-60A6-470D-948C-D2ECCCD6C089}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1353AD2-60A6-470D-948C-D2ECCCD6C089}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6764D527-DAFF-4681-9405-9DCFAA593E83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6764D527-DAFF-4681-9405-9DCFAA593E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6764D527-DAFF-4681-9405-9DCFAA593E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6764D527-DAFF-4681-9405-9DCFAA593E83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D520A89E-C45D-48D3-BD84-4222B7E4DE29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D520A89E-C45D-48D3-BD84-4222B7E4DE29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D520A89E-C45D-48D3-BD84-4222B7E4DE29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D520A89E-C45D-48D3-BD84-4222B7E4DE29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{212B4F26-B400-4FED-8AA3-DC86A4D93BD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{212B4F26-B400-4FED-8AA3-DC86A4D93BD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{212B4F26-B400-4FED-8AA3-DC86A4D93BD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{212B4F26-B400-4FED-8AA3-DC86A4D93BD0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

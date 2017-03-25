@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templets>
+	<templet id="0">
+		<table id="0" name="CLT_VERIFICATIONFILL" split="|">
+<column name="PRO_NAME" index ="0"/>
+<column name="VER_NO" index ="1"/>
+<column name="VER_DATE" index ="2" type="3" format="yyyy-mm-dd hh24:mi:ss" />
+<column name="VER_OPERATER" index ="3"/>
+<column name="VER_EMAIL" index ="4"/>
+<column name="VER_PHONE" index ="5"/>
+<column name="VER_TYPE" index ="6"/>
+<column name="VER_UPLOADDATE" index ="7" type="3" format="yyyy-mm-dd hh24:mi:ss" />
+<column name="VER_BUSSINESS" index ="8"/>
+<column name="VER_NELEVEL" index ="9"/>
+<column name="VER_SUM_WEEK" index ="10"/>
+<column name="VER_UPLOADFILE" index ="11"/>
+<column name="VER_FILEPROBLEM" index ="12"/>
+<column name="VER_PROBLEMDETAIL" index ="13"/>
+<column name="VER_ISREPEAT" index ="14"/>
+<column name="VER_ISEXPLAIN" index ="15"/>
+<column name="VER_COMPLETEDATE" index ="16" type="3" format="yyyy-mm-dd hh24:mi:ss" />
+
+		</table>
+	</templet>
+	
+		<templet id="1">
+		<table id="0" name="CLT_VERIFICATIONDETAIL" split="|">
+<column name="PRO_NAME" index ="0"/>
+<column name="VER_NO" index ="1"/>
+<column name="VER_DATE" index ="2" type="3" format="yyyy-mm-dd hh24:mi:ss" />
+<column name="VER_OPERATER" index ="3"/>
+<column name="VER_EMAIL" index ="4"/>
+<column name="VER_PHONE" index ="5"/>
+<column name="VER_TYPE" index ="6"/>
+<column name="VER_DATALEVEL" index ="7"/>
+<column name="VER_TIMELEVEL" index ="8"/>
+<column name="VER_UPLOADDATE" index ="9" type="3" format="yyyy-mm-dd hh24:mi:ss" />
+<column name="VER_BUSSINESS" index ="10"/>
+<column name="VER_UPLOADFILE" index ="11"/>
+<column name="VER_PROBLE_CNNAME" index ="12"/>
+<column name="VER_FILEDNAME" index ="13"/>
+<column name="VER_FILEDPROBLEM" index ="14"/>
+<column name="VER_ISEXPLAIN" index ="15"/>
+
+
+
+		</table>
+	</templet>
+
+
+	<templet id="2">
+		<table id="0" name="CLT_VERIFICATIONEXPLAINEXPLAIN" split="|">
+<column name="PRO_NAME" index ="0" />
+<column name="VER_NO" index ="1" />
+<column name="VER_DATE" index ="2"  type="3" format="yyyy-mm-dd hh24:mi:ss" />
+<column name="VER_REJECTOPERATER" index ="3" />
+<column name="VER_REJECTDESCRIPTION" index ="4" />
+
+
+		</table>
+	</templet>
+
+
+
+</templets>

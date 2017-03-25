@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<work_plan_list>
+  <work_plan>
+    <wp_hq_code >P1_01_YYYYMMDD_XXXX</wp_hq_code >
+    <wp_hq_name>2013年高铁优化-日常优化</wp_hq_name>
+    <wp_hq_info>描述</wp_hq_info>
+    <wp_to_province_name>浙江</wp_to_province_name>
+    <wp_to_city_name_list>杭州|宁波</wp_to_city_name_list>
+    <wp_index_levle>5</wp_index_levle>
+    <wp_index_time_type>3</wp_index_time_type>
+    <wp_special_wp_type>13</wp_special_wp_type>
+    <wp_special_wp_range>110000_13_000001|110000_13_000002</wp_special_wp_range>
+    <wp_wp_hq_type>2</wp_wp_hq_type>
+    <wp_is_timing_report>0</wp_is_timing_report>
+    <wp_report_regular_period>2014-05-12|2014-06-12</wp_report_regular_period>
+    <wp_report_irregular_period></wp_report_irregular_period>
+    <wp_report_content>描述</wp_report_content>
+    <wp_is_report_regstructure>否</wp_is_report_regstructure>
+    <wp_is_report_photo>图片名称路径</wp_is_report_photo>
+    <wp_is_report_index>否</wp_is_report_index>
+    <wp_is_report_gain>否</wp_is_report_gain>
+    <wp_is_report_templet>否</wp_is_report_templet>
+    <wp_appointed_role>校园专项优化人员</wp_appointed_role>
+    <wp_hq_creator_name>张三</wp_hq_creator_name>
+    <wp_hq_creator_phone>189********</wp_hq_creator_phone>
+    <wp_hq_creator_email>Zhangsan@chinaunitelecom.com.cn</wp_hq_creator_email>
+    <wp_trace_ind_list>
+      <public>
+        <wp_trace_ind>
+            <index_hq_code>MX3.3</index_hq_code>
+            <index_hq_name>话务掉话比-PS</index_hq_name>
+            <index_hq_logic_expression>X&lt;5%</index_hq_logic_expression>
+        </wp_trace_ind>
+      </public>     
+    </wp_trace_ind_list>   
+    <TemplateInfo>
+				<UploadCSVFileNameSample>ZJ_WM_200_1_20140728.csv</UploadCSVFileNameSample>
+				<WorkBook WorkBookID="200" SheetNum="2">
+					<WorkSheet  SheetID="1" SheetName="校园优化工作进度表" ColNum="6" FileObject="地市" Field_Date="日期" Field_Province="省份" Field_City="" >
+						<cols>
+							<col ColID="1" ColName="日期" DataType="日期" DataLength="0" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="2" ColName="省份" DataType="字符串" DataLength="32" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="3" ColName="联系人" DataType="字符串" DataLength="64" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="4" ColName="电话" DataType="字符串" DataLength="64" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="5" ColName="邮箱" DataType="字符串" DataLength="64" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="6" ColName="本周成果" DataType="字符串" DataLength="1024" FieldOption="" ColDesc="" Example=""/>
+						</cols>
+					</WorkSheet>
+					<WorkSheet SheetID="2"  SheetName="校园区域覆盖基站信息库" ColNum="10" FileObject="地市" Field_Date="" Field_Province="省" Field_City="地市" >
+						<cols>
+							<col ColID="1" ColName="省" DataType="字符串" DataLength="32" FieldOption="" ColDesc="" Example=""></col>
+							<col ColID="2" ColName="地市" DataType="字符串" DataLength="32" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="3" ColName="校园名称" DataType="字符串" DataLength="128" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="4" ColName="需要重要等级" DataType="字符串" DataLength="64" FieldOption="需要重要等级" ColDesc="" Example=""/>
+							<col ColID="5" ColName="归属BSC" DataType="字符串" DataLength="64" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="6" ColName="设备厂家" DataType="字符串" DataLength="64" FieldOption="设备厂家" ColDesc="" Example=""/>
+							<col ColID="7" ColName="站号" DataType="字符串" DataLength="128" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="8" ColName="站名" DataType="字符串" DataLength="128" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="9" ColName="1x授权CE数" DataType="整数" DataLength="0" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="10" ColName="Do授权CE数" DataType="整数" DataLength="0" FieldOption="" ColDesc="" Example=""/>
+							<col ColID="11" ColName="扇区" DataType="字符串" DataLength="128" FieldOption="" ColDesc="" Example=""/>
+						</cols>
+					</WorkSheet>
+					<FieldOptions>
+						<FieldOption  OptionName="需要重要等级">
+							<OptionValue>A</OptionValue>
+							<OptionValue>B</OptionValue>
+							<OptionValue>C</OptionValue>
+						</FieldOption>
+						<FieldOption  OptionName="设备厂家">
+							<OptionValue>中兴</OptionValue>
+							<OptionValue>华为</OptionValue>
+							<OptionValue>阿朗</OptionValue>
+						</FieldOption>
+					</FieldOptions>
+				</WorkBook>
+		</TemplateInfo> 
+
+    <work_content_list>
+        <work_content>
+            <ct_pl_name>语音掉话TOPN小区处理</ct_pl_name>
+            <ct_pl_id>P1_01_YYYYMMDD_XXXX_01001_0001</ct_pl_id>
+            <ct_pl_type>TOPN小区处理</ct_pl_type>
+            <ct_pl_content>描述</ct_pl_content>
+            <ct_execute_cycle>1</ct_execute_cycle>
+            <ct_is_timing_report>0</ct_is_timing_report>
+            <ct_report_regular_period>2014-05-12|2014-06-12</ct_report_regular_period>
+            <ct_report_irregular_period></ct_report_irregular_period>
+            <ct_report_content>描述</ct_report_content>
+            <ct_is_report_regstructure>否</ct_is_report_regstructure>
+            <ct_is_report_photo>图片名称路径</ct_is_report_photo>
+            <ct_is_report_index>否</ct_is_report_index>
+            <ct_is_report_gain>否</ct_is_report_gain>
+            <ct_is_report_templet>否</ct_is_report_templet>
+            <ct_execute_stage>准备阶段</ct_execute_stage>
+            <wp_hq_code >P1_01_YYYYMMDD_XXXX</wp_hq_code >
+            <wp_index_levle>5</wp_index_levle>
+            <wp_index_time_type>3</wp_index_time_type>
+            <ct_trace_ind_list>
+              <public>
+                <ct_trace_ind>
+                  <index_hq_code>MX3.3</index_hq_code>
+                  <index_hq_name>话务掉话比-PS</index_hq_name>
+                  <index_hq_logic_expression>X&lt;=5%</index_hq_logic_expression>
+                </ct_trace_ind>
+              </public>              
+            </ct_trace_ind_list>
+            <ct_important_list>
+              <public>
+                <ct_important_ind>
+                  <ct_importance_name_list>五一</ct_importance_name_list>
+                  <ct_importance_sstime_list>2013-05-01至2013-05-03</ct_importance_sstime_list>
+                </ct_important_ind>
+              </public>              
+            </ct_important_list>
+            <TemplateInfo>
+							<UploadCSVFileNameSample>ZJ_WM_201_1_20140728.csv</UploadCSVFileNameSample>
+							<WorkBook WorkBookID="201" SheetNum="2">
+								<WorkSheet  SheetID="1" SheetName="校园优化工作进度表" ColNum="6" FileObject="地市" Field_Date="日期" Field_Province="省份" Field_City="" >
+									<cols>
+										<col ColID="1" ColName="日期" DataType="日期" DataLength="0" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="2" ColName="省份" DataType="字符串" DataLength="32" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="3" ColName="联系人" DataType="字符串" DataLength="64" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="4" ColName="电话" DataType="字符串" DataLength="64" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="5" ColName="邮箱" DataType="字符串" DataLength="64" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="6" ColName="本周成果" DataType="字符串" DataLength="1024" FieldOption="" ColDesc="" Example=""/>
+									</cols>
+								</WorkSheet>
+								<WorkSheet SheetID="2"  SheetName="校园区域覆盖基站信息库" ColNum="10" FileObject="地市" Field_Date="" Field_Province="省" Field_City="地市" >
+									<cols>
+										<col ColID="1" ColName="省" DataType="字符串" DataLength="32" FieldOption="" ColDesc="" Example=""></col>
+										<col ColID="2" ColName="地市" DataType="字符串" DataLength="32" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="3" ColName="校园名称" DataType="字符串" DataLength="128" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="4" ColName="需要重要等级" DataType="字符串" DataLength="64" FieldOption="需要重要等级" ColDesc="" Example=""/>
+										<col ColID="5" ColName="归属BSC" DataType="字符串" DataLength="64" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="6" ColName="设备厂家" DataType="字符串" DataLength="64" FieldOption="设备厂家" ColDesc="" Example=""/>
+										<col ColID="7" ColName="站号" DataType="字符串" DataLength="128" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="8" ColName="站名" DataType="字符串" DataLength="128" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="9" ColName="1x授权CE数" DataType="整数" DataLength="0" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="10" ColName="Do授权CE数" DataType="整数" DataLength="0" FieldOption="" ColDesc="" Example=""/>
+										<col ColID="11" ColName="扇区" DataType="字符串" DataLength="128" FieldOption="" ColDesc="" Example=""/>
+									</cols>
+								</WorkSheet>
+								<FieldOptions>
+									<FieldOption  OptionName="需要重要等级">
+										<OptionValue>A</OptionValue>
+										<OptionValue>B</OptionValue>
+										<OptionValue>C</OptionValue>
+									</FieldOption>
+									<FieldOption  OptionName="设备厂家">
+										<OptionValue>中兴</OptionValue>
+										<OptionValue>华为</OptionValue>
+										<OptionValue>阿朗</OptionValue>
+									</FieldOption>
+								</FieldOptions>
+							</WorkBook>
+					  </TemplateInfo>          
+        </work_content>
+    </work_content_list>
+  </work_plan>
+</work_plan_list>

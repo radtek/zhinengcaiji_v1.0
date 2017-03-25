@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mapping>
+    <province province_en="JS" province_cn="江苏">
+       <city city_id="25">
+			<property name="city_cn">南京</property>
+			<property name="city_en">NJ</property>
+</city>
+<city city_id="510">
+			<property name="city_cn">无锡</property>
+			<property name="city_en">WX</property>
+</city>
+<city city_id="511">
+			<property name="city_cn">镇江</property>
+			<property name="city_en">ZJ</property>
+</city>
+<city city_id="512">
+			<property name="city_cn">苏州</property>
+			<property name="city_en">SZ</property>
+</city>
+<city city_id="513">
+			<property name="city_cn">南通</property>
+			<property name="city_en">NT</property>
+</city>
+<city city_id="514">
+			<property name="city_cn">扬州</property>
+			<property name="city_en">YZ</property>
+</city>
+<city city_id="515">
+			<property name="city_cn">盐城</property>
+			<property name="city_en">YC</property>
+</city>
+<city city_id="516">
+			<property name="city_cn">徐州</property>
+			<property name="city_en">XZ</property>
+</city>
+<city city_id="517">
+			<property name="city_cn">淮安</property>
+			<property name="city_en">HA</property>
+</city>
+<city city_id="518">
+			<property name="city_cn">连云港</property>
+			<property name="city_en">LYG</property>
+</city>
+<city city_id="519">
+			<property name="city_cn">常州</property>
+			<property name="city_en">CZ</property>
+</city>
+<city city_id="523">
+			<property name="city_cn">泰州</property>
+			<property name="city_en">TZ</property>
+</city>
+<city city_id="527">
+			<property name="city_cn">宿迁</property>
+			<property name="city_en">SQ</property>
+</city>
+    </province>
+</mapping>

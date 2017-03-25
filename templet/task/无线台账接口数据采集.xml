@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.0.180:1521:uway
+		</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">cnoap</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+		   <mapping name="wypt_%%Y%%M_cell.txt" templet="无线台账接口数据采集-小区.ftl">
+				<sql>select bsc_id        BSC_ID,
+				       bts_id        BTS_ID,
+				       msc_id        MSC_ID,
+				       local_cell_id CELL_ID,
+				       ci            CI,
+				       sector_id     SECTOR_ID,
+				       bts_name      基站名称,
+				       city_name     城市名称,
+				       adm_area      行政区,
+				       second_region 营销中心,
+				       sector_addr   扇区附加地址,
+				       longitude     经度,
+				       latitude      纬度,
+				       cover_type    区域类型,
+				       NID	,
+                       LAC					       
+				  from ne_taizhang_cell
+				 order by city_name, msc_id, bsc_id, bts_id, local_cell_id, sector_id</sql>
+			</mapping>
+			<mapping name="wypt_%%Y%%M_bts.txt" templet="无线台账接口数据采集-基站.ftl">
+				<sql>select bsc_id        BSC_ID,
+				       bts_id        BTS_ID,
+				       msc_id        MSC_ID,
+				       nid           NID,
+				       lac           LAC,
+				       china_name    局方命名,
+				       city_name     城市名称,
+				       adm_area      行政区,
+				       second_region 营销中心,
+				       address       基站地址,
+				       longitude     经度,
+				       latitude      纬度,
+				       cover_type    区域类型
+
+				  from ne_taizhang_bts				  
+				 order by city_name, msc_id, bsc_id, bts_id</sql>
+			</mapping>
+			</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.0.131</property>
+		<property name="port">21</property>
+		<property name="username">test</property>
+		<property name="password">test</property>
+		<property name="path">/test/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

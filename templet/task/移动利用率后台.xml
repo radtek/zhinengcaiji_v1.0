@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.0.241:1521:UWAY
+		</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">CNOAP</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1" controllog="control_wypt_%%Y%%M.ini">
+			<mapping name="wypt_%%Y%%M_jz.txt" templet="移动利用率-基站.ftl" >
+				<sql>
+				select to_char(to_date('%%Y%%M', 'yyyy-mm'), 'yyyymm') as 统计时期,
+				       perf.BTS as 基站编码,
+				       perf.CHINA_NAME as 基站名称,
+				       bts.taiaddress as 基站地址,
+				       bts.taiCOVER_TYPE as 区域类型,
+				       (case
+				         when (carr.bus_1x + carr.bus_do) = 2 then
+				          '1X/DO'
+				         else
+				          case
+				         when carr.bus_1x = 1 then
+				          '1X'
+				         else
+				          'DO'
+				       end end) AS 业务类型,
+               bts.YFZXID as 基站所属营销服务中心ID,
+               bts.YFZXNAME AS 基站所属营销服务中心名称,
+               BTS.QXID AS 所属区县ID,
+               BTS.QXNAME AS 所属区县名称,
+               BTS.CORPID as 所属地市ID,
+               BTS.CORPNAME AS 所属地市名称,  
+               perf.HWL as 反向业务话务量,
+               PERF.WIRELESS_CAPACITY "网络容量1X:无线容量(erl)",
+               PERF.DO_TCH_AVG_SLOT_OCCUPY_RATE AS "DO:时隙占用率(%)"
+          from (select t.NE_SYS_ID,
+                       t.CHINA_NAME,
+                       t.CITY_ID,
+                       t.BSC,
+                       t.BTS,
+                       ROUND(avg(TRAFFIC_1X_REV_ALL), 3) HWL, --反向业务话务量（包含语音、短信和数据及软切换）
+                       round(avg(WIRELESS_CAPACITY), 3) WIRELESS_CAPACITY, --1X:无线容量(erl)
+                       ROUND(AVG(DO_TCH_AVG_SLOT_OCCUPY_RATE), 2) as DO_TCH_AVG_SLOT_OCCUPY_RATE --DO:时隙占用率(%)
+                  from perf_bts_c_busy t
+                 where t.START_TIME &gt;=
+                       to_date(f_get_week_begin_day('%%Y%%M', 3) || '00:00:00',
+                               'yyyy-mm-dd hh24:mi:ss')
+                   and t.START_TIME &lt;=
+                       to_date(f_get_week_end_day('%%Y%%M', 3) || '23:59:59',
+                               'yyyy-mm-dd hh24:mi:ss')
+                   and (t.DATA_TYPE_1X = 1 or t.DATA_TYPE_DO = 1)
+                 group by t.NE_SYS_ID, t.CHINA_NAME, t.CITY_ID, t.BSC, t.BTS) perf,
+               (select c.*,
+                       tai.adm_area as taiadm_area,
+                       tai.COVER_TYPE as taiCOVER_TYPE,
+                       tai.address as taiaddress,
+                       tai.china_name as taichina_name,
+                       YFZXID,
+                       YFZXNAME,
+                       QXID,
+                       QXNAME,
+                       CORPID,
+                       CORPNAME
+                  from ne_bts_c c, view_taizhangbts_yxzx tai
+                 where c.city_id = tai.city_id(+)
+                   and c.bsc_id = tai.bsc_id(+)
+                   and c.bts_id = tai.bts_id(+)) bts,
+               (select bus.related_bts, bus.BUS_1X, bus.BUS_DO, cell.cellnum
+                  from (select related_bts,
+                               sum(BUS_1X) as BUS_1X,
+                               sum(BUS_DO) as BUS_DO
+                          from (select related_bts, 1 BUS_1X, 0 BUS_DO
+                                  from ne_carrier_c carrier
+                                 where BUSTYPE = '1X'
+                                    or bustype = '0'
+                                    or bustype is null
+                                 group by related_bts
+                                UNION ALL
+                                select related_bts, 0 BUS_1X, 1 BUS_DO
+                                  from ne_carrier_c carrier
+                                 where BUSTYPE = 'DO'
+                                    or bustype = '0'
+                                    or bustype is null
+                                 group by related_bts)
+                         group by related_bts) bus,
+                       (select count(ne_sys_id) as cellnum, related_bts
+                          from ne_cell_c
+                         group by related_bts) cell
+                 where bus.related_bts = cell.related_bts(+)) carr
+         where perf.ne_sys_id = bts.ne_sys_id
+           and perf.ne_sys_id = carr.related_bts
+				</sql>
+			</mapping>
+			<mapping name="wypt_%%Y%%M_qx.txt" templet="移动利用率-区县.ftl" >
+				<sql>
+				select perf_1x.sum_date as 统计时期,
+				       perf_1x.QXID as 区县ID,
+				       perf_1x.QXNAME as 区县名称,
+				       perf_1x.CORPID as 所属地市ID,
+				       perf_1x.CORPNAME as 所属地市名称,
+				       perf_1x.traffic_1x_rev_all as 反向业务话务量,
+				       perf_1x.wireless_capacity as "网络容量1X:无线容量(erl)",
+				       perf_do.do_tch_avg_slot_occupy_rate as "DO:时隙占用率(%)"
+				  from (select to_char(to_date(start_time), 'yyyymm') as SUM_DATE,
+				               QXID,
+				               QXNAME,
+				               CORPID,
+				               CORPNAME,
+				               round(avg(traffic_1x_rev_all), 3) traffic_1x_rev_all,
+				               round(avg(wireless_capacity), 3) wireless_capacity
+				          from (select b.START_TIME,
+				                       BTS.QXID,
+				                       BTS.QXNAME,
+				                       BTS.CORPID,
+				                       BTS.CORPNAME,
+				                       round(sum(traffic_1x_rev_all), 3) traffic_1x_rev_all, --反向业务话务量（包含语音、短信和数据及软切换）
+				                       round(sum(wireless_capacity), 3) wireless_capacity --1x:无线容量(erl) 
+				                  from perf_bts_c_busy b,
+				                       (select c.*,
+				                               YFZXID,
+				                               YFZXNAME,
+				                               QXID,
+				                               QXNAME,
+				                               CORPID,
+				                               CORPNAME
+				                          from ne_bts_c c, view_taizhangbts_yxzx tai
+				                         where c.city_id = tai.city_id(+)
+				                           and c.bsc_id = tai.bsc_id(+)
+				                           and c.bts_id = tai.bts_id(+)) bts
+				                 where b.NE_SYS_ID = bts.ne_sys_id
+				                   and b.DATA_TYPE_1X = 1
+				                   and b.START_TIME &gt;=
+				                       to_date(f_get_week_begin_day('%%Y%%M', 3) ||
+				                               '00:00:00',
+				                               'yyyy-mm-dd hh24:mi:ss')
+				                   and b.START_TIME &lt;=
+				                       to_date(f_get_week_end_day('%%Y%%M', 3) || '23:59:59',
+				                               'yyyy-mm-dd hh24:mi:ss')
+				                 group by BTS.QXID,
+				                          BTS.QXNAME,
+				                          BTS.CORPID,
+				                          BTS.CORPNAME,
+				                          b.START_TIME)
+				         group by QXID,
+				                  QXNAME,
+				                  CORPID,
+				                  CORPNAME,
+				                  to_char(to_date(start_time), 'yyyymm')) perf_1x,
+				       (select to_char(to_date(START_TIME), 'yyyymm') as SUM_DATE,
+				               BTS.QXID,
+				               BTS.QXNAME,
+				               BTS.CORPID,
+				               BTS.CORPNAME,
+				               round(avg(do_tch_avg_slot_occupy_rate), 2) as do_tch_avg_slot_occupy_rate --do:时隙占用率(%)
+				          from perf_bts_c_busy b,
+				               (select c.*, YFZXID, YFZXNAME, QXID, QXNAME, CORPID, CORPNAME
+				                  from ne_bts_c c, view_taizhangbts_yxzx tai
+				                 where c.city_id = tai.city_id(+)
+				                   and c.bsc_id = tai.bsc_id(+)
+				                   and c.bts_id = tai.bts_id(+)) bts
+				         where b.NE_SYS_ID = bts.ne_sys_id
+				           and b.DATA_TYPE_DO = 1
+				           and b.START_TIME &gt;=
+				               to_date(f_get_week_begin_day('%%Y%%M', 3) || '00:00:00',
+				                       'yyyy-mm-dd hh24:mi:ss')
+				           and b.START_TIME &lt;=
+				               to_date(f_get_week_end_day('%%Y%%M', 3) || '23:59:59',
+				                       'yyyy-mm-dd hh24:mi:ss')
+				         group by BTS.QXID,
+				                  BTS.QXNAME,
+				                  BTS.CORPID,
+				                  BTS.CORPNAME,
+				                  to_char(to_date(START_TIME), 'yyyymm')) perf_do
+				 where perf_1x.SUM_DATE = perf_do.SUM_DATE
+				   and perf_1x.qxid = perf_do.qxid
+				</sql>
+			</mapping>
+			<mapping name="wypt_%%Y%%M_ds.txt" templet="移动利用率-地市.ftl" >
+				<sql> 
+				select perf_1x.sum_date as 统计时期,
+				       perf_1x.corp as 地市ID,
+				       perf_1x.corpname as 地市名称 ,
+				       perf_1x.hwl as 反向业务话务量,
+				       perf_1x.wireless_capacity as "网络容量1X:无线容量(erl)",
+				       perf_do.do_tch_avg_slot_occupy_rate as "DO:时隙占用率(%)"
+				  from (select to_char(start_time, 'yyyymm') as sum_date,
+				               city_id as corp, --所属地市id
+				               city_name as corpname, --所属地市名称 
+				               round(avg(traffic_1x_rev_all), 3) hwl, --反向业务话务量（包含语音、短信和数据及软切换）
+				               round(avg(wireless_capacity), 3) wireless_capacity --1x:无线容量(erl) 注意：这个指标特殊，需要在网元粒度上进行SUM，时间粒度AVG
+				          from (select t.start_time,
+				                       t.city_id, --所属地市id
+				                       t.city_name, --所属地市名称 
+				                       round(sum(traffic_1x_rev_all), 3) traffic_1x_rev_all, --反向业务话务量（包含语音、短信和数据及软切换）
+				                       round(sum(wireless_capacity), 3) wireless_capacity --1x:无线容量(erl)
+				                  from perf_bsc_c t, perf_busy_date d
+				                 where d.granularity_type = 1 --标识小时
+				                   and d.perf_busy_type = 2 --1x 地市忙时
+				                   and d.perf_time = t.start_time
+				                   and d.perf_city_id = t.city_id
+				                   and d.date_time &gt;=
+				                       to_date(f_get_week_begin_day('%%Y%%M', 3) ||
+				                               '00:00:00',
+				                               'yyyy-mm-dd hh24:mi:ss')
+				                   and d.date_time &lt;=
+				                       to_date(f_get_week_end_day('%%Y%%M', 3) || '23:59:59',
+				                               'yyyy-mm-dd hh24:mi:ss')
+				                 group by city_id, city_name, start_time)
+				         group by city_id, city_name, to_char(start_time, 'yyyymm')) perf_1x,
+				       (select to_char(t.start_time, 'yyyymm') as sum_date,
+				               t.city_id as corp, --所属地市id
+				               t.city_name as corpname, --所属地市名称 
+				               round(avg(do_tch_avg_slot_occupy_rate), 2) as do_tch_avg_slot_occupy_rate --do:时隙占用率(%)
+				          from perf_bsc_c t, perf_busy_date d
+				         where d.granularity_type = 1 --标识小时
+				           and d.perf_busy_type = 4 --do地市忙时
+				           and d.perf_time = t.start_time
+				           and d.perf_city_id = t.city_id
+				           and d.date_time &gt;=
+				               to_date(f_get_week_begin_day('%%Y%%M', 3) || '00:00:00',
+				                       'yyyy-mm-dd hh24:mi:ss')
+				           and d.date_time &lt;=
+				               to_date(f_get_week_end_day('%%Y%%M', 3) || '23:59:59',
+				                       'yyyy-mm-dd hh24:mi:ss')
+				         group by city_id, city_name, to_char(t.start_time, 'yyyymm')) perf_do
+				 where perf_1x.corp = perf_do.corp
+				   and perf_1x.sum_date = perf_do.sum_date
+				 order by perf_1x.sum_date, perf_1x.corp
+				</sql>
+			</mapping>
+			<mapping name="wypt_%%Y%%M_sq.txt" templet="移动利用率-扇区口径.ftl" >
+				<sql> 
+				select to_char(to_date('2012-4', 'yyyy-mm'), 'yyyymm') as SUM_DATE, --统计时期
+				       perf.CELL as CELL, --扇区编码
+				       perf.CHINA_NAME as CELLNAME, --扇区名称
+				       bts.YFZXID as CELLYFZXID, --扇区所覆盖营销服务中心ID
+				       bts.YFZXNAME AS CELLYFZXNAME, --扇区所覆盖营销服务中心名称
+				       bts.bts_id as BTS, --所属基站编码
+				       bts.taichina_name as BTSNAME, --所属基站名称
+				       bts.taiaddress as BTSADD, --所属基站地址
+				       sector.COVER_TYPE AS QYLX, --区域类型
+				       SECTOR.asbustype AS YWLX, --业务类型
+				       BTS.QXID AS QXID, --所属区县ID
+				       BTS.QXNAME AS QXNAME, --所属区县名称
+				       BTS.CORPID as CORP, --所属地市ID
+				       BTS.CORPNAME AS CORPNAME, --所属地市名称      
+				       perf.HWL   as HWL, --反向业务话务量（包含语音、短信和数据及软切换）
+				       PERF.WIRELESS_CAPACITY   AS WIRELESS_CAPACITY, --1X:无线容量(erl)
+				       PERF.DO_TCH_AVG_SLOT_OCCUPY_RATE AS DO_TCH_AVG_SLOT_OCCUPY_RATE --DO:时隙占用率(%)
+				  from (select t.NE_SYS_ID,
+				               t.RELATED_BTS,
+				               t.CHINA_NAME,
+				               t.CITY_ID,
+				               t.BSC,
+				               t.BTS,
+				               t.CELL,
+				               ROUND(avg(TRAFFIC_1X_REV_ALL), 3) HWL, --反向业务话务量（包含语音、短信和数据及软切换）,
+				               round(avg(WIRELESS_CAPACITY), 3) WIRELESS_CAPACITY, --1X:无线容量(erl)
+				               ROUND(AVG(DO_TCH_AVG_SLOT_OCCUPY_RATE), 2) as DO_TCH_AVG_SLOT_OCCUPY_RATE --DO:时隙占用率(%)
+				          from perf_cell_c_busy t
+				         where t.START_TIME &gt;=
+				               to_date(f_get_week_begin_day('%%Y%%M', 3) || '00:00:00',
+				                       'yyyy-mm-dd hh24:mi:ss')
+				           and t.START_TIME &lt;=
+				               to_date(f_get_week_end_day('%%Y%%M', 3) || '23:59:59',
+				                       'yyyy-mm-dd hh24:mi:ss')
+				           and (t.DATA_TYPE_1X = 1 or t.DATA_TYPE_DO = 1)
+				         group by ne_sys_id,
+				                  RELATED_BTS,
+				                  CHINA_NAME,
+				                  CITY_ID,
+				                  BSC,
+				                  BTS,
+				                  CELL) perf,
+				       (select c.*,
+				               tai.adm_area as taiadm_area,
+				               tai.address as taiaddress,
+				               tai.china_name as taichina_name,
+				               YFZXID,
+				               YFZXNAME,
+				               QXID,
+				               QXNAME,
+				               CORPID,
+				               CORPNAME
+				          from ne_bts_c c, view_taizhangbts_yxzx tai
+				         where c.city_id = tai.city_id(+)
+				           and c.bsc_id = tai.bsc_id(+)
+				           and c.bts_id = tai.bts_id(+)) bts,
+				       (select tai.COVER_TYPE, ne.*
+				          from (select city_id,
+				                       bsc,
+				                       bts,
+				                       cell,
+				                       replace(wmsys.wm_concat(distinct bustype), ',', '/') asbustype,
+				                       ne_cell_id
+				                  from cfg_map_dev_to_ne
+				                 group by ne_cell_id, city_id, bsc, bts, cell) ne,
+				               ne_taizhang_cell tai
+				         where ne.city_id = tai.city_id(+)
+				           and ne.bsc = tai.bsc_id(+)
+				           and ne.Bts = tai.bts_id(+)
+				           and ne.cell = tai.sector_id(+)) sector
+				 where perf.RELATED_BTS = bts.ne_sys_id
+				   AND PERF.NE_SYS_ID = SECTOR.NE_cell_ID
+				</sql>
+			</mapping>
+			<mapping name="wypt_%%Y%%M_yf.txt" templet="移动利用率-营服中心.ftl" >
+				<sql> 
+				select perf_1x.sum_date as 统计时期 ,
+				       perf_1x.YFZXID as 营销服务中心ID,
+				       perf_1x.YFZXNAME as 营销服务中心名称,
+				       perf_1x.QXID as 所属区县ID,
+				       perf_1x.QXNAME as 所属区县名称,
+				       perf_1x.CORPID as 所属地市ID,
+				       perf_1x.CORPNAME as 所属地市名称,
+				       perf_1x.traffic_1x_rev_all as 反向业务话务量,
+       				   perf_1x.wireless_capacity as "1X:无线容量(erl)",
+       				   perf_do.do_tch_avg_slot_occupy_rate as "DO:时隙占用率(%)"
+				  from (select to_char(to_date(start_time), 'yyyymm') as SUM_DATE,
+				               YFZXID,
+				               YFZXNAME,
+				               QXID,
+				               QXNAME,
+				               CORPID,
+				               CORPNAME,
+				               round(avg(traffic_1x_rev_all), 3) traffic_1x_rev_all,
+				               round(avg(wireless_capacity), 3) wireless_capacity
+				          from (select b.START_TIME,
+				                       YFZXID,
+				                       YFZXNAME,
+				                       QXID,
+				                       QXNAME,
+				                       CORPID,
+				                       CORPNAME,
+				                       round(sum(traffic_1x_rev_all), 3) traffic_1x_rev_all, --反向业务话务量（包含语音、短信和数据及软切换）
+				                       round(sum(wireless_capacity), 3) wireless_capacity --1x:无线容量(erl) 
+				                  from perf_bts_c_busy b,
+				                       (select c.*,
+				                               YFZXID,
+				                               YFZXNAME,
+				                               QXID,
+				                               QXNAME,
+				                               CORPID,
+				                               CORPNAME
+				                          from ne_bts_c c, view_taizhangbts_yxzx tai
+				                         where c.city_id = tai.city_id(+)
+				                           and c.bsc_id = tai.bsc_id(+)
+				                           and c.bts_id = tai.bts_id(+)) bts
+				                 where b.NE_SYS_ID = bts.ne_sys_id
+				                   and b.DATA_TYPE_1X = 1
+				                   and b.START_TIME &gt;=
+				                       to_date(f_get_week_begin_day('%%Y%%M', 3) ||
+				                               '00:00:00',
+				                               'yyyy-mm-dd hh24:mi:ss')
+				                   and b.START_TIME &lt;=
+				                       to_date(f_get_week_end_day('%%Y%%M', 3) || '23:59:59',
+				                               'yyyy-mm-dd hh24:mi:ss')
+				                 group by YFZXID,
+				                          YFZXNAME,
+				                          QXID,
+				                          QXNAME,
+				                          CORPID,
+				                          CORPNAME,
+				                          b.START_TIME)
+				         group by YFZXID,
+				                  YFZXNAME,
+				                  QXID,
+				                  QXNAME,
+				                  CORPID,
+				                  CORPNAME,
+				                  to_char(to_date(start_time), 'yyyymm')) perf_1x,
+				       (select to_char(to_date(START_TIME), 'yyyymm') as SUM_DATE,
+				               YFZXID,
+				               YFZXNAME,
+				               QXID,
+				               QXNAME,
+				               CORPID,
+				               CORPNAME,
+				               round(avg(do_tch_avg_slot_occupy_rate), 2) as do_tch_avg_slot_occupy_rate --do:时隙占用率(%)
+				          from perf_bts_c_busy b,
+				               (select c.*, YFZXID, YFZXNAME, QXID, QXNAME, CORPID, CORPNAME
+				                  from ne_bts_c c, view_taizhangbts_yxzx tai
+				                 where c.city_id = tai.city_id(+)
+				                   and c.bsc_id = tai.bsc_id(+)
+				                   and c.bts_id = tai.bts_id(+)) bts
+				         where b.NE_SYS_ID = bts.ne_sys_id
+				           and b.DATA_TYPE_DO = 1
+				           and b.START_TIME &gt;=
+				               to_date(f_get_week_begin_day('%%Y%%M', 3) || '00:00:00',
+				                       'yyyy-mm-dd hh24:mi:ss')
+				           and b.START_TIME &lt;=
+				               to_date(f_get_week_end_day('%%Y%%M', 3) || '23:59:59',
+				                       'yyyy-mm-dd hh24:mi:ss')
+				         group by YFZXID,
+				                  YFZXNAME,
+				                  QXID,
+				                  QXNAME,
+				                  CORPID,
+				                  CORPNAME,
+				                  to_char(to_date(START_TIME), 'yyyymm')) perf_do
+				 where perf_1x.SUM_DATE = perf_do.SUM_DATE
+				   and perf_1x.YFZXID = perf_do.YFZXID
+				</sql>
+			</mapping>
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.0.198</property>
+		<property name="port">21</property>
+		<property name="username">yinhl</property>
+		<property name="password">123</property>
+		<property name="path">/GZ/PERF/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

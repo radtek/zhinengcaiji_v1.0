@@ -1,0 +1,427 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+			<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@132.228.39.97:1521:NOAP1</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noap</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<!--华为载扇1X省接口-->
+    <mapping name="${province_en}_PARA_CARR_HW_1X_%%Y%%M%%D.csv" templet="华为载扇1X省接口_三期.ftl"   >  
+				<sql>
+				
+				select to_char(V1.STAMPTIME,'YYYY-MM-DD') "时间戳",
+ NE.MSC_SIGN || '.' || NE.BSC_NAME || '.' || NE.LOCAL_CELL_ID ||'.'|| V1.SECTOR_ID||'.'||V1.carr_seq AS "载扇标识",
+'${province_cn}' "省份",case ne.CITY_NAME when '江汉' then ne.COUNTY_NAME else ne.CITY_NAME end as "城市",
+ne.MSC_SIGN "载扇所属MSC标识",'' "载扇所属MGW标识",
+NE.MSC_SIGN || '.' || NE.BSC_NAME AS "载扇所属BSC标识",
+NE.MSC_SIGN || '.' || NE.BSC_NAME || '.' || NE.BTS_ID AS "载扇所属BTS标识",
+NE.MSC_SIGN || '.' || NE.BSC_NAME || '.' || NE.LOCAL_CELL_ID ||'.'|| V1.SECTOR_ID AS  "载扇所属扇区标识",
+ne.CHINA_NAME "载扇所属扇区名称",V1.CARR_SEQ "载波编号",
+to_char(V11.PLTCHGAIN) AS "MP1.5.1.1.1",
+to_char(V20.PCHGAIN) AS "MP1.5.1.1.2",
+to_char(V21.SYNCHGAIN) AS "MP1.5.1.1.3",
+to_char(V17.MAXCELLR) AS "MP1.5.1.1.4",
+to_char(V1.ACHLOWTHR) AS "MP1.5.1.1.5",
+to_char(V15.TOTALZN) AS "MP1.5.1.2.1",
+to_char(V15.ZNTMR) AS "MP1.5.1.2.2",
+to_char(V15.MSID) AS "MP1.5.1.2.3",
+to_char(V15.MNID) AS "MP1.5.1.2.4",
+to_char(V15.MAXTSPRDIDX) AS "MP1.5.1.2.5",
+to_char(V15.HOMEREG) AS "MP1.5.1.2.6",
+to_char(V15.FORSIDREG) AS "MP1.5.1.2.7",
+to_char(V15.FORNIDREG) AS "MP1.5.1.2.8",
+to_char(V15.PWRUP) AS "MP1.5.1.2.9",
+to_char(V15.PWRDWN) AS "MP1.5.1.2.10",
+to_char(V15.PRMREG) AS "MP1.5.1.2.11",
+to_char(V15.REGPRD) AS "MP1.5.1.2.12",
+to_char(V15.REGDIST) AS "MP1.5.1.2.13",
+to_char(V4.BCIDX) AS "MP1.5.1.2.14",
+to_char(V20.ADDNUM) AS "MP1.5.1.2.15",
+to_char(V10.PLTPL) AS "MP1.5.1.3.1",
+to_char(V20.ACHNUM) AS "MP1.5.1.3.2",
+to_char(V18.MAXLEN) AS "MP1.5.1.3.3",
+to_char(V18.PAMLEN) AS "MP1.5.1.3.4",
+to_char(V19.NOMPWR) AS "MP1.5.1.3.5",
+to_char(V19.INITPWR) AS "MP1.5.1.3.6",
+to_char(V19.PWRCSTEP) AS "MP1.5.1.3.7",
+to_char(V19.NUMSTEP) AS "MP1.5.1.3.8",
+to_char(V19.PRBPNRAN) AS "MP1.5.1.3.9",
+to_char(V19.PRBBKOFF) AS "MP1.5.1.3.10",
+to_char(V19.BKOFF) AS "MP1.5.1.3.11",
+to_char(V19.MAXREQSEQ) AS "MP1.5.1.3.12",
+to_char(V19.MAXRSPSEQ) AS "MP1.5.1.3.13",
+to_char(V10.TXGAIN) AS "MP1.5.1.4.1",
+to_char(V10.SCTGAIN) AS "MP1.5.1.4.2",
+to_char(V5.FWDVCFCHFER1) AS "MP1.5.1.4.3",
+to_char(V5.FWDDATFCHFER1) AS "MP1.5.1.4.4",
+to_char(V6.IS95SCHGAIN1) AS "MP1.5.1.4.5",
+to_char(V6.IS95SCHGAIN2) AS "MP1.5.1.4.6",
+to_char(V6.IS95SCHGAIN3) AS "MP1.5.1.4.7",
+to_char(V6.IS2KSCHGAIN1) AS "MP1.5.1.4.8",
+to_char(V6.IS2KSCHGAIN2) AS "MP1.5.1.4.9",
+to_char(V6.IS2KSCHGAIN3) AS "MP1.5.1.4.10",
+to_char(V6.VINITFCH) AS "MP1.5.1.4.11",
+to_char(V6.VMAXFCH) AS "MP1.5.1.4.12",
+to_char(V6.VMINFCH) AS "MP1.5.1.4.13",
+to_char(V6.DINITFCH) AS "MP1.5.1.4.14",
+to_char(V6.DMAXFCH) AS "MP1.5.1.4.15",
+to_char(V6.DMINFCH) AS "MP1.5.1.4.16",
+to_char(V6.MAXDCCH) AS "MP1.5.1.4.17",
+to_char(V6.MINDCCH) AS "MP1.5.1.4.18",
+to_char(V6.SCHMAX) AS "MP1.5.1.4.19",
+to_char(V6.SCHMIN) AS "MP1.5.1.4.20",
+to_char(V6.V6VUFPCM) AS "MP1.5.1.4.21",
+to_char(V6.V6DUFPCM) AS "MP1.5.1.4.22",
+to_char(V6.V7VUFPCM) AS "MP1.5.1.4.23",
+to_char(V6.V7DUFPCM) AS "MP1.5.1.4.24",
+to_char(V6.FPCTHRS) AS "MP1.5.1.4.25",
+to_char(V7.PWRRPTTHRS) AS "MP1.5.1.4.26",
+to_char(V7.PWRRPTFRMNUM) AS "MP1.5.1.4.27",
+to_char(V7.PWRRPTDL) AS "MP1.5.1.4.28",
+to_char(V13.REVSPDMDLOADCTRLSW) AS "MP1.5.1.4.29",
+to_char(V12.REVPWRCSTEP) AS "MP1.5.1.4.30",
+to_char(V12.VFCHRLGAINADJ) AS "MP1.5.1.4.31",
+to_char(V12.DFCHRLGAINADJ) AS "MP1.5.1.4.32",
+to_char(V12.RLGAINSCHPLT1X) AS "MP1.5.1.4.33",
+to_char(V12.RLGAINSCHPLT2X) AS "MP1.5.1.4.34",
+to_char(V12.RLGAINSCHPLT4X) AS "MP1.5.1.4.35",
+to_char(V12.RLGAINSCHPLT8X) AS "MP1.5.1.4.36",
+to_char(V12.RLGAINSCHPLT16X) AS "MP1.5.1.4.37",
+to_char(V12.RLGAINSCHPLT32X) AS "MP1.5.1.4.38",
+to_char(V12.REVPWRCTRLDELAY) AS "MP1.5.1.4.39",
+to_char(V9.SRCHWINA) AS "MP1.5.1.5.1",
+to_char(V9.SRCHWINN) AS "MP1.5.1.5.2",
+to_char(V9.SRCHWINR) AS "MP1.5.1.5.3",
+to_char(V9.NBRMAXAGE) AS "MP1.5.1.5.4",
+to_char(V9.TADD) AS "MP1.5.1.5.5",
+to_char(V9.TDROP) AS "MP1.5.1.5.6",
+to_char(V9.TTDROP) AS "MP1.5.1.5.7",
+to_char(V9.ADDINTERC) AS "MP1.5.1.5.8",
+to_char(V9.DROPINTERC) AS "MP1.5.1.5.9",
+to_char(V9.SOFTSLOPE) AS "MP1.5.1.5.10",
+to_char(V9.TCMP) AS "MP1.5.1.5.11",
+to_char(V9.PNINC) AS "MP1.5.1.5.12",
+to_char(V19.ACCTMO) AS "MP1.5.1.5.13",
+to_char(V14.R1XDRT) AS "MP1.5.1.7.1",
+to_char(V14.R2XDRT) AS "MP1.5.1.7.2",
+to_char(V14.R4XDRT) AS "MP1.5.1.7.3",
+to_char(V14.R8XDRT) AS "MP1.5.1.7.4",
+to_char(V14.R16XDRT) AS "MP1.5.1.7.5",
+to_char(V14.R32XDRT) AS "MP1.5.1.7.6",
+to_char(V14.FWDMINDRT) AS "MP1.5.1.7.7",
+to_char(V14.FWDMAXDRT) AS "MP1.5.1.7.8",
+to_char(V10.OBNDCLS) AS "MP1.5.1.8.1",
+to_char(V2.RCDATASCHSW) AS "MP1.5.1.8.2",
+to_char(V8.BNDCLS) AS "MP1.5.1.8.3",
+to_char(V3.BNDCLS) AS "MP1.5.1.8.4",
+to_char(V16.BNDCLS) AS "MP1.5.1.8.5",
+to_char(V10.AUTODWNCDMACH) AS "MP1.5.1.9.1",
+'' "#"
+FROM (select CELL.*,MSC.MSC_NAME AS MSC_SIGN from NE_CELL_C CELL,
+(select  a.RELATED_MSC, replace(wmsys.wm_concat(distinct case when  b.CITY_NAME = '江汉' then 'XT,TM,QJ' else  b.ENNAME end), ',', '|') ||'_'||a.MSC_NAME as MSC_NAME
+from ne_bsc_c a, cfg_city b 
+where a.city_id = b.city_id 
+GROUP BY a.RELATED_MSC,a.MSC_NAME) MSC 
+where CELL.RELATED_MSC = MSC.RELATED_MSC) NE
+inner join PARA_CDMA1XCH_ALDCTRL_HW V1 ON (NE.NE_SYS_ID = V1.RELATED_CELL)
+inner join PARA_CDMA1XCH_CHINF_HW V2 on (V1.NE_SYS_ID = V2.NE_SYS_ID AND V1.STAMPTIME = V2.STAMPTIME)
+inner join PARA_CDMA1XCH_EGSRDM_HW V3 on (V2.NE_SYS_ID = V3.NE_SYS_ID AND V2.STAMPTIME = V3.STAMPTIME)
+inner join PARA_CDMA1XCH_ESPM_HW V4 on (V3.NE_SYS_ID = V4.NE_SYS_ID AND V3.STAMPTIME = V4.STAMPTIME)
+inner join PARA_CDMA1XCH_FER_HW V5 on (V4.NE_SYS_ID = V5.NE_SYS_ID AND V4.STAMPTIME = V5.STAMPTIME)
+inner join PARA_CDMA1XCH_FFASTPC_HW V6 on (V5.NE_SYS_ID = V6.NE_SYS_ID AND V5.STAMPTIME = V6.STAMPTIME)
+inner join PARA_CDMA1XCH_FSLOWPC_HW V7 on (V6.NE_SYS_ID = V7.NE_SYS_ID AND V6.STAMPTIME = V7.STAMPTIME)
+inner join PARA_CDMA1XCH_GSRDM_HW V8 on (V7.NE_SYS_ID = V8.NE_SYS_ID AND V7.STAMPTIME = V8.STAMPTIME)
+inner join PARA_CDMA1XCH_HO_HW V9 on (V8.NE_SYS_ID = V9.NE_SYS_ID AND V8.STAMPTIME = V9.STAMPTIME)
+inner join PARA_CDMA1XCH_HW V10 on (V9.NE_SYS_ID = V10.NE_SYS_ID AND V9.STAMPTIME = V10.STAMPTIME)
+inner join PARA_CDMA1XCH_PLTCH_HW V11 on (V10.NE_SYS_ID = V11.NE_SYS_ID AND V10.STAMPTIME = V11.STAMPTIME)
+inner join PARA_CDMA1XCH_RCLPC_HW V12 on (V11.NE_SYS_ID = V12.NE_SYS_ID AND V11.STAMPTIME = V12.STAMPTIME)
+inner join PARA_CDMA1XCH_RLDCTRL_HW V13 on (V12.NE_SYS_ID = V13.NE_SYS_ID AND V12.STAMPTIME = V13.STAMPTIME)
+inner join PARA_CDMA1XCH_SCH_HW V14 on (V13.NE_SYS_ID = V14.NE_SYS_ID AND V13.STAMPTIME = V14.STAMPTIME)
+inner join PARA_CDMA1XCH_SPM_HW V15 on (V14.NE_SYS_ID = V15.NE_SYS_ID AND V14.STAMPTIME = V15.STAMPTIME)
+inner join PARA_CDMA1XCH_SRCFG_HW V16 on (V15.NE_SYS_ID = V16.NE_SYS_ID AND V15.STAMPTIME = V16.STAMPTIME)
+inner join PARA_HW_CBTSSECTORCARRIER_1X V17 on (V16.NE_SYS_ID = V17.NE_SYS_ID AND V16.STAMPTIME = V17.STAMPTIME)
+inner join PARA_PCH_ACH_HW V18 on (V17.NE_SYS_ID = V18.NE_SYS_ID AND V17.STAMPTIME = V18.STAMPTIME)
+inner join PARA_PCH_APM_HW V19 on (V18.NE_SYS_ID = V19.NE_SYS_ID AND V18.STAMPTIME = V19.STAMPTIME)
+inner join PARA_PCH_HW V20 on (V19.NE_SYS_ID = V20.NE_SYS_ID AND V19.STAMPTIME = V20.STAMPTIME)
+inner join PARA_SYNCH_HW V21 on (V20.NE_SYS_ID = V21.NE_SYS_ID AND V20.STAMPTIME = V21.STAMPTIME)
+WHERE  TRUNC(V1.STAMPTIME) = to_date('%%Y-%%M-%%D','YYYY-MM-DD') AND V1.VENDOR = 'ZY0808' AND V1.BUSTYPE = '1X' 
+				
+				</sql>
+			</mapping>
+		     <!--华为载扇DO省接口-->
+    <mapping name="${province_en}_PARA_CARR_HW_DO_%%Y%%M%%D.csv" templet="华为载扇DO省接口_三期.ftl"   >  
+				<sql>
+					
+					select to_char(V1.STAMPTIME,'YYYY-MM-DD') "时间戳",
+NE.MSC_SIGN || '.' || NE.BSC_NAME || '.' || NE.LOCAL_CELL_ID ||'.'|| V1.SECTOR_ID||'.'||V1.carr_seq AS "载扇标识",
+'${province_cn}' "省份",case ne.CITY_NAME when '江汉' then ne.COUNTY_NAME else ne.CITY_NAME end as "城市",
+ne.MSC_SIGN "载扇所属MSC标识",'' "载扇所属MGW标识",
+NE.MSC_SIGN || '.' || NE.BSC_NAME AS "载扇所属BSC标识",
+NE.MSC_SIGN || '.' || NE.BSC_NAME || '.' || NE.BTS_ID  AS "载扇所属BTS标识",
+NE.MSC_SIGN || '.' || NE.BSC_NAME || '.' || NE.LOCAL_CELL_ID ||'.'|| V1.SECTOR_ID AS  "载扇所属扇区标识",
+ne.CHINA_NAME "载扇所属扇区名称",V1.CARR_SEQ "载波编号",
+to_char(V6.CAPSULEOFFSET) AS "MP1.5.2.1.1",
+to_char(V6.CCHRATE) AS "MP1.5.2.1.2",
+to_char(V2.PLTPL) AS "MP1.5.2.3.1",
+to_char(V4.ACYCLEDURATION) AS "MP1.5.2.3.2",
+to_char(V4.PRBNUMSTEP) AS "MP1.5.2.3.3",
+to_char(V4.PRBLEN) AS "MP1.5.2.3.4",
+to_char(V4.CAPSULELENMAX) AS "MP1.5.2.3.5",
+to_char(V4.SECTORACCMAXRATE) AS "MP1.5.2.3.6",
+to_char(V3.MAXCELLR) AS "MP1.5.2.3.7",
+to_char(V2.TXGAIN) AS "MP1.5.2.4.1",
+to_char(V2.SCTGAIN) AS "MP1.5.2.4.2",
+to_char(V4.OLOOPADJUST) AS "MP1.5.2.4.3",
+to_char(V4.PRBINIADJUST) AS "MP1.5.2.4.4",
+to_char(V4.PWRSTEP) AS "MP1.5.2.4.5",
+to_char(V8.MINPCT) AS "MP1.5.2.4.6",
+to_char(V8.MAXPCT) AS "MP1.5.2.4.7",
+to_char(V8.INITPCT) AS "MP1.5.2.4.8",
+to_char(V8.NORMALGFRAMED) AS "MP1.5.2.4.9",
+to_char(V8.NODATAMAXINC) AS "MP1.5.2.4.10",
+to_char(V5.DOAREVPER) AS "MP1.5.2.4.11",
+to_char(V7.SOFTSLOPE) AS "MP1.5.2.5.1",
+to_char(V7.ADDINTERCEPT) AS "MP1.5.2.5.2",
+to_char(V7.DROPINTERCEPT) AS "MP1.5.2.5.3",
+to_char(V7.NBRMAXAGE) AS "MP1.5.2.5.4",
+to_char(V7.DIFFCHNBRMAXAGE) AS "MP1.5.2.5.5",
+to_char(V7.SRCHWINA) AS "MP1.5.2.5.6",
+to_char(V7.SRCHWINN) AS "MP1.5.2.5.7",
+to_char(V7.SRCHWINR) AS "MP1.5.2.5.8",
+to_char(V2.OBNDCLS) AS "MP1.5.2.8.1",
+to_char(V2.AUTODWNCDMACH) AS "MP1.5.2.9.1",
+to_char(V1.RABOFFSET) AS "MP1.5.2.20.1",
+'' "#"
+FROM (select CELL.*,MSC.MSC_NAME AS MSC_SIGN from NE_CELL_C CELL,
+(select  a.RELATED_MSC, replace(wmsys.wm_concat(distinct case when  b.CITY_NAME = '江汉' then 'XT,TM,QJ' else  b.ENNAME end), ',', '|') ||'_'||a.MSC_NAME as MSC_NAME
+from ne_bsc_c a, cfg_city b 
+where a.city_id = b.city_id 
+GROUP BY a.RELATED_MSC,a.MSC_NAME) MSC 
+where CELL.RELATED_MSC = MSC.RELATED_MSC) NE
+inner join PARA_CDMADOCH_DOSP_HW V1 ON (NE.NE_SYS_ID = V1.RELATED_CELL)
+inner join PARA_CDMADOCH_HW V2 on (V1.NE_SYS_ID = V2.NE_SYS_ID AND V1.STAMPTIME = V2.STAMPTIME)
+inner join PARA_HW_CBTSSECTORCARRIER_DO V3 on (V2.NE_SYS_ID = V3.NE_SYS_ID AND V2.STAMPTIME = V3.STAMPTIME)
+inner join PARA_HW_DOAPM V4 on (V3.NE_SYS_ID = V4.NE_SYS_ID AND V3.STAMPTIME = V4.STAMPTIME)
+inner join PARA_HW_DOARPCP V5 on (V4.NE_SYS_ID = V5.NE_SYS_ID AND V4.STAMPTIME = V5.STAMPTIME)
+inner join PARA_HW_DOCCHP V6 on (V5.NE_SYS_ID = V6.NE_SYS_ID AND V5.STAMPTIME = V6.STAMPTIME)
+inner join PARA_HW_DOCNP V7 on (V6.NE_SYS_ID = V7.NE_SYS_ID AND V6.STAMPTIME = V7.STAMPTIME)
+inner join PARA_HW_DORPCP V8 on (V7.NE_SYS_ID = V8.NE_SYS_ID AND V7.STAMPTIME = V8.STAMPTIME)
+WHERE  TRUNC(V1.STAMPTIME) = to_date('%%Y-%%M-%%D','YYYY-MM-DD') AND V1.VENDOR = 'ZY0808' AND V1.BUSTYPE = 'DO' 
+
+					
+					
+					</sql>
+			</mapping>
+			<!--中兴载扇1X省接口-->
+    <mapping name="${province_en}_PARA_CARR_ZTE_1X_%%Y%%M%%D.csv" templet="中兴载扇1X省接口_三期.ftl" >
+				<sql>
+					
+					select to_char(V1.STAMPTIME,'YYYY-MM-DD') "时间戳",
+NE.BSC_NAME || '.' || NE.BTS_ID ||'.'|| V1.SECTOR_ID||'.'||V1.carr_seq AS "载扇标识",
+'${province_cn}' "省份",case ne.CITY_NAME when '江汉' then ne.COUNTY_NAME else ne.CITY_NAME end as "城市",
+ne.MSC_SIGN "载扇所属MSC标识",'' "载扇所属MGW标识",
+NE.BSC_NAME AS "载扇所属BSC标识",
+NE.BSC_NAME || '.' || NE.BTS_ID  AS "载扇所属BTS标识",
+NE.BSC_NAME || '.' || NE.BTS_ID ||'.'|| V1.SECTOR_ID AS  "载扇所属扇区标识",
+ne.CHINA_NAME "载扇所属扇区名称",V1.CARR_SEQ "载波编号",
+to_char(V1.INIT_PWR) AS "MP2.5.1.3.1",
+to_char(V1.PWR_STEP) AS "MP2.5.1.3.2",
+to_char(V1.NUM_STEP) AS "MP2.5.1.3.3",
+to_char(V1.MAX_CAP_SZ) AS "MP2.5.1.3.4",
+to_char(V1.PAM_SZ) AS "MP2.5.1.3.5",
+to_char(V1.PROBE_PN_RAN) AS "MP2.5.1.3.6",
+to_char(V1.ACC_TMO) AS "MP2.5.1.3.7",
+to_char(V1.PROBE_BKOFF) AS "MP2.5.1.3.8",
+to_char(V1.BKOFF) AS "MP2.5.1.3.9",
+to_char(V1.MAX_REQ_SEQ) AS "MP2.5.1.3.10",
+to_char(V1.MAX_RSP_SEQ) AS "MP2.5.1.3.11",
+to_char(V2.NOM_PWR) AS "MP2.5.1.3.12",
+to_char(V4.FPC_MODE) AS "MP2.5.1.4.1",
+to_char(V4.FPC_MODE_SCH) AS "MP2.5.1.4.2",
+to_char(V4.FPC_PRI_CHAN) AS "MP2.5.1.4.3",
+to_char(V4.FPC_FCH_FER_VOICE) AS "MP2.5.1.4.4",
+to_char(V4.FPC_FCH_FER_DATA) AS "MP2.5.1.4.5",
+to_char(V4.FPCFCHMINSETPVOICE) AS "MP2.5.1.4.6",
+to_char(V4.FPCFCHMINSETPDATA) AS "MP2.5.1.4.7",
+to_char(V4.FPCFCHMAXSETPVOICE) AS "MP2.5.1.4.8",
+to_char(V4.FPCFCHMAXSETPDATA) AS "MP2.5.1.4.9",
+to_char(V4.FPC_DCCH_FER) AS "MP2.5.1.4.10",
+to_char(V4.FPC_DCCH_MAX_SETPT) AS "MP2.5.1.4.11",
+to_char(V4.FPC_SEC_CHAN) AS "MP2.5.1.4.12",
+to_char(V4.FPCFCHINITSETPVOICE) AS "MP2.5.1.4.13",
+to_char(V4.FPCFCHINITSETPDATA) AS "MP2.5.1.4.14",
+to_char(V4.RLGAIN_ADJ) AS "MP2.5.1.4.15",
+to_char(V4.REV_FCH_GATING_MODE) AS "MP2.5.1.4.16",
+to_char(V4.FPC_SCH_INIT_SETPT) AS "MP2.5.1.4.17",
+to_char(V4.FPC_SCH_MIN_SETPT) AS "MP2.5.1.4.18",
+to_char(V4.FPC_SCH_MAX_SETPT) AS "MP2.5.1.4.19",
+to_char(V4.FPC_SETPT_THRESH_SCH) AS "MP2.5.1.4.20",
+to_char(V4.FPC_SCH_FER32X) AS "MP2.5.1.4.21",
+to_char(V4.FPC_SCH_FER16X) AS "MP2.5.1.4.22",
+to_char(V4.FPC_SCH_FER8X) AS "MP2.5.1.4.23",
+to_char(V4.FPC_SCH_FER4X) AS "MP2.5.1.4.24",
+to_char(V4.FPC_SCH_FER2X) AS "MP2.5.1.4.25",
+to_char(V4.FPC_SCH_INIT_SETPT_OP) AS "MP2.5.1.7.1",
+to_char(V3.REVDTXDURATION) AS "MP2.5.1.7.2",
+to_char(V3.FWDSCHRCPREF) AS "MP2.5.1.8.1",
+to_char(V3.FWDCODINGTYPE) AS "MP2.5.1.8.2",
+to_char(V3.FWDSCHMAXRATE) AS "MP2.5.1.8.3",
+to_char(V3.REVSCHRCPREF) AS "MP2.5.1.8.4",
+to_char(V3.REVCODINGTYPE) AS "MP2.5.1.8.5",
+to_char(V3.REVSCHMAXRATE) AS "MP2.5.1.8.6",
+'' "#"
+FROM (select CELL.*,MSC.MSC_NAME AS MSC_SIGN from NE_CELL_C CELL,
+(select  a.RELATED_MSC, replace(wmsys.wm_concat(distinct case when  b.CITY_NAME = '江汉' then 'XT,TM,QJ' else  b.ENNAME end), ',', '|') ||'_'||a.MSC_NAME as MSC_NAME
+from ne_bsc_c a, cfg_city b 
+where a.city_id = b.city_id 
+GROUP BY a.RELATED_MSC,a.MSC_NAME) MSC 
+where CELL.RELATED_MSC = MSC.RELATED_MSC) NE
+inner join PARA_R_3G_T_ACCESS_PARA_ZTE V1 ON (NE.NE_SYS_ID = V1.RELATED_CELL)
+inner join PARA_R_3G_T_CARRIER_ZTE V2 on (V1.NE_SYS_ID = V2.NE_SYS_ID AND V1.STAMPTIME = V2.STAMPTIME)
+inner join PARA_R_3G_T_CH_PARA_ZTE V3 on (V2.NE_SYS_ID = V3.NE_SYS_ID AND V2.STAMPTIME = V3.STAMPTIME)
+inner join PARA_ZTE_R_3G_T_PC_MSG V4 on (V3.NE_SYS_ID = V4.NE_SYS_ID AND V3.STAMPTIME = V4.STAMPTIME)
+WHERE  TRUNC(V1.STAMPTIME) = to_date('%%Y-%%M-%%D','YYYY-MM-DD') AND V1.VENDOR = 'ZY0804' AND V1.BUSTYPE = '1X'
+					
+					</sql>
+			</mapping>
+			<!--中兴载扇DO省接口-->
+    <mapping name="${province_en}_PARA_CARR_ZTE_DO_%%Y%%M%%D.csv" templet="中兴载扇DO省接口_三期.ftl"   >  
+				<sql>  
+					
+					select to_char(V1.STAMPTIME,'YYYY-MM-DD') "时间戳",
+NE.BSC_NAME || '.' || NE.BTS_ID ||'.'|| V1.SECTOR_ID||'.'||V1.carr_seq AS "载扇标识",
+'${province_cn}' "省份",case ne.CITY_NAME when '江汉' then ne.COUNTY_NAME else ne.CITY_NAME end as "城市",
+ne.MSC_SIGN as "载扇所属MSC标识",'' "载扇所属MGW标识",
+NE.BSC_NAME AS "载扇所属BSC标识",
+NE.BSC_NAME || '.' || NE.BTS_ID  AS "载扇所属BTS标识",
+NE.BSC_NAME || '.' || NE.BTS_ID ||'.'|| V1.SECTOR_ID AS  "载扇所属扇区标识",
+ne.CHINA_NAME "载扇所属扇区名称",V1.CARR_SEQ "载波编号",
+to_char(V4.OLCONTROLMINDORM) AS "MP2.5.2.1.1",
+to_char(V2.RABLENGTH) AS "MP2.5.2.1.2",
+to_char(V3.SYNCCAPSULEOFFSET) AS "MP2.5.2.1.3",
+to_char(V3.CONTROLCHANNELRATE) AS "MP2.5.2.1.4",
+to_char(V1.PROBENUMSTEP) AS "MP2.5.2.3.1",
+to_char(V1.ACHDURATIONFOR6800) AS "MP2.5.2.3.2",
+to_char(V1.SECTORACCESSMAXRATE) AS "MP2.5.2.3.3",
+to_char(V1.OPENLOOPADJUST) AS "MP2.5.2.4.1",
+to_char(V1.POWERSTEP) AS "MP2.5.2.4.2",
+to_char(V2.RABOFFSET) AS "MP2.5.2.20.1",
+to_char(V2.RABTHRESHOLD68_ROT) AS "MP2.5.2.20.2",
+'' "#"
+FROM (select CELL.*,MSC.MSC_NAME AS MSC_SIGN from NE_CELL_C CELL,
+(select  a.RELATED_MSC, replace(wmsys.wm_concat(distinct case when  b.CITY_NAME = '江汉' then 'XT,TM,QJ' else  b.ENNAME end), ',', '|') ||'_'||a.MSC_NAME as MSC_NAME
+from ne_bsc_c a, cfg_city b 
+where a.city_id = b.city_id 
+GROUP BY a.RELATED_MSC,a.MSC_NAME) MSC 
+where CELL.RELATED_MSC = MSC.RELATED_MSC) NE
+inner join PARA_R_H_T_ACC_PARA_ZTE V1 ON (NE.NE_SYS_ID = V1.RELATED_CELL)
+inner join PARA_R_H_T_CARRIER_STATE_ZTE V2 on (V1.NE_SYS_ID = V2.NE_SYS_ID AND V1.STAMPTIME = V2.STAMPTIME)
+inner join PARA_R_H_T_CCH_PARA_ZTE V3 on (V2.NE_SYS_ID = V3.NE_SYS_ID AND V2.STAMPTIME = V3.STAMPTIME)
+inner join PARA_R_H_T_OVLD_PARA_ZTE V4 on (V3.NE_SYS_ID = V4.NE_SYS_ID AND V3.STAMPTIME = V4.STAMPTIME)
+WHERE  TRUNC(V1.STAMPTIME) = to_date('%%Y-%%M-%%D','YYYY-MM-DD') AND V1.VENDOR = 'ZY0804' AND V1.BUSTYPE = 'DO' 
+
+
+					</sql>
+			</mapping>
+			
+						<!--阿朗载扇1X-->
+    <mapping name="${province_en}_PARA_CARR_ALU_1X_%%Y%%M%%D.csv" templet="阿朗载扇1X_三期.ftl"   >  
+				<sql>
+					select to_char(V1.STAMPTIME,'YYYY-MM-DD') "时间戳",
+NE.MSC_SIGN || '.' || NE.BSC_ID || '.' || NE.BTS_ID ||'.'|| V1.SECTOR_ID||'.'||V1.carr_seq AS "载扇标识",
+'${province_cn}' "省份",case ne.CITY_NAME when '江汉' then ne.COUNTY_NAME else ne.CITY_NAME end as "城市",
+ne.MSC_SIGN "载扇所属MSC标识",'' "载扇所属MGW标识",
+NE.MSC_SIGN || '.' || NE.BSC_ID AS "载扇所属BSC标识",
+NE.MSC_SIGN || '.' || NE.BSC_ID || '.' || NE.BTS_ID AS "载扇所属BTS标识",
+NE.MSC_SIGN || '.' || NE.BSC_ID || '.' || NE.BTS_ID ||'.'|| V1.SECTOR_ID AS  "载扇所属扇区标识",
+ne.CHINA_NAME "载扇所属扇区名称",V1.CARR_SEQ "载波编号",
+to_char(V1.BCAST_INDEX) AS "MP4.5.1.2.1",
+'' "#"
+FROM (select CELL.*,MSC.MSC_NAME AS MSC_SIGN from NE_CELL_C CELL,
+(select  a.RELATED_MSC, replace(wmsys.wm_concat(distinct case when  b.CITY_NAME = '江汉' then 'XT,TM,QJ' else  b.ENNAME end), ',', '|') ||'_'||a.MSC_NAME as MSC_NAME
+from ne_bsc_c a, cfg_city b 
+where a.city_id = b.city_id 
+GROUP BY a.RELATED_MSC,a.MSC_NAME) MSC 
+where CELL.RELATED_MSC = MSC.RELATED_MSC) NE
+inner join 
+(SELECT C.NE_SYS_ID,C.RELATED_CELL,C.BTS_ID,C.SECTOR_ID,C.LOCAL_CELL_ID,C.carr_seq,C.BUSTYPE,C.VENDOR,CLT.BCAST_INDEX,CLT.STAMPTIME FROM NE_CARRIER_C C,CLT_CM_LUC_ECP CLT 
+where C.OMC_ID=CLT.OMCID AND C.VENDOR='ZY0810' AND TRUNC(CLT.STAMPTIME) = to_date('%%Y-%%M-%%D','YYYY-MM-DD')) V1 ON (NE.NE_SYS_ID = V1.RELATED_CELL)
+WHERE  TRUNC(V1.STAMPTIME) = to_date('%%Y-%%M-%%D','YYYY-MM-DD') AND V1.VENDOR = 'ZY0810' AND V1.BUSTYPE = '1X'
+ 
+				</sql>
+			</mapping>
+		     <!--阿朗载扇DO-->
+    <mapping name="${province_en}_PARA_CARR_ALU_DO_%%Y%%M%%D.csv" templet="阿朗载扇DO_三期.ftl"   >  
+				<sql>
+			
+			
+			select to_char(V1.STAMPTIME,'YYYY-MM-DD') "时间戳",
+case NE.VENDOR 
+ when 'ZY0808' THEN NE.MSC_SIGN || '.' || NE.BSC_NAME || '.' || NE.LOCAL_CELL_ID ||'.'|| V1.SECTOR_ID||'.'||V1.carr_seq
+ when 'ZY0810' THEN NE.MSC_SIGN || '.' || NE.BSC_ID || '.' || NE.BTS_ID ||'.'|| V1.SECTOR_ID||'.'||V1.carr_seq
+ WHEN 'ZY0804' THEN NE.BSC_NAME || '.' || NE.BTS_ID ||'.'|| V1.SECTOR_ID||'.'||V1.carr_seq END AS "载扇标识",
+'${province_cn}' "省份",ne.CITY_NAME "城市",
+ne.MSC_SIGN "载扇所属MSC标识",'' "载扇所属MGW标识",
+case NE.VENDOR 
+ when 'ZY0808' THEN NE.MSC_SIGN || '.' || NE.BSC_NAME 
+ when 'ZY0810' THEN NE.MSC_SIGN || '.' || NE.BSC_ID
+ WHEN 'ZY0804' THEN NE.BSC_NAME END AS "载扇所属BSC标识",
+case NE.VENDOR 
+ when 'ZY0808' THEN NE.MSC_SIGN || '.' || NE.BSC_NAME || '.' || NE.BTS_ID 
+ when 'ZY0810' THEN NE.MSC_SIGN || '.' || NE.BSC_ID || '.' || NE.BTS_ID 
+ WHEN 'ZY0804' THEN NE.BSC_NAME || '.' || NE.BTS_ID  END AS "载扇所属BTS标识",
+case NE.VENDOR 
+ when 'ZY0808' THEN NE.MSC_SIGN || '.' || NE.BSC_NAME || '.' || NE.LOCAL_CELL_ID ||'.'|| V1.SECTOR_ID
+ when 'ZY0810' THEN NE.MSC_SIGN || '.' || NE.BSC_ID || '.' || NE.BTS_ID ||'.'|| V1.SECTOR_ID
+ WHEN 'ZY0804' THEN NE.BSC_NAME || '.' || NE.BTS_ID ||'.'|| V1.SECTOR_ID END AS  "载扇所属扇区标识",
+ne.CHINA_NAME "载扇所属扇区名称",V1.CARR_SEQ "载波编号",
+to_char(V1.PREAMBLELENGTHSLOTS) AS "MP4.5.2.3.1",
+to_char(V1.SECTORACCESSMAXRATE) AS "MP4.5.2.3.2",
+'' "#"
+FROM (select CELL.*,MSC.MSC_NAME AS MSC_SIGN from NE_CELL_C CELL,
+(select  a.RELATED_MSC, replace(wmsys.wm_concat(distinct case when  b.CITY_NAME = '江汉' then 'XT,TM,QJ' else  b.ENNAME end), ',', '|') ||'_'||a.MSC_NAME as MSC_NAME
+from ne_bsc_c a, cfg_city b 
+where a.city_id = b.city_id 
+GROUP BY a.RELATED_MSC,a.MSC_NAME) MSC 
+where CELL.RELATED_MSC = MSC.RELATED_MSC) NE
+inner join PARA_LUC_DO_SECTORCARRIER V1 ON (NE.NE_SYS_ID = V1.RELATED_CELL)
+WHERE  TRUNC(V1.STAMPTIME) = to_date('%%Y-%%M-%%D','YYYY-MM-DD') AND V1.VENDOR = 'ZY0810' AND V1.BUSTYPE = 'DO'
+			
+					</sql>
+			</mapping>
+					
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	   <ti id="1" after="1">
+		<property name="ftpip">132.228.39.154</property>
+		<property name="port">21</property>
+		<property name="username">FTPUser</property>
+		<property name="password">Js!QAZ7</property>
+		<property name="path">/PARA/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--?????-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>

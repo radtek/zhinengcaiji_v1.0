@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nbi_cfg name="1">
+	<db>
+	<!-- 深度覆盖数据库连接池 -->
+		<name>WW_DB_POOL</name>	<!-- 连接池名称 -->
+		<dbpooltype>3</dbpooltype>	<!--使用连接池类型 1: oracle自带的数据库连接池。 2: C3P0数据库连接池。 3:DBCP数据库连接池。 -->
+		<type>javax.sql.DataSource</type>
+		<driverClassName>oracle.jdbc.driver.OracleDriver</driverClassName>
+		<url>jdbc:oracle:thin:@192.168.15.223:1521:ora11</url>
+		<service>nbi_igp_m1bad_smc</service>	<!-- 数据库连接服务名 -->
+		<user>wcdma2</user>	<!-- 数据库连接用户名 -->
+		<password>uwaysoft2010</password>	<!-- 数据库连接密码 -->		
+		<maxActive>10</maxActive>	<!-- 连接池最大活动连接数，默认值：12 -->
+		<maxIdle>5</maxIdle>
+		<maxWait>10000</maxWait>
+		<validationQuery>select sysdate from dual</validationQuery>
+	</db>
+</nbi_cfg>

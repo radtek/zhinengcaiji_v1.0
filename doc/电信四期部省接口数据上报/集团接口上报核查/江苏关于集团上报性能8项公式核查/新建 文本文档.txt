@@ -1,0 +1,8 @@
+select * from (select start_time ,
+(SUM(nvl(AT_CONN_SUC_DO,0))+SUM(nvl(AN_CONN_SUC_DO,0)))*100/(SUM(nvl(AT_CONN_ATT_DO,0))+SUM(nvl(AN_CONN_ATT_DO,0)))
+as allf
+from perf_bsc_c
+group by start_time)
+where allf>100
+
+--的确有大于100的

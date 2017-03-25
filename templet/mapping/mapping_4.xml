@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mapping>
+    <province province_en="GD" province_cn="广东">
+     
+       <city city_id="754">
+					<property name="city_cn">汕头</property>
+					<property name="city_en">ST</property>										
+       </city>
+       <city city_id="660">
+					<property name="city_cn">汕尾</property>
+					<property name="city_en">SW</property>										
+       </city>
+       <city city_id="751">
+					<property name="city_cn">韶关</property>
+					<property name="city_en">SG</property>										
+       </city>
+       <city city_id="766">
+					<property name="city_cn">云浮</property>
+					<property name="city_en">YF</property>										
+       </city>
+      
+    </province>
+</mapping>

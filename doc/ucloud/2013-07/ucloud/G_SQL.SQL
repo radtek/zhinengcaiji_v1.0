@@ -1,0 +1,43 @@
+	select rownum rowno,t.ne_sys_id PHYSICAL_DEVICE_ID,
+				GONG_ANT
+				TKSYS_NETWORK_BELONG_ENUM_ID,
+        t.ANT_PITCHANGLE
+        ANTENNA_PITCHING_ANGLE,
+        t.NE_SYS_ID UPLINK_DEVICE_ID,
+        t.ANT_HIGH
+        ANTENNA_HEIGHT,
+        t.CELL_STATE MAINTENANCE_STATUS_ENUM_ID,
+        t.ANT_AZIMUTH POSITION_ANGLE,
+        t.ANT_PLUS ANTENNA_GAIN,
+       null   ANTENNA_MANUFACTURER_ID,
+        null ELECTRIC_REGULATING_FLAG,
+        null
+        FEEDER_MANUFACTURER_ID,
+        null REGULATING_RCU_POSITION,
+        t.ANT_EQUIPMODULE DEVICE_MODEL,
+        FEEDER_TYPE FEEDER_MODEL,
+        COVERTYPE
+        COVERAGE_AREA,
+        null ANTENNA_TYPE_ENUM_ID,
+        CELL_FRES
+        WORKING_FREQUENCY_BAND,
+        TXFEEDER_LENGTH FEEDER_LENGTH,
+        POWER
+        TRANSMITTING_POWER,
+        t.ANT_POLARIZE POLARIZATION_MODE_ENUM_ID,
+        null ANTENNA_MANUFACTURER_ID,
+        to_char(t.ACCESS_NET_TIME,'YYYY-MM-DD hh24:mi:ss') PRESENCE_DATE
+        from NE_CELL_G t;
+        
+        
+        select rownum rowno, NE_SYS_ID CELL_ID,
+				CHINA_NAME ALIAS,
+				CARRIER_NUM CARRIER_FREQ_QUANTITY,
+				LAC LOCATION_AREA_CODE,
+				CI CELL_CI
+				from NE_CELL_G;
+				
+				select rownum rowno, NE_SYS_ID CELL_ID,
+				null RELATED_CELL_ID from NE_CELL_G t ;
+				
+				

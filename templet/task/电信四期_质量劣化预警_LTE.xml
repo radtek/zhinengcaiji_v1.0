@@ -1,0 +1,569 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:test10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">test_cnoap</property>
+		<property name="password">test_cnoap</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="${province_en}_QUALITYDETER_%%Y%%M%%D.csv" templet="电信四期_质量劣化预警_LTE.ftl" >
+				<sql>
+						<![CDATA[
+			select
+			 '1.42.01b_SP0'  as "版本号",'%%Y-%%M-%%D' as 时间戳, 
+			 (SELECT DISTINCT C.PROVINCE_NAME
+          FROM CFG_PROVINCE_CITY C
+         WHERE C.CITY_NAME = t.city_name) AS "省份",
+       city_name AS "地市",
+       count(distinct t.reseau_no) AS "质量劣化网格数量",
+       (select count(distinct reseau_no)
+          from ne_taizhang_cell N
+         WHERE N.City_Name = t.City_Name) AS "网格总数"
+  from ne_taizhang_cell t,
+       (SELECT distinct T1.NE_SYS_ID
+          FROM (select NE_SYS_ID,
+                       Round((decode(SUM(P30111_2),
+                                     0,
+                                     0.0,
+                                     SUM(P30111_1) / SUM(P30111_2))) * 100,
+                             4) P30111,
+                       Round((decode(SUM(P33176_2),
+                                     0,
+                                     1.0,
+                                     SUM(P33176_1) / SUM(P33176_2))) * 100,
+                             4) P33176,
+                       Round((decode(SUM(P33207_2),
+                                     0,
+                                     0.0,
+                                     SUM(P33207_1) / SUM(P33207_2))) * 100,
+                             4) P33207,
+                       Round((decode(SUM(P34124_2),
+                                     0,
+                                     1.0,
+                                     SUM(P34124_1) / SUM(P34124_2))) * 100,
+                             4) P34124
+                  from (select TB0.NE_SYS_ID,
+                               Round(((P2815_CM_RADIOFNUM)), 4) P30111_1,
+                               Round(((P2802_CMO_CALLSUCCESSNUM +
+                                     P2802_CMO_EXTINTERRUPTNUM +
+                                     P2802_ACCPROBE_CALLSUCCESSNUM +
+                                     P2802_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2802_ACCHO_CALLSUCCESSNUM +
+                                     P2802_ACCHO_EXTINTERRUPTNUM +
+                                     P2802_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2802_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2848_CALLSUCCESSNUM +
+                                     P2848_EXTINTERRUPTNUM) +
+                                     (P2803_CMO_CALLSUCCESSNUM +
+                                     P2803_CMO_EXTINTERRUPTNUM +
+                                     P2803_ACCPROBE_CALLSUCCESSNUM +
+                                     P2803_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2803_ACCHO_CALLSUCCESSNUM +
+                                     P2803_ACCHO_EXTINTERRUPTNUM +
+                                     P2803_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2803_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2850_CALLSUCCESSNUM +
+                                     P2850_EXTINTERRUPTNUM)),
+                                     4) P30111_2,
+                               Round((P2802_CMO_CALLSUCCESSNUM +
+                                     P2802_CMO_EXTINTERRUPTNUM +
+                                     P2802_ACCPROBE_CALLSUCCESSNUM +
+                                     P2802_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2802_ACCHO_CALLSUCCESSNUM +
+                                     P2802_ACCHO_EXTINTERRUPTNUM +
+                                     P2848_CALLSUCCESSNUM +
+                                     P2848_EXTINTERRUPTNUM +
+                                     P2803_CMO_CALLSUCCESSNUM +
+                                     P2803_CMO_EXTINTERRUPTNUM +
+                                     P2803_ACCPROBE_CALLSUCCESSNUM +
+                                     P2803_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2803_ACCHO_CALLSUCCESSNUM +
+                                     P2803_ACCHO_EXTINTERRUPTNUM +
+                                     P2803_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2803_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2833_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2834_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2834_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2802_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2802_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2850_CALLSUCCESSNUM +
+                                     P2850_EXTINTERRUPTNUM +
+                                     P2833_CMO_CALLSUCCESSNUM +
+                                     P2833_CMO_EXTINTERRUPTNUM +
+                                     P2833_ACCPROBE_CALLSUCCESSNUM +
+                                     P2833_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2833_ACCHO_CALLSUCCESSNUM +
+                                     P2833_ACCHO_EXTINTERRUPTNUM +
+                                     P2833_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2834_CMO_CALLSUCCESSNUM +
+                                     P2834_CMO_EXTINTERRUPTNUM +
+                                     P2834_ACCPROBE_CALLSUCCESSNUM +
+                                     P2834_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2834_ACCHO_CALLSUCCESSNUM +
+                                     P2834_ACCHO_EXTINTERRUPTNUM),
+                                     4) P33176_1,
+                               Round((P2802_CMO_CALLSUCCESSNUM +
+                                     P2802_CMO_EXTINTERRUPTNUM +
+                                     P2802_CMO_BLOCKFAILURENUM +
+                                     P2802_CMO_OTHERFAILURENUM +
+                                     P2802_ACCPROBE_CALLSUCCESSNUM +
+                                     P2802_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2802_ACCPROBE_BLOCKFAILURENUM +
+                                     P2802_ACCPROBE_OTHERFAILURENUM +
+                                     P2802_ACCHO_CALLSUCCESSNUM +
+                                     P2802_ACCHO_EXTINTERRUPTNUM +
+                                     P2802_ACCHO_BLOCKFAILURENUM +
+                                     P2802_ACCHO_OTHERFAILURENUM +
+                                     P2802_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2802_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2802_ASSIGNSOFT_BLOCKFAILUREN +
+                                     P2802_ASSIGNSOFT_OTHERFAILUREN +
+                                     P2848_CALLSUCCESSNUM +
+                                     P2848_EXTINTERRUPTNUM +
+                                     P2848_BLOCKFAILURENUM +
+                                     P2848_OTHERFAILURENUM +
+                                     P2803_CMO_CALLSUCCESSNUM +
+                                     P2803_CMO_EXTINTERRUPTNUM +
+                                     P2803_CMO_BLOCKFAILURENUM +
+                                     P2803_CMO_OTHERFAILURENUM +
+                                     P2803_ACCPROBE_CALLSUCCESSNUM +
+                                     P2803_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2803_ACCPROBE_BLOCKFAILURENUM +
+                                     P2803_ACCPROBE_OTHERFAILURENUM +
+                                     P2803_ACCHO_CALLSUCCESSNUM +
+                                     P2803_ACCHO_EXTINTERRUPTNUM +
+                                     P2803_ACCHO_BLOCKFAILURENUM +
+                                     P2803_ACCHO_OTHERFAILURENUM +
+                                     P2803_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2803_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2803_ASSIGNSOFT_BLOCKFAILUREN +
+                                     P2803_ASSIGNSOFT_OTHERFAILUREN +
+                                     P2850_CALLSUCCESSNUM +
+                                     P2850_EXTINTERRUPTNUM +
+                                     P2850_BLOCKFAILURENUM +
+                                     P2850_OTHERFAILURENUM +
+                                     P2833_CMO_CALLSUCCESSNUM +
+                                     P2833_CMO_EXTINTERRUPTNUM +
+                                     P2833_CMO_BLOCKFAILURENUM +
+                                     P2833_CMO_OTHERFAILURENUM +
+                                     P2833_ACCPROBE_CALLSUCCESSNUM +
+                                     P2833_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2833_ACCPROBE_BLOCKFAILURENUM +
+                                     P2833_ACCPROBE_OTHERFAILURENUM +
+                                     P2833_ACCHO_CALLSUCCESSNUM +
+                                     P2833_ACCHO_EXTINTERRUPTNUM +
+                                     P2833_ACCHO_BLOCKFAILURENUM +
+                                     P2833_ACCHO_OTHERFAILURENUM +
+                                     P2833_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2833_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2833_ASSIGNSOFT_BLOCKFAILUREN +
+                                     P2833_ASSIGNSOFT_OTHERFAILUREN +
+                                     P2834_CMO_CALLSUCCESSNUM +
+                                     P2834_CMO_EXTINTERRUPTNUM +
+                                     P2834_CMO_BLOCKFAILURENUM +
+                                     P2834_CMO_OTHERFAILURENUM +
+                                     P2834_ACCPROBE_CALLSUCCESSNUM +
+                                     P2834_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2834_ACCPROBE_BLOCKFAILURENUM +
+                                     P2834_ACCPROBE_OTHERFAILURENUM +
+                                     P2834_ACCHO_CALLSUCCESSNUM +
+                                     P2834_ACCHO_EXTINTERRUPTNUM +
+                                     P2834_ACCHO_BLOCKFAILURENUM +
+                                     P2834_ACCHO_OTHERFAILURENUM +
+                                     P2834_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2834_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2834_ASSIGNSOFT_BLOCKFAILUREN),
+                                     4) P33176_2,
+                               Round((P803_AIRLINKLOSTDROPNUM +
+                                     P803_HHODROPNUM + P803_OTHERDROPNUM),
+                                     4) P33207_1,
+                               Round((P803_AIRLINKLOSTDROPNUM +
+                                     P803_HHODROPNUM + P803_OTHERDROPNUM +
+                                     P803_RLSSNUM + P803_PDSNRELEASENUM),
+                                     4) P33207_2,
+                               Round((P801_MO_WIRENETCALLSUCNUM +
+                                     P801_MT_WIRENETSUCNUM +
+                                     P819_MO_WIRENETCALLSUCNUM +
+                                     P819_MT_WIRENETSUCNUM),
+                                     4) P34124_1,
+                               Round((P801_CMO_CALLSNUM +
+                                     P801_CMO_EXTINTERRUPTNUM +
+                                     P801_CMO_BLOCKFNUM + P801_CMO_OTHERFNUM +
+                                     P801_CMO_RTCHCAPFNUM +
+                                     P801_CMO_TCCTIMEOUTFNUM +
+                                     P819_CMO_CALLSUCCESSNUM +
+                                     P819_CMO_EXTINTERRUPTNUM +
+                                     P819_CMO_BLOCKFAILURENUM +
+                                     P819_CMO_OTHERFAILURENUM +
+                                     P819_CMO_RTCHCAPFNUM +
+                                     P819_CMO_TCCTIMEOUTFNUM +
+                                     P801_CMT_CALLSNUM +
+                                     P801_CMT_EXTINTERRUPTNUM +
+                                     P801_CMT_BLOCKFNUM + P801_CMT_OTHERFNUM +
+                                     P801_CMT_RTCHCAPFNUM +
+                                     P801_CMT_TCCTIMEOUTFNUM +
+                                     P819_CMT_CALLSUCCESSNUM +
+                                     P819_CMT_EXTINTERRUPTNUM +
+                                     P819_CMT_BLOCKFAILURENUM +
+                                     P819_CMT_OTHERFAILURENUM +
+                                     P819_CMT_RTCHCAPFNUM +
+                                     P819_CMT_TCCTIMEOUTFNUM +
+                                     P801_FMT_CALLSNUM +
+                                     P801_FMT_EXTINTERRUPTNUM +
+                                     P801_FMT_BLOCKFNUM + P801_FMT_OTHERFNUM +
+                                     P801_FMT_RTCHCAPFNUM +
+                                     P801_FMT_TCCTIMEOUTFNUM +
+                                     P819_FMT_CALLSUCCESSNUM +
+                                     P819_FMT_EXTINTERRUPTNUM +
+                                     P819_FMT_BLOCKFAILURENUM +
+                                     P819_FMT_OTHERFAILURENUM +
+                                     P819_FMT_RTCHCAPFNUM +
+                                     P819_FMT_TCCTIMEOUTFNUM),
+                                     4) P34124_2
+                          from DS_COUNTER_GROUP_ZTE_TC_1X_1D TB0,
+                               DS_COUNTER_GROUP_ZTE_TC_DO_1D TB1
+                         where (((TB0.START_TIME >=
+                               to_date('%%Y-%%M-%%D', 'yyyy-mm-dd') - 7 AND
+                               TB0.START_TIME <=
+                               to_date('%%Y-%%M-%%D', 'yyyy-mm-dd') - 1) and
+                               tb0.NE_SYS_ID = tb1.NE_SYS_ID and
+                               tb0.CITY_ID = tb1.CITY_ID and
+                               tb0.START_TIME = tb1.START_TIME))
+                        union all
+                        select TB0.NE_SYS_ID,
+                               Round(((COUNTER_1157632969 + COUNTER_1157632970 +
+                                     COUNTER_1157632971 + COUNTER_1157632972 +
+                                     COUNTER_1157632973 + COUNTER_1157632974)),
+                                     4) P30111_1,
+                               Round(((COUNTER_1157628567 + COUNTER_1157628587) +
+                                     (COUNTER_1157628568 + COUNTER_1157628588)),
+                                     4) P30111_2,
+                               Round(((COUNTER_1157628567 + COUNTER_1157628587 +
+                                     COUNTER_1157628568 + COUNTER_1157628588 +
+                                     COUNTER_1157632645 + COUNTER_1157632646)),
+                                     4) P33176_1,
+                               Round(((COUNTER_1157628553 + COUNTER_1157628573 +
+                                     COUNTER_1157628554 + COUNTER_1157628574 +
+                                     COUNTER_1157632642 + COUNTER_1157632641)),
+                                     4) P33176_2,
+                               Round((COUNTER_1157633261 + COUNTER_1157631124 +
+                                     COUNTER_1157633260),
+                                     4) P33207_1,
+                               Round((COUNTER_1157633261 + COUNTER_1157631124 +
+                                     COUNTER_1157633260 + COUNTER_1157633262),
+                                     4) P33207_2,
+                               Round((COUNTER_1157631249), 4) P34124_1,
+                               Round((COUNTER_1157631248), 4) P34124_2
+                          from DS_COUNTER_GROUP_HW_TC_1X_1D TB0,
+                               DS_COUNTER_GROUP_HW_TC_DO_1D TB1
+                         where (((TB0.START_TIME >=
+                               to_date('%%Y-%%M-%%D', 'yyyy-mm-dd') - 7 AND
+                               TB0.START_TIME <=
+                               to_date('%%Y-%%M-%%D', 'yyyy-mm-dd') - 1) and
+                               tb0.NE_SYS_ID = tb1.NE_SYS_ID and
+                               tb0.CITY_ID = tb1.CITY_ID and
+                               tb0.START_TIME = tb1.START_TIME)))
+                 group by NE_SYS_ID) T1,
+               (select NE_SYS_ID,
+                       Round((decode(SUM(P30111_2),
+                                     0,
+                                     0.0,
+                                     SUM(P30111_1) / SUM(P30111_2))) * 100,
+                             4) P30111,
+                       Round((decode(SUM(P33176_2),
+                                     0,
+                                     1.0,
+                                     SUM(P33176_1) / SUM(P33176_2))) * 100,
+                             4) P33176,
+                       Round((decode(SUM(P33207_2),
+                                     0,
+                                     0.0,
+                                     SUM(P33207_1) / SUM(P33207_2))) * 100,
+                             4) P33207,
+                       Round((decode(SUM(P34124_2),
+                                     0,
+                                     1.0,
+                                     SUM(P34124_1) / SUM(P34124_2))) * 100,
+                             4) P34124
+                  from (select TB0.NE_SYS_ID,
+                               Round(((P2815_CM_RADIOFNUM)), 4) P30111_1,
+                               Round(((P2802_CMO_CALLSUCCESSNUM +
+                                     P2802_CMO_EXTINTERRUPTNUM +
+                                     P2802_ACCPROBE_CALLSUCCESSNUM +
+                                     P2802_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2802_ACCHO_CALLSUCCESSNUM +
+                                     P2802_ACCHO_EXTINTERRUPTNUM +
+                                     P2802_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2802_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2848_CALLSUCCESSNUM +
+                                     P2848_EXTINTERRUPTNUM) +
+                                     (P2803_CMO_CALLSUCCESSNUM +
+                                     P2803_CMO_EXTINTERRUPTNUM +
+                                     P2803_ACCPROBE_CALLSUCCESSNUM +
+                                     P2803_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2803_ACCHO_CALLSUCCESSNUM +
+                                     P2803_ACCHO_EXTINTERRUPTNUM +
+                                     P2803_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2803_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2850_CALLSUCCESSNUM +
+                                     P2850_EXTINTERRUPTNUM)),
+                                     4) P30111_2,
+                               Round((P2802_CMO_CALLSUCCESSNUM +
+                                     P2802_CMO_EXTINTERRUPTNUM +
+                                     P2802_ACCPROBE_CALLSUCCESSNUM +
+                                     P2802_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2802_ACCHO_CALLSUCCESSNUM +
+                                     P2802_ACCHO_EXTINTERRUPTNUM +
+                                     P2848_CALLSUCCESSNUM +
+                                     P2848_EXTINTERRUPTNUM +
+                                     P2803_CMO_CALLSUCCESSNUM +
+                                     P2803_CMO_EXTINTERRUPTNUM +
+                                     P2803_ACCPROBE_CALLSUCCESSNUM +
+                                     P2803_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2803_ACCHO_CALLSUCCESSNUM +
+                                     P2803_ACCHO_EXTINTERRUPTNUM +
+                                     P2803_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2803_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2833_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2834_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2834_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2802_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2802_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2850_CALLSUCCESSNUM +
+                                     P2850_EXTINTERRUPTNUM +
+                                     P2833_CMO_CALLSUCCESSNUM +
+                                     P2833_CMO_EXTINTERRUPTNUM +
+                                     P2833_ACCPROBE_CALLSUCCESSNUM +
+                                     P2833_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2833_ACCHO_CALLSUCCESSNUM +
+                                     P2833_ACCHO_EXTINTERRUPTNUM +
+                                     P2833_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2834_CMO_CALLSUCCESSNUM +
+                                     P2834_CMO_EXTINTERRUPTNUM +
+                                     P2834_ACCPROBE_CALLSUCCESSNUM +
+                                     P2834_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2834_ACCHO_CALLSUCCESSNUM +
+                                     P2834_ACCHO_EXTINTERRUPTNUM),
+                                     4) P33176_1,
+                               Round((P2802_CMO_CALLSUCCESSNUM +
+                                     P2802_CMO_EXTINTERRUPTNUM +
+                                     P2802_CMO_BLOCKFAILURENUM +
+                                     P2802_CMO_OTHERFAILURENUM +
+                                     P2802_ACCPROBE_CALLSUCCESSNUM +
+                                     P2802_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2802_ACCPROBE_BLOCKFAILURENUM +
+                                     P2802_ACCPROBE_OTHERFAILURENUM +
+                                     P2802_ACCHO_CALLSUCCESSNUM +
+                                     P2802_ACCHO_EXTINTERRUPTNUM +
+                                     P2802_ACCHO_BLOCKFAILURENUM +
+                                     P2802_ACCHO_OTHERFAILURENUM +
+                                     P2802_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2802_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2802_ASSIGNSOFT_BLOCKFAILUREN +
+                                     P2802_ASSIGNSOFT_OTHERFAILUREN +
+                                     P2848_CALLSUCCESSNUM +
+                                     P2848_EXTINTERRUPTNUM +
+                                     P2848_BLOCKFAILURENUM +
+                                     P2848_OTHERFAILURENUM +
+                                     P2803_CMO_CALLSUCCESSNUM +
+                                     P2803_CMO_EXTINTERRUPTNUM +
+                                     P2803_CMO_BLOCKFAILURENUM +
+                                     P2803_CMO_OTHERFAILURENUM +
+                                     P2803_ACCPROBE_CALLSUCCESSNUM +
+                                     P2803_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2803_ACCPROBE_BLOCKFAILURENUM +
+                                     P2803_ACCPROBE_OTHERFAILURENUM +
+                                     P2803_ACCHO_CALLSUCCESSNUM +
+                                     P2803_ACCHO_EXTINTERRUPTNUM +
+                                     P2803_ACCHO_BLOCKFAILURENUM +
+                                     P2803_ACCHO_OTHERFAILURENUM +
+                                     P2803_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2803_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2803_ASSIGNSOFT_BLOCKFAILUREN +
+                                     P2803_ASSIGNSOFT_OTHERFAILUREN +
+                                     P2850_CALLSUCCESSNUM +
+                                     P2850_EXTINTERRUPTNUM +
+                                     P2850_BLOCKFAILURENUM +
+                                     P2850_OTHERFAILURENUM +
+                                     P2833_CMO_CALLSUCCESSNUM +
+                                     P2833_CMO_EXTINTERRUPTNUM +
+                                     P2833_CMO_BLOCKFAILURENUM +
+                                     P2833_CMO_OTHERFAILURENUM +
+                                     P2833_ACCPROBE_CALLSUCCESSNUM +
+                                     P2833_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2833_ACCPROBE_BLOCKFAILURENUM +
+                                     P2833_ACCPROBE_OTHERFAILURENUM +
+                                     P2833_ACCHO_CALLSUCCESSNUM +
+                                     P2833_ACCHO_EXTINTERRUPTNUM +
+                                     P2833_ACCHO_BLOCKFAILURENUM +
+                                     P2833_ACCHO_OTHERFAILURENUM +
+                                     P2833_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2833_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2833_ASSIGNSOFT_BLOCKFAILUREN +
+                                     P2833_ASSIGNSOFT_OTHERFAILUREN +
+                                     P2834_CMO_CALLSUCCESSNUM +
+                                     P2834_CMO_EXTINTERRUPTNUM +
+                                     P2834_CMO_BLOCKFAILURENUM +
+                                     P2834_CMO_OTHERFAILURENUM +
+                                     P2834_ACCPROBE_CALLSUCCESSNUM +
+                                     P2834_ACCPROBE_EXTINTERRUPTNUM +
+                                     P2834_ACCPROBE_BLOCKFAILURENUM +
+                                     P2834_ACCPROBE_OTHERFAILURENUM +
+                                     P2834_ACCHO_CALLSUCCESSNUM +
+                                     P2834_ACCHO_EXTINTERRUPTNUM +
+                                     P2834_ACCHO_BLOCKFAILURENUM +
+                                     P2834_ACCHO_OTHERFAILURENUM +
+                                     P2834_ASSIGNSOFT_CALLSUCCESSNU +
+                                     P2834_ASSIGNSOFT_EXTINTERRUPTN +
+                                     P2834_ASSIGNSOFT_BLOCKFAILUREN),
+                                     4) P33176_2,
+                               Round((P803_AIRLINKLOSTDROPNUM +
+                                     P803_HHODROPNUM + P803_OTHERDROPNUM),
+                                     4) P33207_1,
+                               Round((P803_AIRLINKLOSTDROPNUM +
+                                     P803_HHODROPNUM + P803_OTHERDROPNUM +
+                                     P803_RLSSNUM + P803_PDSNRELEASENUM),
+                                     4) P33207_2,
+                               Round((P801_MO_WIRENETCALLSUCNUM +
+                                     P801_MT_WIRENETSUCNUM +
+                                     P819_MO_WIRENETCALLSUCNUM +
+                                     P819_MT_WIRENETSUCNUM),
+                                     4) P34124_1,
+                               Round((P801_CMO_CALLSNUM +
+                                     P801_CMO_EXTINTERRUPTNUM +
+                                     P801_CMO_BLOCKFNUM + P801_CMO_OTHERFNUM +
+                                     P801_CMO_RTCHCAPFNUM +
+                                     P801_CMO_TCCTIMEOUTFNUM +
+                                     P819_CMO_CALLSUCCESSNUM +
+                                     P819_CMO_EXTINTERRUPTNUM +
+                                     P819_CMO_BLOCKFAILURENUM +
+                                     P819_CMO_OTHERFAILURENUM +
+                                     P819_CMO_RTCHCAPFNUM +
+                                     P819_CMO_TCCTIMEOUTFNUM +
+                                     P801_CMT_CALLSNUM +
+                                     P801_CMT_EXTINTERRUPTNUM +
+                                     P801_CMT_BLOCKFNUM + P801_CMT_OTHERFNUM +
+                                     P801_CMT_RTCHCAPFNUM +
+                                     P801_CMT_TCCTIMEOUTFNUM +
+                                     P819_CMT_CALLSUCCESSNUM +
+                                     P819_CMT_EXTINTERRUPTNUM +
+                                     P819_CMT_BLOCKFAILURENUM +
+                                     P819_CMT_OTHERFAILURENUM +
+                                     P819_CMT_RTCHCAPFNUM +
+                                     P819_CMT_TCCTIMEOUTFNUM +
+                                     P801_FMT_CALLSNUM +
+                                     P801_FMT_EXTINTERRUPTNUM +
+                                     P801_FMT_BLOCKFNUM + P801_FMT_OTHERFNUM +
+                                     P801_FMT_RTCHCAPFNUM +
+                                     P801_FMT_TCCTIMEOUTFNUM +
+                                     P819_FMT_CALLSUCCESSNUM +
+                                     P819_FMT_EXTINTERRUPTNUM +
+                                     P819_FMT_BLOCKFAILURENUM +
+                                     P819_FMT_OTHERFAILURENUM +
+                                     P819_FMT_RTCHCAPFNUM +
+                                     P819_FMT_TCCTIMEOUTFNUM),
+                                     4) P34124_2
+                          from DS_COUNTER_GROUP_ZTE_TC_1X_1D TB0,
+                               DS_COUNTER_GROUP_ZTE_TC_DO_1D TB1
+                         where (((TB0.START_TIME >=
+                               to_date('%%Y-%%M-%%D', 'yyyy-mm-dd') AND
+                               TB0.START_TIME <=
+                               to_date('%%Y-%%M-%%D', 'yyyy-mm-dd') + 6) and
+                               tb0.NE_SYS_ID = tb1.NE_SYS_ID and
+                               tb0.CITY_ID = tb1.CITY_ID and
+                               tb0.START_TIME = tb1.START_TIME))
+                        union all
+                        select TB0.NE_SYS_ID,
+                               Round(((COUNTER_1157632969 + COUNTER_1157632970 +
+                                     COUNTER_1157632971 + COUNTER_1157632972 +
+                                     COUNTER_1157632973 + COUNTER_1157632974)),
+                                     4) P30111_1,
+                               Round(((COUNTER_1157628567 + COUNTER_1157628587) +
+                                     (COUNTER_1157628568 + COUNTER_1157628588)),
+                                     4) P30111_2,
+                               Round(((COUNTER_1157628567 + COUNTER_1157628587 +
+                                     COUNTER_1157628568 + COUNTER_1157628588 +
+                                     COUNTER_1157632645 + COUNTER_1157632646)),
+                                     4) P33176_1,
+                               Round(((COUNTER_1157628553 + COUNTER_1157628573 +
+                                     COUNTER_1157628554 + COUNTER_1157628574 +
+                                     COUNTER_1157632642 + COUNTER_1157632641)),
+                                     4) P33176_2,
+                               Round((COUNTER_1157633261 + COUNTER_1157631124 +
+                                     COUNTER_1157633260),
+                                     4) P33207_1,
+                               Round((COUNTER_1157633261 + COUNTER_1157631124 +
+                                     COUNTER_1157633260 + COUNTER_1157633262),
+                                     4) P33207_2,
+                               Round((COUNTER_1157631249), 4) P34124_1,
+                               Round((COUNTER_1157631248), 4) P34124_2
+                          from DS_COUNTER_GROUP_HW_TC_1X_1D TB0,
+                               DS_COUNTER_GROUP_HW_TC_DO_1D TB1
+                         where (((TB0.START_TIME >=
+                               to_date('%%Y-%%M-%%D', 'yyyy-mm-dd') AND
+                               TB0.START_TIME <=
+                               to_date('%%Y-%%M-%%D', 'yyyy-mm-dd') + 6) and
+                               tb0.NE_SYS_ID = tb1.NE_SYS_ID and
+                               tb0.CITY_ID = tb1.CITY_ID and
+                               tb0.START_TIME = tb1.START_TIME)))
+                 group by NE_SYS_ID) T2
+         WHERE T1.NE_SYS_ID = T2.NE_SYS_ID
+           AND decode(T2.P30111,
+                      0,
+                      0,
+                      abs(T2.P30111 - T1.P30111) / T2.P30111 * 100) >= 10
+           AND decode(T2.P33176,
+                      0,
+                      0,
+                      abs(T2.P33176 - T1.P33176) / T2.P33176 * 100) >= 10
+           AND decode(T2.P33207,
+                      0,
+                      0,
+                      abs(T2.P33207 - T1.P33207) / T2.P33207 * 100) >= 10
+           AND decode(T2.P34124,
+                      0,
+                      0,
+                      abs(T2.P34124 - T1.P34124) / T2.P34124 * 100) >= 10) C
+ where t.ne_sys_id = c.ne_sys_id
+ group by t.city_name
+			
+			
+
+						]]>
+				</sql>
+			</mapping>
+		
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+	  	<property name="ftpip">192.168.15.43</property>
+		<property name="port">21</property>
+		<property name="username">ftp</property>
+		<property name="password">1</property>
+		<property name="path">/WORK/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

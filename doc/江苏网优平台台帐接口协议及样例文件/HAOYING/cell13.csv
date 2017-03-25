@@ -1,0 +1,2 @@
+city_id,bsc_id,bts_id,local_cell_id,sector_id,antenna_alti,antenna_loc_accu,sector_center_lati,sector_center_longi,sector_center_alti,max_antenna_range,terrain_average_height,terrain_height_standard_devi,potential_repeater,pn_increment,fwd_calib,fwd_calib_accu
+510,4,2568,2568,2,38,300,31.2797222,119.8406944,120,5000,9,1,0,1,12,150

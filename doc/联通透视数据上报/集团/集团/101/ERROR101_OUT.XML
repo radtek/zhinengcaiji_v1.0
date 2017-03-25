@@ -1,0 +1,14 @@
+<rnop_service_output_para>
+	<service_instance>
+		<service_id>ERROR101</service_id>
+		<version>V1</version>
+		<service_name>业务错误信息</service_name>
+		<service_desc>由业务提供者提供给调用者业务调用错误的信息</service_desc>
+		<service_content>
+			<errorresult>
+				<errorcode>错误代码</errorcode>
+				<errorreason>由于XX原因导致文件获取请求被拒绝...</errorreason>
+			</errorresult>
+		</service_content>
+	</service_instance>
+</rnop_service_output_para>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noapjs</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="重庆联通基础数据_WCDMA_%%Y.%%M.%%D.csv.zip" templet="重庆联通基础数据_WCDMA.ftl">
+				<sql>
+				select BTS_NAME,
+       CITY_NAME,
+       CELL_NAME,
+       LAC,
+       CI,
+       SITE_SECTOR_TYPE,
+       BSC_NAME,
+       VENDOR_NAME,
+       ADM_AREA,
+       MSC_NAME,
+       MSCSERVER,
+       GGSN,
+       SGSN,
+       RRU,
+       
+  CASE WHEN SITE_TYPE=1 THEN 
+            '宏基站'
+            WHEN SITE_TYPE=2 THEN 
+            '微蜂窝'
+              WHEN SITE_TYPE=3 THEN 
+            '小基站'
+            ELSE 
+            ''
+       END AS SITE_TYPE,        
+       
+       LONGITUDE,
+       LATITUDE,
+       ANT_HEIGHT,
+       SITE_HEIGHT,
+       DIR,
+       DOWNTILT_ELECTR,
+       DOWNTILT_MACH,
+       ANT_PITCHANGLE,
+       ANT_SHARE,
+       FEEDER_SHARE,
+       FEEDER_TYPE,
+       IS_RRUCELL,
+       
+  CASE WHEN IS_RRUCELL=1 THEN 
+            '是'
+            WHEN IS_RRUCELL=0 THEN 
+            '否'
+            ELSE 
+            ''
+       END AS IS_RRUCELL, 
+         
+       CELL_TRX_POW,
+       RADIOCAPACITY,
+       ANT_TYPE,
+       ANT_VENDOR,
+       
+ CASE WHEN ISMOVEBYELECT=1 THEN 
+            '是'
+            WHEN ISMOVEBYELECT=0 THEN 
+            '否'
+            ELSE 
+            ''
+       END AS ISMOVEBYELECT, 
+              
+       
+       EDT1,
+       NEWCONF,
+       
+ CASE WHEN CELLLEVEL=0 THEN 
+            '宏小区'
+            WHEN CELLLEVEL=1 THEN 
+            '微小区'
+             WHEN CELLLEVEL=2 THEN 
+            '微微小区'
+            ELSE 
+            ''
+       END AS CELLLEVEL, 
+       
+       ENGINEERING_PERIODS,
+            
+       CASE WHEN PROJECT_STATE=0 THEN 
+            '规划'
+            WHEN PROJECT_STATE=1 THEN 
+            '建设'
+             WHEN PROJECT_STATE=2 THEN 
+            '取消'
+             WHEN PROJECT_STATE=3 THEN 
+            '暂缓'
+             WHEN PROJECT_STATE=4 THEN 
+            '正常'
+             WHEN PROJECT_STATE=5 THEN 
+            '告警'
+             WHEN PROJECT_STATE=6 THEN 
+            '短期退服'
+             WHEN PROJECT_STATE=7 THEN 
+            '长期退服'
+            ELSE 
+            ''
+       END AS PROJECT_STATE, 
+       
+       
+       CASE 
+            WHEN CELL_STATE=1 THEN 
+            '现网运行状态'
+             WHEN CELL_STATE=2 THEN 
+            '新增网元工程状态'
+             WHEN CELL_STATE=3 THEN 
+            '搬迁工程状态'
+             WHEN CELL_STATE=4 THEN 
+            '替换工程状态'
+             WHEN CELL_STATE=5 THEN 
+            '维护工程状态'
+             WHEN CELL_STATE=6 THEN 
+            '退服状态'
+              WHEN CELL_STATE=7 THEN 
+            '搬迁退服状态'
+              WHEN CELL_STATE=8 THEN 
+            '替换退服状态'
+              WHEN CELL_STATE=9 THEN 
+            '暂时关闭状态'
+            ELSE 
+            ''
+       END AS CELL_STATE,        
+       
+       NE_CELL_ID,
+       CITY_ID,
+       NE_MSC_ID,
+       NE_BSC_ID,
+       NE_BTS_ID,
+       CITY_AREA,
+       
+        CASE WHEN MR_BOOLEAN=1 THEN 
+            '是'
+            WHEN MR_BOOLEAN=0 THEN 
+            '否'
+            ELSE 
+            ''
+       END AS MR_BOOLEAN, 
+       
+       MGW_NAME,
+       BTS_NAME,
+       GONG_INFO,
+       EXT_OID
+  from NE_CELL_W
+
+					
+					</sql>
+			</mapping>
+	
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">10.0.140.77</property>
+		<property name="port">21</property>
+		<property name="username">KFXT</property>
+		<property name="password">KFXT</property>
+		<property name="path">/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--?????-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>

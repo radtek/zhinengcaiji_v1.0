@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:test10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">test_cnoap</property>
+		<property name="password">test_cnoap</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="${province_en}_PERF_DTCQT_%%Y%%M.csv" templet="电信四期_DT_CQT_KPI指标_LTE.ftl" >
+				<sql>
+						<![CDATA[
+						select '1.42.01b_SP0'  as "版本号", 
+						 "省份",
+				       "地市",
+				       '%%Y-%%M' as "时间",
+				        "运营商类型",
+				       "场景类别",
+				      "3G数据业务覆盖率(%)",
+				       "3G数据业务覆盖率分子",
+				       "3G数据业务覆盖率分母",
+				       "3G数据下行吞吐率平均值(kb)",
+				       "3G数据上行吞吐率平均值(kb)",
+				       "3G数据下行吞吐率优良比(%)",
+				       "3G数据下行吞吐率优良比分子",
+				       "3G数据下行吞吐率优良比分母",
+				       "3G数据上行吞吐率优良比(%)",
+				       "3G数据上行吞吐率优良比分子",
+				       "3G数据上行吞吐率优良比分母",
+				       "3G数据分组业务建立成功率(%)",
+				       "3G数据分组业务建立成功率分子",
+				      "3G数据分组业务建立成功率分母",
+				       "3G数据业务分组业务掉线率(%)",
+				        "3G数据业务分组业务掉线率分子",
+				       "3G数据业务分组业务掉线率分母",
+				       "2G语音业务覆盖率(%)",
+				       "2G语音业务覆盖率分子",
+				       "2G语音业务覆盖率分母",
+				        "2G语音业务接通率(%)",
+				      "2G语音业务接通率分子",
+				       "2G语音业务接通率分母",
+				        "2G语音业务掉话率(%)",
+				       "2G语音业务掉话率分子",
+				       "2G语音业务掉话率分母",
+				       "2G语音业务里程掉话比(km)",
+				       "2G语音业务里程掉话比分子",
+				      "2G语音业务里程掉话比分母",
+				       "2G语音业务MOS值优良比(%)",
+				       "2G语音业务MOS值优良比分子",
+				       "2G语音业务MOS值优良比分母",
+				        "上报时间",
+				       "上报人"
+						
+						 from VRPT_PERF_DTCQT t
+						
+								  
+						]]>
+				</sql>
+			</mapping>
+		
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+	  	<property name="ftpip">192.168.15.43</property>
+		<property name="port">21</property>
+		<property name="username">ftp</property>
+		<property name="password">1</property>
+		<property name="path">/PERF/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

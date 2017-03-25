@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+			<property name="mapping">mapping_4.xml</property>
+			<property name="loop">true</property>
+        </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.0.180:1521:uway</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">cnoap</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+	<to id="1">
+		<resolve dsid="1">
+			<!-- 1X早忙时 -->
+			<mapping name="${province_en}_CDL_${city_en}_1X_%%Y%%M%%D10.csv.gz" templet="话单数据1X忙时后台.ftl">
+				<sql>select '%%Y-%%M-%%D 10:00:00' as curr_data_time,city_id, city_name, showserial, longitude_lb, latitude_lb, longitude_rb, latitude_rb, longitude_center, latitude_center, ne_sys_id_center, iscal, gridstartid, scale, vendor, pnincrease, max_grid_m, max_grid_n, version, sid, enname, order_index, city_sign from cfg_city where city_id=${city_id}</sql>
+				<sql>select latitude,longitude,
+		          sum(nvl(voice_call_num,0)) as voice_call_num,
+		          sum(nvl(data_call_num,0)) as data_call_num,
+		          sum(nvl(sms_call_num,0)) as   sms_call_num,
+		          sum(nvl(voice_drop_num,0)) as voice_drop_num,
+		          sum(nvl(data_drop_num,0)) as data_drop_num,
+		          sum(nvl(sms_drop_num,0)) as sms_drop_num,
+		          sum(nvl(accesspnstravg,0)) as accesspnstravg
+		          
+		          from (select latitude , longitude,
+		          
+		          voice_call_num,
+		          voice_drop_num,
+		          data_call_num,
+		          data_drop_num,
+		          sms_call_num,
+		          sms_drop_num,
+		          accesspnstravg
+
+		          from (select
+		          trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) / 1000,
+		          2.1) as latitude,
+		          trunc(to_number(substr(grid_id, 0, length(grid_id)
+		          - 5)) / 1000,
+		          2.1) as longitude,
+		          t.voice_call_num,
+		          t.voice_drop_num,
+		          t.data_call_num,
+		          t.data_drop_num,
+		          t.sms_call_num,
+		          t.sms_drop_num,
+		          t.accesspnstravg
+		          
+		          from mod_cdl_grid t
+		          where city_id=${city_id} and
+		          start_time = to_date('%%Y-%%M-%%D 10:00:00',
+		          'YYYY-MM-DD HH24:MI:SS')
+		          order by longitude))
+		          group by latitude,longitude</sql>
+		    </mapping>
+		    
+				<!-- 1X晚忙时 -->
+			<mapping name="${province_en}_CDL_${city_en}_1X_%%Y%%M%%D20.csv.gz" templet="话单数据1X忙时后台.ftl">
+				<sql>select '%%Y-%%M-%%D 20:00:00' as curr_data_time,city_id, city_name, showserial, longitude_lb, latitude_lb, longitude_rb, latitude_rb, longitude_center, latitude_center, ne_sys_id_center, iscal, gridstartid, scale, vendor, pnincrease, max_grid_m, max_grid_n, version, sid, enname, order_index, city_sign from cfg_city where city_id=${city_id}</sql>
+				<sql>select latitude,longitude,
+			          sum(nvl(voice_call_num,0)) as voice_call_num,
+			          sum(nvl(data_call_num,0)) as data_call_num,
+			          sum(nvl(sms_call_num,0)) as   sms_call_num,
+			          sum(nvl(voice_drop_num,0)) as voice_drop_num,
+			          sum(nvl(data_drop_num,0)) as data_drop_num,
+			          sum(nvl(sms_drop_num,0)) as sms_drop_num,
+			          sum(nvl(accesspnstravg,0)) as accesspnstravg
+			          
+					from (select latitude,longitude,
+					voice_call_num,
+					voice_drop_num,
+					data_call_num,
+					data_drop_num,
+					sms_call_num,
+					sms_drop_num,
+					accesspnstravg
+					
+					from (select
+					trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) /
+					1000,
+					2.1) as latitude,
+					trunc(to_number(substr(grid_id, 0, length(grid_id)
+					- 5)) / 1000,
+					2.1) as longitude,
+					t.voice_call_num,
+					t.voice_drop_num,
+					t.data_call_num,
+					t.data_drop_num,
+					t.sms_call_num,
+					t.sms_drop_num,
+					t.accesspnstravg
+					
+					from mod_cdl_grid t
+					where city_id=${city_id} and
+					start_time = to_date('%%Y-%%M-%%D 20:00:00',
+					'YYYY-MM-DD HH24:MI:SS')
+					order by longitude))
+					 group by latitude,longitude</sql>
+			</mapping>
+			
+			<!-- DO早忙时 -->
+			<mapping name="${province_en}_CDL_${city_en}_DO_%%Y%%M%%D10.csv.gz" templet="话单数据DO忙时后台.ftl">
+				<sql>select '%%Y-%%M-%%D 10:00:00' as curr_data_time,city_id, city_name, showserial, longitude_lb, latitude_lb, longitude_rb, latitude_rb, longitude_center, latitude_center, ne_sys_id_center, iscal, gridstartid, scale, vendor, pnincrease, max_grid_m, max_grid_n, version, sid, enname, order_index, city_sign from cfg_city where city_id=${city_id}</sql>
+				<sql> select latitude,longitude,
+					sum(nvl(dodata_call_num,0)) as dodata_call_num
+					from (select
+					latitude,longitude,
+					dodata_call_num
+					from (select
+					trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) /
+					1000,
+					2.1) as latitude,
+					trunc(to_number(substr(grid_id, 0, length(grid_id)
+					- 5)) / 1000,
+					2.1) as longitude,
+					t.dodata_call_num
+					from
+					mod_cdl_do_grid t
+					where city_id=${city_id} and start_time =
+					to_date('%%Y-%%M-%%D 10:00:00',
+					'YYYY-MM-DD HH24:MI:SS')
+					order by
+					longitude))
+					 group by latitude,longitude</sql>
+			</mapping>
+
+			<!-- DO晚忙时 -->
+			<mapping name="${province_en}_CDL_${city_en}_DO_%%Y%%M%%D20.csv.gz" templet="话单数据DO忙时后台.ftl">
+				<sql>select '%%Y-%%M-%%D 20:00:00' as curr_data_time,city_id, city_name, showserial, longitude_lb, latitude_lb, longitude_rb, latitude_rb, longitude_center, latitude_center, ne_sys_id_center, iscal, gridstartid, scale, vendor, pnincrease, max_grid_m, max_grid_n, version, sid, enname, order_index, city_sign from cfg_city where city_id=${city_id}</sql>
+				<sql> select latitude,longitude,
+					sum(nvl(dodata_call_num,0)) as dodata_call_num
+					from (select
+					latitude,longitude,
+					dodata_call_num
+					from (select
+					trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) /
+					1000,
+					2.1) as latitude,
+					trunc(to_number(substr(grid_id, 0, length(grid_id)
+					- 5)) / 1000,
+					2.1) as longitude,
+					t.dodata_call_num
+					from
+					mod_cdl_do_grid t
+					where city_id=${city_id} and start_time =
+					to_date('%%Y-%%M-%%D 20:00:00',
+					'YYYY-MM-DD HH24:MI:SS')
+					order by
+					longitude))
+					 group by latitude,longitude</sql>
+			</mapping>
+
+
+			<!-- VIP1X早忙时 -->
+			<mapping name="${province_en}_VIPCDL_${city_en}_1X_%%Y%%M%%D10.csv.gz" templet="话单数据VIP1X忙时后台.ftl">
+				<sql>select '%%Y-%%M-%%D 10:00:00' as curr_data_time,city_id, city_name, showserial, longitude_lb, latitude_lb, longitude_rb, latitude_rb, longitude_center, latitude_center, ne_sys_id_center, iscal, gridstartid, scale, vendor, pnincrease, max_grid_m, max_grid_n, version, sid, enname, order_index, city_sign from cfg_city where city_id=${city_id}</sql>
+				<sql>select latitude,longitude,
+					sum(nvl(voice_call_num,0)) as voice_call_num,
+					sum(nvl(data_call_num,0)) as data_call_num,
+					sum(nvl(sms_call_num,0)) as sms_call_num,
+					sum(nvl(voice_drop_num,0)) as voice_drop_num,
+					sum(nvl(data_drop_num,0)) as data_drop_num,
+					sum(nvl(sms_drop_num,0)) as sms_drop_num,
+					sum(nvl(accesspnstravg,0)) as accesspnstravg
+
+					from (select
+					latitude,longitude,
+					voice_call_num,
+					voice_drop_num,
+					data_call_num,
+					data_drop_num,
+					sms_call_num,
+					sms_drop_num,
+					accesspnstravg
+					from (select
+					trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) / 1000,
+					2.1) as latitude,
+					trunc(to_number(substr(grid_id, 0, length(grid_id)
+					- 5)) / 1000,
+					2.1) as longitude,
+					t.voice_call_num,
+					t.voice_drop_num,
+					t.data_call_num,
+					t.data_drop_num,
+					t.sms_call_num,
+					t.sms_drop_num,
+					t.accesspnstravg
+					from mod_cdl_grid_vip t
+					where city_id=${city_id} and
+					start_time = to_date('%%Y-%%M-%%D 10:00:00',
+					'YYYY-MM-DD HH24:MI:SS')
+					order by longitude))
+					 group by latitude,longitude</sql>
+			</mapping>
+
+
+			<!-- VIP1X晚忙时 -->
+			<mapping name="${province_en}_VIPCDL_${city_en}_1X_%%Y%%M%%D20.csv.gz" templet="话单数据VIP1X忙时后台.ftl">
+				<sql>select '%%Y-%%M-%%D 20:00:00' as curr_data_time,city_id, city_name, showserial, longitude_lb, latitude_lb, longitude_rb, latitude_rb, longitude_center, latitude_center, ne_sys_id_center, iscal, gridstartid, scale, vendor, pnincrease, max_grid_m, max_grid_n, version, sid, enname, order_index, city_sign from cfg_city where city_id=${city_id}</sql>
+				<sql>
+					select latitude,longitude,
+					sum(nvl(voice_call_num,0)) as voice_call_num,
+					sum(nvl(data_call_num,0)) as data_call_num,
+					sum(nvl(sms_call_num,0)) as sms_call_num,
+					sum(nvl(voice_drop_num,0)) as voice_drop_num,
+					sum(nvl(data_drop_num,0)) as data_drop_num,
+					sum(nvl(sms_drop_num,0)) as sms_drop_num,
+					sum(nvl(accesspnstravg,0)) as accesspnstravg
+
+					from (select
+					latitude,longitude,
+					voice_call_num,
+					voice_drop_num,
+					data_call_num,
+					data_drop_num,
+					sms_call_num,
+					sms_drop_num,
+					accesspnstravg
+					from (select
+					trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) / 1000,
+					2.1) as latitude,
+					trunc(to_number(substr(grid_id, 0, length(grid_id)
+					- 5)) / 1000,
+					2.1) as longitude,
+					t.voice_call_num,
+					t.voice_drop_num,
+					t.data_call_num,
+					t.data_drop_num,
+					t.sms_call_num,
+					t.sms_drop_num,
+					t.accesspnstravg
+					from mod_cdl_grid_vip t
+					where city_id=${city_id} and
+					start_time = to_date('%%Y-%%M-%%D 20:00:00',
+					'YYYY-MM-DD HH24:MI:SS')
+					order by longitude))
+					 group by latitude,longitude</sql>
+			</mapping>
+			
+			<!-- VIPDO早忙时 -->
+			<mapping name="${province_en}_VIPCDL_${city_en}_DO_%%Y%%M%%D10.csv.gz" templet="话单数据VIPDO忙时后台.ftl">
+				<sql>select '%%Y-%%M-%%D 10:00:00' as curr_data_time,city_id, city_name, showserial, longitude_lb, latitude_lb, longitude_rb, latitude_rb, longitude_center, latitude_center, ne_sys_id_center, iscal, gridstartid, scale, vendor, pnincrease, max_grid_m, max_grid_n, version, sid, enname, order_index, city_sign from cfg_city where city_id=${city_id}</sql>
+				<sql> select latitude,longitude,
+					sum(nvl(dodata_call_num,0)) as dodata_call_num
+					from
+					(select latitude,longitude,
+					dodata_call_num
+					from
+					(select trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) /
+					1000,
+					2.1) as latitude,
+					trunc(to_number(substr(grid_id, 0,
+					length(grid_id) - 5)) / 1000,
+					2.1) as longitude,
+					t.dodata_call_num
+					from mod_cdl_grid_do_vip t
+					where city_id=${city_id} and start_time =
+					to_date('%%Y-%%M-%%D 10:00:00',
+					'YYYY-MM-DD HH24:MI:SS')
+					order by
+					longitude))
+					 group by latitude,longitude</sql>
+			</mapping>
+
+			<!--VIPDO晚忙时 -->
+			<mapping name="${province_en}_VIPCDL_${city_en}_DO_%%Y%%M%%D20.csv.gz" templet="话单数据VIPDO忙时后台.ftl">
+				<sql>select '%%Y-%%M-%%D 20:00:00' as curr_data_time,city_id, city_name, showserial, longitude_lb, latitude_lb, longitude_rb, latitude_rb, longitude_center, latitude_center, ne_sys_id_center, iscal, gridstartid, scale, vendor, pnincrease, max_grid_m, max_grid_n, version, sid, enname, order_index, city_sign from cfg_city where city_id=${city_id}</sql>
+				<sql>select latitude,longitude,
+					sum(nvl(dodata_call_num,0)) as dodata_call_num
+					from
+					(select latitude,longitude,
+					dodata_call_num
+					from
+					(select trunc(to_number(substr(GRID_ID, length(GRID_ID) - 4, 5)) /
+					1000,
+					2.1) as latitude,
+					trunc(to_number(substr(grid_id, 0,
+					length(grid_id) - 5)) / 1000,
+					2.1) as longitude,
+					t.dodata_call_num
+					from mod_cdl_grid_do_vip t
+					where city_id=${city_id} and start_time =
+					to_date('%%Y-%%M-%%D 20:00:00',
+					'YYYY-MM-DD HH24:MI:SS')
+					order by
+					longitude))
+					 group by latitude,longitude</sql>
+			</mapping>
+		</resolve>
+	</to>
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.0.113</property>
+		<property name="port">21</property>
+		<property name="username">litp</property>
+		<property name="password">litp</property>
+		<property name="path">/erc/aaa/bbb/</property><!--可以配置通配符 -->
+	</ti>
+	<ti id="2" after="1">
+		<property name="ftpip">192.168.0.132</property>
+		<property name="port">21</property>
+		<property name="username">test</property>
+		<property name="password">test</property>
+		<property name="path">/erc/</property><!--可以配置通配符 -->
+		<property name="encode">utf-8</property>
+	</ti>
+
+	<t>
+		<action id="1" toid="1" tiid="2" strategyid="1" /><!--ftp文件方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templets>
+	<templet id="0" file="/WORKMODEL/*_VERIFICATIONFILL_%%Y%%M%%D%%H.csv">
+		<ds id="0">
+			<meta>
+				<head splitSign=","/>
+			</meta>
+			<fields splitSign=",">
+			<field name="省份" index="0"	 />
+<field name="核查单号" index="1"	 />
+<field name="核查结果下发时间" index="2"	 />
+<field name="下发人" index="3"	 />
+<field name="下发人邮箱" index="4"	 />
+<field name="下发人电话" index="5"	 />
+<field name="数据类型" index="6"	 />
+<field name="数据时间" index="7"	 />
+<field name="业务类型域" index="8"	 />
+<field name="数据级别" index="9"	 />
+<field name="要求统计周期" index="10"	 />
+<field name="要求上报文件" index="11"	 />
+<field name="上报文件问题" index="12"	 />
+<field name="问题描述" index="13"	 />
+<field name="是否要求补报/重报" index="14"	 />
+<field name="是否要求解释原因" index="15"	 />
+<field name="要求完成时限" index="16"	 />
+
+			</fields>
+		</ds>
+	</templet>
+	
+		<templet id="0" file="/WORKMODEL/BJ_VERIFICATIONDETAIL_%%Y%%M%%D%%H.cvs">
+		<ds id="0">
+			<meta>
+				<head splitSign=","/>
+			</meta>
+			<fields splitSign=",">
+
+<field name="省份" 	index="0"	 />
+<field name="核查单号" 	index="1"	 />
+<field name="核查结果下发时间" 	index="2"	 />
+<field name="下发人" 	index="3"	 />
+<field name="下发人邮箱" 	index="4"	 />
+<field name="下发人电话" 	index="5"	 />
+<field name="数据类型" 	index="6"	 />
+<field name="数据级别" 	index="7"	 />
+<field name="时间粒度" 	index="8"	 />
+<field name="数据时间" 	index="9"	 />
+<field name="业务类型域" 	index="10"	 />
+<field name="要求上报文件" 	index="11"	 />
+<field name="问题对象中文名称" 	index="12"	 />
+<field name="字段名称" 	index="13"	 />
+<field name="字段问题" 	index="14"	 />
+<field name="是否要求解释" 	index="15"	 />
+
+
+
+			</fields>
+		</ds>
+	</templet>
+	
+	
+		<templet id="0" file="/WORKMODEL/BJ_VERIFICATIONEXPLAINEXPLAIN_REJECT_2013060623.cvs">
+		<ds id="0">
+			<meta>
+				<head splitSign=","/>
+			</meta>
+			<fields splitSign=",">
+<field name="PRO_NAME" 	index="0"	 />
+<field name="VER_NO" 	index="1"	 />
+<field name="VER_DATE" 	index="2"	 />
+<field name="VER_REJECTOPERATER" 	index="3"	 />
+<field name="VER_REJECTDESCRIPTION" 	index="4"	 />
+
+			</fields>
+		</ds>
+	</templet>
+
+</templets>

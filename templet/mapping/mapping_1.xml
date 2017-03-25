@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mapping>
+    <province province_en="GD" province_cn="广东"  province_code="020">
+        <city city_id="20">
+					<property name="city_cn">广州</property>
+					<property name="city_en">GZ</property>										
+       </city>
+       <city city_id="757">
+					<property name="city_cn">佛山</property>
+					<property name="city_en">FS</property>										
+       </city>
+       <city city_id="760">
+					<property name="city_cn">中山</property>
+					<property name="city_en">ZS</property>										
+       </city>
+       <city city_id="769">
+					<property name="city_cn">东莞</property>
+					<property name="city_en">DG</property>										
+       </city>
+        <city city_id="23">
+					<property name="city_cn">cq</property>
+					<property name="city_en">cq</property>										
+       </city>
+    </province>
+</mapping>

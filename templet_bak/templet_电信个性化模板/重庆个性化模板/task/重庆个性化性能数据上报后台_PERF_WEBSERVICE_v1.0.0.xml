@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 500:webservice 400:others -->
+		<ds id="1" type="500">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ORA10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">cnoap_s</property>
+		<property name="password">cnoap_s</property>
+	</ds>
+
+	<!-- to 与  resolve 是一对多关系, package为可选标签 to_char(START_TIME,'YYYY-MM-DD HH24:MI:SS')  -->
+
+	 <!-- NBI_PERF_MSC_1X, NBI_PERF_MSC_DO, NBI_PERF_CITY_1X,NBI_PERF_CITY_DO, NBI_PERF_SCENE_1X, NBI_PERF_SCENE_DO -->
+	<to id="1">
+		<resolve dsid="1">
+	
+		
+			<mapping name="${province_en}_PERF_SECTOR_1X_%%Y%%M%%D.csv" templet="重庆个性化性能数据上报后台_SINGLE_HEADER_CQ_PERF_SECTOR_1X_PERF_WEBSERVICE.ftl">
+				<ws> 
+				   <property name="url">http://192.168.15.225/cnoap_nbi/KpiSQLToolService.asmx</property>
+				   <property name="param_type">CQ_PERF_SECTOR_1X</property>
+				   <property name="table_key">时间,时段,厂家,BSC号,基站号,厂商侧 CELLID,扇区号,扇区名称</property>
+				   <property name="single_table_header">COL1,COL2,COL3,COL4,COL5,COL6,COL7,COL8,COL9,COL10,COL11,COL12,COL13,COL14,COL15,COL16,COL17</property>		 				   
+				</ws> 
+			</mapping> 
+			
+			<mapping name="${province_en}_PERF_SECTOR_DO_%%Y%%M%%D.csv" templet="重庆个性化性能数据上报后台_SINGLE_HEADER_CQ_PERF_SECTOR_DO_PERF_WEBSERVICE.ftl">
+				<ws> 
+				   <property name="url">http://192.168.15.225/cnoap_nbi/KpiSQLToolService.asmx</property>
+				   <property name="param_type">CQ_PERF_SECTOR_DO</property>
+				   <property name="table_key">时间,时段,厂家,BSC号,基站号,厂商侧 CELLID,扇区号,扇区名称</property>
+				   <property name="single_table_header">COL1,COL2,COL3,COL4,COL5,COL6,COL7,COL8,COL9,COL10,COL11,COL12,COL13,COL14,COL15,COL16,COL17</property> 		 				   
+				</ws> 
+			</mapping>
+								
+		
+		</resolve>
+	</to>
+	
+
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.94</property>
+		<property name="port">21</property>
+		<property name="username">admin</property>
+		<property name="password">admin</property>
+		<property name="path">/PERF/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--数据库方式-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

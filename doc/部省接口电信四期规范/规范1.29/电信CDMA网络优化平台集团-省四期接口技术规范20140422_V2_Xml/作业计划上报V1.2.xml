@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<work_plan_list>
+  <work_plan>
+    <wp_instance_hq_code>P1_01_YYYYMMDD_XXXX</wp_instance_hq_code>
+    <wp_instance_name>2013年日常优化</wp_instance_name>
+    <wp_type_id>0</wp_type_id>
+    <province_name>浙江</province_name>
+    <city_name>杭州</city_name>
+    <creator>张三</creator>
+    <creator_role>网优平台主管</creator_role>
+    <wp_state>2</wp_state>
+    <start_time>41275</start_time>
+    <end_time>41639</end_time>
+    <work_order_num>100</work_order_num>
+    <antenna_feeder_num>224</antenna_feeder_num>
+    <para_num>322</para_num>
+    <participant_num>10</participant_num>
+    <execute_percent>10.32%</execute_percent>
+    <execute_stage>准备阶段</execute_stage>
+    <template_attachment_list>A文件|B文件</template_attachment_list>
+    <other_attachment_list>A文件|B文件</other_attachment_list>
+    <ct_work_order_list>
+      <ct_work_order>
+        <work_order_state>0</work_order_state>
+        <work_order_state_num>12</work_order_state_num>
+      </ct_work_order>     
+    </ct_work_order_list>    
+    <work_content_list>
+        <work_content>
+            <ct_instance_code>P1_01_YYYYMMDD_XXXX_001</ct_instance_code>
+            <ct_instance_name>语音掉话TOPN小区处理</ct_instance_name>
+            <mon_ne_range>0</mon_ne_range>
+            <ne_level>0</ne_level>
+            <plan_start_time>41275</plan_start_time>
+            <plan_end_time>41639</plan_end_time>
+            <send_type>0</send_type>
+            <end_type>0</end_type>
+            <rule_type>110_1_1</rule_type>
+            <filter_condition></filter_condition>
+            <resume_condition></resume_condition>
+            <filter_condition_desc>最近2天内有1天连续小时:00点到23点有3小时满足条件：C6.4业务信道掉话率(%) 大于等于.1</filter_condition_desc>
+            <resume_condition_desc>最近2天内有1天连续小时:00点到23点有3小时满足条件：C6.4业务信道掉话率(%) 小于0.1</resume_condition_desc>
+            <work_order_num>100</work_order_num>
+            <antenna_feeder_num>224</antenna_feeder_num>
+            <para_num>322</para_num>
+            <participant_num>10</participant_num>
+            <execute_percent>10.32%</execute_percent>
+            <ct_work_order_list>
+                <ct_work_order>
+                  <work_order_state>0</work_order_state>
+                  <work_order_state_num>12</work_order_state_num>
+                </ct_work_order>     
+            </ct_work_order_list>            
+        </work_content>
+    </work_content_list>
+  </work_plan>
+</work_plan_list>

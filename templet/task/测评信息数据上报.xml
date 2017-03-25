@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+        <include>
+			<property name="mapping">mapping.xml</property>
+			<property name="loop">false</property>
+        </include>
+
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.0.180:1521:cnoap</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">cnoap</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+	<to id="1">
+		<resolve dsid="1">
+	       
+				<!-- 测评信息  CITYHP	 -->
+				<mapping name="${province_en}_WORKTEST_CITYHP_%%Y%%M.csv" templet="其他数据上报配置.ftl">
+				<sql>select '%%Y-%%M-%%D' as "时间戳",
+			       HOT.SERIAL_ID as "序号",
+			       HOT.CITY_NAME as "辖区城市",
+			       '${province_cn}' as "辖区省份",
+			       HOT.AREA_NAME as "辖区区/县",
+			       HOT.TOWN_NAME as "辖区镇区",
+			       HOT.BUILDNAME as "信息点场所或建筑物名称",
+			       HOT.ADDRESS as "信息点详细地址",
+			       HOT.LONGITUDE as "信息点GPS经度",
+			       HOT.LATITUDE as "信息点GPS纬度",
+			       HOT.PROPERTYONETYPE as "信息类型所属1级类型",
+			       HOT.PROPERTYTWOTYPE as "信息类型所属2级类型",
+			       HOT.PROPERTYTHREETYPE as "信息类型所属3级类型",
+			       HOT.ONEXGRADE as "1x覆盖等级",
+			       HOT.DOGRADE as "DO覆盖等级",
+			       HOT.MOVEGSMGRADE as "移动GSM覆盖等级",
+			       HOT.MOVETDGRADE as "移动TD覆盖等级",
+			       HOT.LINKGSMGRADE as "联通GSM覆盖等级",
+			       HOT.LINKWCDMAGRADE as "联通WCDMA覆盖等级",
+			       HOT.CGOODPNONE as "C网最强信号PN1",
+			       HOT.CGOODPNTWO as "C网最强信号PN2",
+			       HOT.INDOORDISTRIBUT as "室内分布方式",
+			       HOT.CSIGNAL as "C网信号未覆盖的位置",
+			       HOT.VOICEGRADE as "语音业务重要级",
+			       HOT.DATAGRADE as "数据业务重要级",
+			       '' as "预留字段1",
+			       '' as "预留字段2",
+			       '' as "预留字段3",
+			       '' as "预留字段4",
+			       '' as "预留字段5"
+			  from ne_uway_hotinfor hot  
+
+				</sql>
+				
+			</mapping>
+			
+			<!-- 测评信息 CITYROAD -->
+				<mapping name="${province_en}_WORKTEST_CITYROAD_%%Y%%M.csv" templet="其他数据上报配置.ftl">
+				<sql>select '%%Y-%%M-%%D' as "时间戳",
+			       ROAD.SERIAL_ID as "序号",
+			       ROAD.CITY_NAME as "辖区城市",
+			       '${province_cn}' as "辖区省份",
+			       ROAD.AREA_NAME as "辖区区/县",
+			       ROAD.TOWN_NAME as "辖区镇区",
+			       ROAD.ROADTYPE as "道路类型",
+			       ROAD.ROADNAME as "道路名称",
+			       ROAD.STARNAME as "道路起点名称",
+			       ROAD.STARLONGITUDE as "道路起点GPS经度",
+			       ROAD.STARLATITUDE as "道路起点GPS纬度",
+			       ROAD.ENDNAME as "道路终点名称",
+			       ROAD.ENDLONGITUDE as "道路终点GPS经度",
+			       ROAD.ENDLATITUDE as "道路终点GPS纬度",
+			       ROAD.ROADLONG as "道路长度或公里数",
+			       ROAD.ONEXGRADE as "1x覆盖等级",
+			       ROAD.DOGRADE as "DO覆盖等级",
+			       '' as "预留字段1",
+			       '' as "预留字段2",
+			       '' as "预留字段3",
+			       '' as "预留字段4",
+			       '' as "预留字段5"
+			  from ne_uway_roadinfor road 
+				</sql>
+			</mapping>
+			
+			
+				<!--测评信息 VILLAGE -->
+				<mapping name="${province_en}_WORKTEST_VILLAGE_%%Y%%M.csv" templet="其他数据上报配置.ftl">
+				<sql>select '%%Y-%%M-%%D' as "时间戳",
+			       TOWN.SERIAL_ID as "序号",
+			       TOWN.CITY_NAME as "辖区城市",
+			       '${province_cn}' as "辖区省份",
+			       TOWN.AREA_NAME as "辖区区/县",
+			       TOWN.TOWN_NAME as "辖区镇区",
+			       TOWN.VILLAGENAME as "村名称",
+			       TOWN.VILLAGLONGITUDE as "村中心GPS经度",
+			       TOWN.VILLAGLATITUDE as "村中心GPS纬度",
+			       TOWN.OUTROADONE as "出行道路1",
+			       TOWN.OUTROADTWO as "出行道路2",
+			       TOWN.OUTROADTHREE as "出行道路3",
+			       TOWN.ONEXGRADE as "1x覆盖等级",
+			       TOWN.DOGRADE as "DO覆盖等级",
+			       '' as "预留字段1",
+			       '' as "预留字段2",
+			       '' as "预留字段3",
+			       '' as "预留字段4",
+			       '' as "预留字段5"
+			  from ne_uway_towninfor town  
+               </sql>
+			</mapping>
+	    
+	    
+	    </resolve>
+	
+	</to>
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+
+	<ti id="2" after="1">
+		<property name="ftpip">10.252.0.204</property>
+		<property name="port">21</property>
+		<property name="username">sxftp</property>
+		<property name="password">fzs%Jxop</property>
+		<property name="path">/WORKTEST/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+	</ti>
+
+	<t>
+		<action id="1" toid="1" tiid="2" strategyid="1" /><!--ftp文件方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

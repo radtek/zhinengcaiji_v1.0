@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="GB2312"?>
+<deployment xmlns="http://xml.apache.org/axis/wsdd/"
+	xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+	<globalConfiguration>
+		<parameter name="adminPassword" value="jsadm1n" />
+		<parameter name="sendXsiTypes" value="true" />
+		<parameter name="sendMultiRefs" value="true" />
+		<parameter name="sendXMLDeclaration" value="true" />
+		<parameter name="enableNamespacePrefixOptimization" value="true" />
+		<parameter name="sendXMLDeclaration" value="true" />
+		<parameter name="axis.sendMinimizedElements" value="true" />
+		<parameter name="attachments.implementation"
+			value="org.apache.axis.attachments.AttachmentsImpl" />
+		<requestFlow>
+			<handler type="java:org.apache.axis.handlers.JWSHandler">
+				<parameter name="scope" value="session" />
+			</handler>
+			<handler type="java:org.apache.axis.handlers.JWSHandler">
+				<parameter name="scope" value="request" />
+				<parameter name="extension" value=".jwr" />
+			</handler>
+		</requestFlow>
+	</globalConfiguration>
+	<handler name="Authenticate"
+		type="java:org.apache.axis.handlers.SimpleAuthenticationHandler" />
+	<handler name="LocalResponder"
+		type="java:org.apache.axis.transport.local.LocalResponder" />
+		
+		<handler type="java:cn.uway.webservice.dt.DTHandle" name="DTHandle"/>  
+		
+	<handler name="URLMapper" type="java:org.apache.axis.handlers.http.URLMapper" />
+	<transport name="http">
+		<requestFlow>
+			<handler type="URLMapper" />
+			<handler type="java:org.apache.axis.handlers.http.HTTPAuthHandler" />
+		</requestFlow>
+		<parameter name="qs:list"
+			value="org.apache.axis.transport.http.QSListHandler" />
+		<parameter name="qs:wsdl"
+			value="org.apache.axis.transport.http.QSWSDLHandler" />
+		<parameter name="qs.list"
+			value="org.apache.axis.transport.http.QSListHandler" />
+		<parameter name="qs.method"
+			value="org.apache.axis.transport.http.QSMethodHandler" />
+		<parameter name="qs:method"
+			value="org.apache.axis.transport.http.QSMethodHandler" />
+		<parameter name="qs.wsdl"
+			value="org.apache.axis.transport.http.QSWSDLHandler" />
+	</transport>
+
+	<transport name="local">
+		<responseFlow>
+			<handler type="LocalResponder" />
+		</responseFlow>
+	</transport>
+
+	<service name="NetSheetChangeServiceImpl" provider="java:RPC"
+		style="wrapped" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://netOptimize.local.webservice" />
+		<parameter name="wsdlServiceElement" value="NetSheetChangeServiceImplService" />
+		<parameter name="schemaQualified" value="http://netOptimize.local.webservice" />
+		<parameter name="wsdlServicePort" value="NetSheetChangeServiceImpl" />
+		<parameter name="className"
+			value="cn.uway.nbi.dxsheet3.webServices.impl.NetSheetChangeServiceImpl" />
+		<parameter name="wsdlPortType" value="NetSheetChangeServiceImpl" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation xmlns:operNS="http://netOptimize.local.webservice"
+			xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+			name="statusChange" qname="operNS:statusChange" returnQName="retNS:statusChangeReturn"
+			returnType="rtns:string" soapAction="">
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+				xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:statusPara"
+				type="tns:string" />
+		</operation>
+		
+		<parameter name="allowedMethods" value="statusChange" />
+
+	</service>
+
+
+	<service name="NetSheetManualImpl" provider="java:RPC" style="wrapped"
+		use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://netOptimize.local.webservice" />
+		<parameter name="wsdlServiceElement" value="NetSheetManualImplService" />
+		<parameter name="schemaQualified" value="http://netOptimize.local.webservice" />
+		<parameter name="wsdlServicePort" value="NetSheetManualImpl" />
+		<parameter name="className"
+			value="cn.uway.nbi.dxsheet3.webServices.impl.NetSheetManualImpl" />
+		<parameter name="wsdlPortType" value="NetSheetManualImpl" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation xmlns:operNS="http://netOptimize.local.webservice"
+			xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+			name="manualControlOrder" qname="operNS:manualControlOrder"
+			returnQName="retNS:manualControlOrderReturn" returnType="rtns:string"
+			soapAction="">
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+				xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:orderid"
+				type="tns:string" />
+		</operation>
+		<parameter name="allowedMethods" value="manualControlOrder noticOrder checkOrder" />
+
+	</service>
+	
+	
+	<service name="BSAServiceImpl" provider="java:RPC" style="wrapped"
+		use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://netOptimize.local.webservice" />
+		<parameter name="wsdlServiceElement" value="BSAServiceImplService" />
+		<parameter name="schemaQualified" value="http://netOptimize.local.webservice" />
+		<parameter name="wsdlServicePort" value="BSAServiceImpl" />
+		<parameter name="className"
+			value="cn.uway.webservice.bsa.impl.BSAServiceImpl" />
+		<parameter name="wsdlPortType" value="BSAServiceImpl" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation xmlns:operNS="http://netOptimize.local.webservice"
+			xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+			name="bsaCommandInterface" qname="operNS:bsaCommandInterface"
+			returnQName="retNS:bsaCommandInterfaceReturn" returnType="rtns:int"
+			soapAction="">
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+				xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:city_id"
+				type="tns:string" />
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:type"
+			type="tns:string" />
+		</operation>
+		
+		<operation xmlns:operNS="http://netOptimize.local.webservice"
+			xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+			name="deductIndicator" qname="operNS:deductIndicator"
+			returnQName="retNS:deductIndicatorReturn" returnType="rtns:int"
+			soapAction="">
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+				xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:sid_nid_extidList"
+				type="tns:string" />
+		</operation>
+		
+		<operation xmlns:operNS="http://netOptimize.local.webservice"
+			xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+			name="fullDeductIndicator" qname="operNS:fullDeductIndicator"
+			returnQName="retNS:fullDeductIndicatorReturn" returnType="rtns:int"
+			soapAction="">
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+				xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:sid_nid_extidList"
+				type="tns:string" />
+		</operation>
+		<parameter name="allowedMethods" value="*" />
+
+	</service>
+	
+	<service name="DTService" provider="java:RPC" style="wrapped" 
+		use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://netOptimize.local.webservice" />
+		<parameter name="wsdlServiceElement" value="DTService" />
+		<parameter name="schemaQualified" value="http://netOptimize.local.webservice" />
+		<parameter name="wsdlServicePort" value="DTServiceImpl" />
+		<parameter name="className"
+			value="cn.uway.webservice.dt.impl.DTServiceImpl" />
+		
+		<parameter name="wsdlPortType" value="DTServiceImpl" />
+		<parameter name="scope" value="session"/>      
+		
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation xmlns:operNS="http://netOptimize.local.webservice"
+			xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+			name="getBtsInfoXml" qname="operNS:getBtsInfoXml"
+			returnQName="retNS:getBtsInfoXml" returnType="rtns:string"
+			soapAction="">
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+				xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:btsid"
+				type="tns:string" />
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:type"
+			type="tns:string" />
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:userName"
+			type="tns:string" />
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:password"
+			type="tns:string" />
+		</operation>
+		<operation xmlns:operNS="http://netOptimize.local.webservice"
+			xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+			name="getBtsJSON" qname="operNS:getBtsJSON"
+			returnQName="retNS:getBtsJSON" returnType="rtns:string"
+			soapAction="">
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:type"
+			type="tns:string" />
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:userName"
+			type="tns:string" />
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:password"
+			type="tns:string" />
+		</operation>
+		<operation xmlns:operNS="http://netOptimize.local.webservice"
+			xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+			name="getBtsCoordinateXML" qname="operNS:getBtsCoordinateXML"
+			returnQName="retNS:getBtsCoordinateXML" returnType="rtns:string"
+			soapAction="">
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:type"
+			type="tns:string" />
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:userName"
+			type="tns:string" />
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:password"
+			type="tns:string" />
+		</operation>
+		<operation xmlns:operNS="http://netOptimize.local.webservice"
+			xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+			name="getBtsDetailInfoXML" qname="operNS:getBtsDetailInfoXML"
+			returnQName="retNS:getBtsDetailInfoXML" returnType="rtns:string"
+			soapAction="">
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:type"
+			type="tns:string" />
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:id"
+			type="tns:string" />
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:userName"
+			type="tns:string" />
+			<parameter xmlns:pns="http://netOptimize.local.webservice"
+			xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:password"
+			type="tns:string" />
+		</operation>
+		
+		   <parameter name="allowedMethods" value="*" />
+
+    </service>
+		
+		
+    <service name="EMOSWebService" provider="java:RPC" style="wrapped"
+        use="literal">
+        <parameter name="wsdlTargetNamespace" value="http://netOptimize.local.webservice" />
+        <parameter name="wsdlServiceElement" value="EMOSWebService" />
+        <parameter name="schemaQualified" value="http://netOptimize.local.webservice" />
+        <parameter name="wsdlServicePort" value="EMOSWebServiceImpl" />
+        <parameter name="className"
+            value="cn.uway.webservice.managecontrol.impl.EMOSWebServiceImpl" />
+        <parameter name="wsdlPortType" value="EMOSWebServiceImpl" />
+        <parameter name="typeMappingVersion" value="1.2" />
+        <operation xmlns:operNS="http://netOptimize.local.webservice"
+            xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+            name="EMOSQuery" qname="operNS:EMOSQuery"
+            returnQName="retNS:EMOSQueryReturn" returnType="rtns:string"
+            soapAction="">
+            <parameter xmlns:pns="http://netOptimize.local.webservice"
+                xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:BTSName"
+                type="tns:string" />
+            <parameter xmlns:pns="http://netOptimize.local.webservice"
+            xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:type"
+            type="tns:int" />
+        </operation>
+        
+        <operation xmlns:operNS="http://netOptimize.local.webservice"
+            xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+            name="EMOSAsyncQuery" qname="operNS:EMOSAsyncQuery"
+            returnQName="retNS:EMOSAsyncQueryReturn" returnType="rtns:int"
+            soapAction="">
+            <parameter xmlns:pns="http://netOptimize.local.webservice"
+                xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:BTSName"
+                type="tns:string" />
+            <parameter xmlns:pns="http://netOptimize.local.webservice"
+            xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:type"
+            type="tns:int" />
+        </operation>
+        
+        <parameter name="allowedMethods" value="*" />
+
+    </service>
+    
+    
+     <service name="UwayNoapService" provider="java:RPC" style="wrapped"
+        use="literal">
+        <parameter name="wsdlTargetNamespace" value="http://netOptimize.local.webservice" />
+        <parameter name="wsdlServiceElement" value="UwayNoapService" />
+        <parameter name="schemaQualified" value="http://netOptimize.local.webservice" />
+        <parameter name="wsdlServicePort" value="UwayNoapServiceImpl" />
+        <parameter name="className"
+            value="cn.uway.webservice.managecontrol.impl.UwayNoapServiceImpl" />
+        <parameter name="wsdlPortType" value="UwayNoapServiceImpl" />
+        <parameter name="typeMappingVersion" value="1.2" />
+        
+        <operation xmlns:operNS="http://netOptimize.local.webservice"
+            xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+            name="UwayKpiQueryAsync" qname="operNS:UwayKpiQueryAsync"
+            returnQName="retNS:UwayKpiQueryAsyncReturn" returnType="rtns:int"
+            soapAction="">
+            <parameter xmlns:pns="http://netOptimize.local.webservice"
+                xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:dataTime"
+                type="tns:string" />
+        </operation>
+        
+        <parameter name="allowedMethods" value="*" />
+
+    </service>
+    
+    <service name="DcsWebService" provider="java:RPC" style="wrapped"
+        use="literal">
+        <parameter name="wsdlTargetNamespace" value="http://netOptimize.local.webservice" />
+        <parameter name="wsdlServiceElement" value="DcsWebService" />
+        <parameter name="schemaQualified" value="http://netOptimize.local.webservice" />
+        <parameter name="wsdlServicePort" value="DcsWebServiceImpl" />
+        <parameter name="className"
+            value="cn.uway.webservice.managecontrol.impl.DcsWebServiceImpl" />
+        <parameter name="wsdlPortType" value="DcsWebServiceImpl" />
+        <parameter name="typeMappingVersion" value="1.2" />
+        
+        <operation xmlns:operNS="http://netOptimize.local.webservice"
+            xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+            name="dcsSceneSyncQuery" qname="operNS:dcsSceneSyncQuery"
+            returnQName="retNS:dcsSceneSyncQueryReturn" returnType="rtns:string"
+            soapAction="">
+        </operation>
+        
+        <operation xmlns:operNS="http://netOptimize.local.webservice"
+            xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+            name="dcsSceneCellSyncQuery" qname="operNS:dcsSceneCellSyncQuery"
+            returnQName="retNS:dcsSceneCellSyncQueryReturn" returnType="rtns:string"
+            soapAction="">
+        </operation>
+        
+          <operation xmlns:operNS="http://netOptimize.local.webservice"
+            xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+            name="dcsSceneBuildingSyncQuery" qname="operNS:dcsSceneBuildingSyncQuery"
+            returnQName="retNS:dcsSceneBuildingSyncQueryReturn" returnType="rtns:string"
+            soapAction="">
+        </operation>
+        
+        <parameter name="allowedMethods" value="*" />
+
+    </service>
+		
+		
+		<service name="AddComplaint" provider="java:RPC" style="wrapped"
+        use="literal">
+        <parameter name="wsdlTargetNamespace" value="http://netOptimize.local.webservice" />
+        <parameter name="wsdlServiceElement" value="NoapSvcService" />
+        <parameter name="schemaQualified" value="http://netOptimize.local.webservice" />
+        <parameter name="wsdlServicePort" value="AddComplaintImpl" />
+        <parameter name="className"
+            value="cn.uway.webservice.managecontrol.impl.AddComplaintImpl" />
+        <parameter name="wsdlPortType" value="AddComplaintImpl" />
+        <parameter name="typeMappingVersion" value="1.2" />
+        
+        <operation xmlns:operNS="http://netOptimize.local.webservice"
+            xmlns:retNS="http://netOptimize.local.webservice" xmlns:rtns="http://www.w3.org/2001/XMLSchema"
+            name="getComplaint" qname="operNS:getComplaint"
+            returnQName="retNS:getComplaintReturn" returnType="rtns:string"
+            soapAction="">
+             <parameter xmlns:pns="http://netOptimize.local.webservice"
+                xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:xmlString"
+                type="tns:string" />
+        </operation>
+  
+        
+        <parameter name="allowedMethods" value="getComplaint" />
+
+    </service>
+    
+ <!-- 
+	 <typeMapping       
+	      qname="ns:LoginResponse"     
+	      xmlns:ns="DTService"     
+	      type="java:cn.uway.webservice.dt.LoginResponse"     
+	      deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"         
+	      encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"     
+	      serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"     
+	  />   -->
+
+
+</deployment>

@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:test10
+		</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">test_cnoap</property>
+		<property name="password">test_cnoap</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="${province_en}_QOE_TEMPLETBASE_%%Y%%M%%D.csv"
+				templet="电信四期_扇区QOE模板基本信息_LTE.ftl">
+				<sql>
+					<![CDATA[		
+		              SELECT '1.42.02b_SP0' "版本号",
+		                     '%%Y-%%M-%%D' "时间戳",
+		                     '${province_cn}' "省份",
+		                     et.template_name "模板名称",
+		                     decode(et.generation_type,1,1,4,2) "网络类型",
+		                     decode(af.businesstype,'1X',1,'DO',2,'FDD',3,'TDD',4) "系统类型",
+		                     '各维度得分*维度权重之和，通过分值的区间分别计算QOE的得分' "综合得分规则",
+		                     '维度下各指标*指标加权值之和' "覆盖类得分规则",
+		                     sum(decode(ei.seqno,1,ei.eval_rate*ef.field_rate/100,0))/100 "覆盖类得分权重",
+		                     '维度下各指标*指标加权值之和' "接入类得分规则",
+		                     sum(decode(ei.seqno,2,ei.eval_rate*ef.field_rate/100,0))/100 "接入类得分权重",
+		                     '维度下各指标*指标加权值之和' "保持类得分规则",
+		                     sum(decode(ei.seqno,3,ei.eval_rate*ef.field_rate/100,0))/100 "保持类得分权重",
+		                     '维度下各指标*指标加权值之和' "业务完整性得分规则",
+		                     sum(decode(ei.seqno,4,ei.eval_rate*ef.field_rate/100,0))/100 "业务完整性得分权重",
+		                     '维度下各指标*指标加权值之和' "网络可用性得分规则",
+		                     sum(decode(ei.seqno,5,ei.eval_rate*ef.field_rate/100,0))/100 "网络可用性得分权重"
+		                FROM (select t.template_id,t.template_name,t.generation_type from cfg_qoe_eval_temlate t where t.sharetype=1) et
+		                left join cfg_qoe_eval_item ei
+		                on et.template_id= ei.template_id
+		                left join cfg_qoe_eval_field ef
+		                on ei.template_id= ef.template_id
+		                and ei.eval_id= ef.eval_id
+		                left join DS_CFG_APP_FORMULA af
+		                on ef.att_id=af.id
+		              group by et.template_name,decode(et.generation_type,1,1,4,2),decode(af.businesstype,'1X',1,'DO',2,'FDD',3,'TDD',4)
+		              
+					]]>
+				</sql>
+			</mapping>
+			<mapping name="${province_en}_QOE_TEMPLETINDEX_%%Y%%M%%D.csv"
+				templet="电信四期_扇区QOE模板指标内容_LTE.ftl">
+				<sql>
+					<![CDATA[		
+						SELECT '1.42.02b_SP0' "版本号",
+						       '%%Y-%%M-%%D' "时间戳",
+						       '${province_cn}' "省份",
+						       et.template_name "模板名称",
+						       ei.seqno "指标维度",
+						       ef.field_name "指标名称",
+						       ef.att_id "指标编号",
+						       af.formula "指标定义",
+						       '3' "指标时间粒度",
+						       efc.dfgz "指标得分规则",
+						       ef.field_rate "指标得分权重"
+						  FROM (select t.template_id, t.template_name, t.generation_type
+						          from cfg_qoe_eval_temlate t
+						         where t.sharetype = 1) et
+						  left join cfg_qoe_eval_item ei
+						    on et.template_id = ei.template_id
+						  left join cfg_qoe_eval_field ef
+						    on ei.template_id = ef.template_id
+						   and ei.eval_id = ef.eval_id
+						  left join DS_CFG_APP_FORMULA af
+						    on ef.att_id = af.id
+						  left join (select t.template_id,
+						                    t.eval_id,
+						                    t.field_id,
+						                    wmsys.wm_concat(decode(t.min_value_sign, 0, '(', 1, '[') ||
+						                              t.min_value || '~' || t.max_value ||
+						                              decode(t.max_value_sign, 0, ')', 1, ']') || ':' ||
+						                              t.field_score) dfgz
+						               from CFG_QOE_EVAL_FIELD_SECTION t
+						              group by t.template_id, t.eval_id, t.field_id) efc
+						    on ef.field_id = efc.field_id
+						   and ef.eval_id = efc.eval_id
+						   and ef.template_id = efc.template_id
+
+					]]>
+				</sql>
+			</mapping>
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.43</property>
+		<property name="port">21</property>
+		<property name="username">ftp</property>
+		<property name="password">1</property>
+		<property name="path">/QOE/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

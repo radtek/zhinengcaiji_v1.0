@@ -1,0 +1,74 @@
+       <property name="mapping">mapping.xml</property>
+    <mapping name="${province_en}_CARR_HW_1X_%%Y%%M%%D.csv" templet="华为载扇1X省接口_三期.ftl"   >  
+			</mapping>
+    <mapping name="${province_en}_CARR_HW_DO_%%Y%%M%%D.csv" templet="华为载扇DO省接口_三期.ftl"   >  
+			</mapping>
+    <mapping name="${province_en}_CARR_ZTE_1X_%%Y%%M%%D.csv" templet="中兴载扇1X省接口_三期.ftl" >
+			</mapping>
+    <mapping name="${province_en}_CARR_ZTE_DO_%%Y%%M%%D.csv" templet="中兴载扇DO省接口_三期.ftl"   >  
+			</mapping>
+    <mapping name="${province_en}_CARR_ALU_1X_%%Y%%M%%D.csv" templet="阿朗载扇1X_三期.ftl"   >  
+			</mapping>
+    <mapping name="${province_en}_CARR_ALU_DO_%%Y%%M%%D.csv" templet="阿朗载扇DO_三期.ftl"   >  
+			</mapping>
+			
+			
+			
+			       <property name="mapping">mapping.xml</property>
+    <mapping name="${province_en}_PARA_SECTOR_HW_1X_%%Y%%M%%D.csv" templet="华为扇区1X省接口_三期.ftl"   >  
+			</mapping>
+    <mapping name="${province_en}_PARA_SECTOR_ZTE_1X_%%Y%%M%%D.csv" templet="中兴扇区1X省接口_三期.ftl">
+			</mapping>
+    <mapping name="${province_en}_PARA_SECTOR_ZTE_DO_%%Y%%M%%D.csv" templet="中兴扇区DO省接口_三期.ftl">
+			</mapping>
+    <mapping name="${province_en}_PARA_SECTOR_ALU_1X_%%Y%%M%%D.csv" templet="阿朗扇区1X省接口_三期.ftl">
+			</mapping>
+    <mapping name="${province_en}_PARA_SECTOR_ALU_DO_%%Y%%M%%D.csv" templet="阿朗扇区DO省接口_三期.ftl" before="1">
+			</mapping>
+    <mapping name="${province_en}_PARA_BTS_ZTE_1X_%%Y%%M%%D.csv" templet="中兴BTS_1X省接口_三期.ftl">
+			</mapping>
+    <mapping name="${province_en}_PARA_BTS_ALU_1X_%%Y%%M%%D.csv" templet="阿朗BTS_1X省接口_三期.ftl">
+			</mapping>
+    <mapping name="${province_en}_PARA_BSC_HW_ALL_%%Y%%M%%D.csv" templet="华为BSC省接口_三期.ftl">
+			</mapping>
+    <mapping name="${province_en}_PARA_BSC_ZTE_1X_%%Y%%M%%D.csv" templet="中兴BSC_1X省接口_三期.ftl" before="1">
+			</mapping>
+    <mapping name="${province_en}_PARA_BSC_ZTE_DO_%%Y%%M%%D.csv" templet="中兴BSC_DO省接口_三期.ftl">
+			</mapping>			
+
+
+
+       <property name="mapping">mapping.xml</property>
+			<mapping name="${province_en}_CONF_MSC_%%Y%%M%%D.csv" templet="配置数据模板_三期.ftl"   >  
+			</mapping>
+		<mapping name="${province_en}_CONF_BSC_%%Y%%M%%D.csv" templet="配置数据模板_三期.ftl"   >  
+			</mapping>
+			<mapping name="${province_en}_CONF_BTS_%%Y%%M%%D.csv" templet="BTS数据模板_三期.ftl"    before="1">
+			</mapping>
+			<mapping name="${province_en}_CONF_SECTOR_%%Y%%M%%D.csv" templet="SECTOR数据模板_三期.ftl"   >  
+			</mapping>
+			<mapping name="${province_en}_CONF_WLANHP_%%Y%%M%%D.csv" templet="WLANHP数据模板.ftl">
+			</mapping>
+			<mapping name="${province_en}_CONF_BLINDPOINT_%%Y%%M%%D.csv" templet="配置数据模板.ftl">
+			</mapping>
+
+
+
+			<property name="mapping">mapping.xml</property>
+			<mapping name="${province_en}_CDL_${city_en}_1X_%%Y%%M%%D10.csv.gz" templet="话单数据1X忙时后台.ftl">
+		    </mapping>
+			<mapping name="${province_en}_CDL_${city_en}_1X_%%Y%%M%%D20.csv.gz" templet="话单数据1X忙时后台.ftl">
+			</mapping>
+			<mapping name="${province_en}_CDL_${city_en}_DO_%%Y%%M%%D10.csv.gz" templet="话单数据DO忙时后台.ftl">
+			</mapping>
+			<mapping name="${province_en}_CDL_${city_en}_DO_%%Y%%M%%D20.csv.gz" templet="话单数据DO忙时后台.ftl">
+			</mapping>
+			<mapping name="${province_en}_VIPCDL_${city_en}_1X_%%Y%%M%%D10.csv.gz" templet="话单数据VIP1X忙时后台.ftl">
+			</mapping>
+			<mapping name="${province_en}_VIPCDL_${city_en}_1X_%%Y%%M%%D20.csv.gz" templet="话单数据VIP1X忙时后台.ftl">
+			</mapping>
+			<mapping name="${province_en}_VIPCDL_${city_en}_DO_%%Y%%M%%D10.csv.gz" templet="话单数据VIPDO忙时后台.ftl">
+			</mapping>
+			<mapping name="${province_en}_VIPCDL_${city_en}_DO_%%Y%%M%%D20.csv.gz" templet="话单数据VIPDO忙时后台.ftl">
+			</mapping>
+

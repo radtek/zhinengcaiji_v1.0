@@ -1,0 +1,72 @@
+-- Create table
+create table mod_imp_basedata_roomw
+(
+   IMPTIME                      DATE,
+   city_id                      NUMBER(6),
+    ROOMSITENAME                 VARCHAR2(50),
+      VESTEDINCOMPANY              VARCHAR2(50),
+       SOURCECELLNAME               VARCHAR2(90),
+         VESTINGRNCNAME               VARCHAR2(50),
+           LONGITUDE                    NUMBER(18,7),
+  LATITUDE                     NUMBER(18,7),
+   NETWORKTIME                  DATE,
+   VESTINGDURATION              VARCHAR2(50),
+     ROOMSITESTATUS               VARCHAR2(50),
+      SOURCECELLPSC                NUMBER(6),
+       UPLINKFREQUENCY              NUMBER(6),
+  DOWNLINKFREQUENCY            NUMBER(6),
+    LAC                          NUMBER(6),
+     SOURCECELLID                 NUMBER(6),
+   res                 VARCHAR2(1000),
+   res_state NUMBER(1),
+)
+tablespace UWAY_DATA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 160K
+    next 32K
+    minextents 1
+    maxextents unlimited
+  );
+  
+  comment on column mod_imp_basedata_roomw.IMPTIME
+  is '导入时间';
+  comment on column mod_imp_basedata_roomw.city_id
+  is '导入城市ID';
+  comment on column mod_imp_basedata_roomw.ROOMSITENAME
+  is '室分站点名称';
+  comment on column mod_imp_basedata_roomw.VESTEDINCOMPANY
+  is '归属分公司';
+  comment on column mod_imp_basedata_roomw.SOURCECELLNAME
+  is '信源/施主基站小区名称（cell_Name）';
+  comment on column mod_imp_basedata_roomw.VESTINGRNCNAME
+  is '归属RNC_Name';
+  comment on column mod_imp_basedata_roomw.LONGITUDE
+  is '经度';
+comment on column mod_imp_basedata_roomw.LATITUDE
+  is '纬度';
+ comment on column mod_imp_basedata_roomw.NETWORKTIME
+  is '入网时间';
+  comment on column mod_imp_basedata_roomw.VESTINGDURATION
+  is '归属工期';
+  comment on column mod_imp_basedata_roomw.ROOMSITESTATUS
+  is '室分站点状态';
+  comment on column mod_imp_basedata_roomw.SOURCECELLPSC
+  is '信源/施主基站小区扰码(PSC)';
+comment on column mod_imp_basedata_roomw.UPLINKFREQUENCY
+  is '上行频点号';
+comment on column mod_imp_basedata_roomw.DOWNLINKFREQUENCY
+  is '下行频点号';
+  comment on column mod_imp_basedata_roomw.LAC
+  is 'LAC';
+  comment on column mod_imp_basedata_roomw.SOURCECELLID
+  is '信源/施主基站小区Cell_ID';
+    comment on column mod_imp_basedata_roomw.res
+  is '导入结果';
+    comment on column mod_imp_basedata_roomw.res_state
+  is '导入状态，1 为成功 ，2为失败';
+ 
+ 

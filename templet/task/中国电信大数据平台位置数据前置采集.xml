@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+ 	
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<!-- 如果是本地文件200，此处配置的路径只是为了进行非周期性的上报 -->
+	<ds id="1" type="200">
+	    <property name="localdir">d:/test/</property>
+	</ds>
+	
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+	<!-- 每一个文件还可以打成不同的包，配置single_package_ext,只需要配置扩展名即可 如：.rar或者rar-->
+	<to id="1">
+		<resolve dsid="1">			
+			<files><!--  name="${province_en}_CCH_WCDMA_%%Y%%M%%D.csv.tar.gz"此属性用于将所有文件打包，本地打包路径为config.xml中的currentpath -->
+				<property>/D/testfile/wcdr/zte/1x/city_id/1X_BSC1_%%Y%%M%%D%%H%%m%%S.DAT</property>
+				<property>/D/testfile/wcdr/hw/1x/city_id/1X_BSC2_%%Y%%M%%D%%H%%m%%S.DAT</property>
+			</files>
+	    </resolve>
+	</to>
+	<to id="2">
+		<resolve dsid="1">			
+			<files><!--  name="${province_en}_CCH_WCDMA_%%Y%%M%%D.csv.tar.gz"此属性用于将所有文件打包，本地打包路径为config.xml中的currentpath -->
+				<property>/D/testfile/wcdr/zte/do/city_id/DO_BSC1_%%Y%%M%%D%%H%%m%%S.DAT</property>
+				<property>/D/testfile/wcdr/hw/do/city_id/DO_BSC2_%%Y%%M%%D%%H%%m%%S.DAT</property>
+			</files> 	    
+	    </resolve>
+	</to>
+	<to id="3">
+	    <resolve dsid="1">			
+			<files><!-- /wcdr/zte/1x/city_id/xx.data -->
+				<property>/D/testfile/wcdr/zte/1x/city_id/1X_BSC1_%%Y%%M%%D_get.LOG</property>
+				<property>/D/testfile/wcdr/zte/1x/city_id/1X_BSC1_%%Y%%M%%D_pas.LOG</property>
+				<property>/D/testfile/wcdr/hw/1x/city_id/1X_BSC2_%%Y%%M%%D_get.LOG</property>
+				<property>/D/testfile/wcdr/hw/1x/city_id/1X_BSC2_%%Y%%M%%D_pas.LOG</property>
+				<property>/D/testfile/wcdr/zte/do/city_id/DO_BSC1_%%Y%%M%%D_get.LOG</property>
+				<property>/D/testfile/wcdr/zte/do/city_id/DO_BSC1_%%Y%%M%%D_pas.LOG</property>
+				<property>/D/testfile/wcdr/hw/do/city_id/DO_BSC2_%%Y%%M%%D_get.LOG</property>
+				<property>/D/testfile/wcdr/hw/do/city_id/DO_BSC2_%%Y%%M%%D_pas.LOG</property>
+			</files>
+	    </resolve>
+	</to>
+	
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<!-- file -->
+		<property name="ftpip">192.168.15.249</property>
+		<property name="port">21</property>
+		<property name="username">ftpuser</property>
+		<property name="password">ftpuser</property>
+		<!--结果文件目录-->
+		<property name="path">/group_province/WCDR/RESU/cityID/%%Y%%M%%D</property>
+		<property name="encode">utf-8</property>
+	</ti>
+	<ti id="2" after="1">
+		<!-- file -->
+		<property name="ftpip">192.168.15.249</property>
+		<property name="port">21</property>
+		<property name="username">ftpuser</property>
+		<property name="password">ftpuser</property>
+		<!--采集日志文件目录,可以配置通配符HUB/WORK/-->
+		<property name="path">/group_province/WCDR/LOG/cityID/%%Y%%M%%D</property>
+		<property name="encode">utf-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="5" /><!--ftp文件方式 -->
+		<action id="2" toid="2" tiid="1" strategyid="6" /><!--ftp文件方式 -->
+		<action id="3" toid="3" tiid="2" strategyid="7"/><!--ftp文件方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="5">
+		<property name="ids">22</property>
+	</strategy>
+	<strategy id="6">
+		<property name="ids">23</property>
+	</strategy>
+	<strategy id="7">
+		<property name="ids"></property>
+	</strategy>
+	<!-- before ,after ,exception -->
+	<trigger id="22" class="cn.uway.nbi.task.triggerbean.LogFileTriggerBean" >
+		<property name="conn_id">${chinatelecom_bigdata_palform_ftp}</property>
+		<property name="%%TF">0|1</property>
+   		<property name="file_name">1X_BSCNAME_%%Y%%M%%D_put.LOG</property>
+   		<property name="sql">FILE_NAME || '|' || FILE_SIZE_BYTES || ' BYTES|' || FTP_IP || '|' || FILE_FTP_DIR || '|' ||to_char(INSERT_TIME, 'yyyy-mm-dd hh24:mi:ss') || '|' || CASE UPLOAD_RESULT WHEN 0 THEN '上传成功' WHEN 1 THEN 'FTP连接失败' WHEN 2 THEN '上传部分失败' ELSE '上传完全失败' END</property>
+	</trigger>
+	<trigger id="23" class="cn.uway.nbi.task.triggerbean.LogFileTriggerBean" >
+		<property name="conn_id">${chinatelecom_bigdata_palform_ftp}</property>
+		<property name="%%TF">0|1</property>
+   		<property name="file_name">DO_BSCNAME_%%Y%%M%%D_put.LOG</property>
+   		<property name="sql">FILE_NAME || '|' || FILE_SIZE_BYTES || ' BYTES|' || FTP_IP || '|' || FILE_FTP_DIR || '|' ||to_char(INSERT_TIME, 'yyyy-mm-dd hh24:mi:ss') || '|' || CASE UPLOAD_RESULT WHEN 0 THEN '上传成功' WHEN 1 THEN 'FTP连接失败' WHEN 2 THEN '上传部分失败' ELSE '上传完全失败' END</property>
+	</trigger>
+</config>

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+       <property name="mapping">mapping.xml</property>
+       <property name="loop">false</property>
+    </include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+		<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:ora10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noapjs</property>
+		<property name="password">uwaysoft2009</property>
+	</ds>
+	<!-- to 与  resolve 是一对多关系, package为可选标签 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="CELL13.csv" templet="上传小区级台帐的定位字段给浩盈_后台模板0070_1_2.ftl">
+				<sql>select city_id,
+				       bsc_id,
+				       bts_id,
+				       local_cell_id,
+				       sector_id,
+				       antenna_alti,
+				       antenna_loc_accu,
+				       sector_center_lati,
+				       sector_center_longi,
+				       sector_center_alti,
+				       max_antenna_range,
+				       terrain_average_height,
+				       terrain_height_standard_devi,
+				       potential_repeater,
+				       pn_in_gpsone,
+				       fwd_calib,
+				       fwd_calib_accu
+				  from ne_taizhang_cell
+				          </sql>
+			</mapping>
+	
+		</resolve>
+	</to>
+	
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.103</property>
+		<property name="port">21</property>
+		<property name="username">test</property>
+		<property name="password">test</property>
+		<property name="path">/HAOYING/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+        </ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1"/><!--?????-->
+	</t>
+	
+	<!-- 默认失败不处理  0:正常   1:   2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+	
+	<!-- before ,after ,exception -->
+	<trigger id="11" class="cn.uway.nbi.task.triggerc.UpdateBean" />
+</config>

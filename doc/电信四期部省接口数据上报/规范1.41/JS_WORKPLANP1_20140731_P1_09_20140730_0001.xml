@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<work_plan_list>
+<work_plan>
+<wp_hq_code>平台进度文件收集_集约化文件收集</wp_hq_code>
+<wp_hq_info/>
+<wp_to_province_name>江苏</wp_to_province_name>
+<wp_to_city_name_list/>
+<wp_index_levle>1</wp_index_levle>
+<wp_index_time_type>2</wp_index_time_type>
+<wp_special_wp_type>0</wp_special_wp_type>
+<wp_special_wp_range/>
+<wp_wp_hq_type>9</wp_wp_hq_type>
+<wp_is_timing_report>1</wp_is_timing_report>
+<wp_report_regular_period>2014-08-03|2014-08-10|2014-08-17|2014-08-24|2014-08-31|2014-09-07|2014-09-14|2014-09-21|2014-09-28|2014-10-05|2014-10-12|2014-10-19|2014-10-26|2014-11-02|2014-11-09|2014-11-16|2014-11-23|2014-11-30|2014-12-07|2014-12-14|2014-12-21|2014-12-28</wp_report_regular_period>
+<wp_report_irregular_period>0</wp_report_irregular_period>
+<wp_report_period>1</wp_report_period>
+<wp_report_content/>
+<wp_is_report_regstructure>1</wp_is_report_regstructure>
+<wp_is_report_photo>1</wp_is_report_photo>
+<wp_is_report_index>1</wp_is_report_index>
+<wp_is_report_gain>1</wp_is_report_gain>
+<wp_is_report_templet>0</wp_is_report_templet>
+<wp_appointed_role/>
+<wp_hq_creator_name>admin</wp_hq_creator_name>
+<wp_hq_creator_phone>13311111111</wp_hq_creator_phone>
+<wp_hq_creator_email>admin@metarnet.com</wp_hq_creator_email>
+<wp_trace_ind_list>
+<public>
+<wp_trace_ind>
+<index_hq_code>MX1.3</index_hq_code>
+<index_hq_name>MX1.3 呼叫建立成功率-CS(不含短信)(%)</index_hq_name>
+<index_hq_logic_expression>X&gt;=99.5</index_hq_logic_expression>
+</wp_trace_ind>
+</public>
+</wp_trace_ind_list>
+<work_content_list>
+<work_content>
+<ct_pl_name>平台进度周报(文件收集)</ct_pl_name>
+<ct_pl_id>P1_09_20140730_0001_19001_001</ct_pl_id>
+<ct_pl_type>文件收集</ct_pl_type>
+<ct_pl_content>  </ct_pl_content>
+<ct_execute_cycle>0</ct_execute_cycle>
+<ct_is_timing_report>1</ct_is_timing_report>
+<ct_report_regular_period>2014-08-03|2014-08-10|2014-08-17|2014-08-24|2014-08-31|2014-09-07|2014-09-14|2014-09-21|2014-09-28|2014-10-05|2014-10-12|2014-10-19|2014-10-26|2014-11-02|2014-11-09|2014-11-16|2014-11-23|2014-11-30|2014-12-07|2014-12-14|2014-12-21|2014-12-28</ct_report_regular_period>
+<ct_report_irregular_period>1</ct_report_irregular_period>
+<ct_report_content>  </ct_report_content>
+<ct_is_report_regstructure>0</ct_is_report_regstructure>
+<ct_is_report_photo>0</ct_is_report_photo>
+<ct_is_report_index>0</ct_is_report_index>
+<ct_is_report_gain>0</ct_is_report_gain>
+<ct_is_report_templet>0</ct_is_report_templet>
+<wp_hq_code>P1_09_20140730_0001</wp_hq_code>
+<wp_index_levle>1</wp_index_levle>
+<wp_index_time_type>1</wp_index_time_type>
+<ct_trace_ind_list>
+<public>
+<ct_trace_ind>
+<index_hq_code>MX1.1</index_hq_code>
+<index_hq_name>MX1.1 呼叫尝试次数-CS(不含短信)(次)</index_hq_name>
+<index_hq_logic_expression>X&gt;=0</index_hq_logic_expression>
+</ct_trace_ind>
+</public>
+</ct_trace_ind_list>
+<TemplateInfo>
+<UploadCSVFileNameSample>省份缩写_wc_125_1.csv</UploadCSVFileNameSample>
+<WorkBook SheetNum="2" WorkBookID="125">
+<WorkSheet ColNum="13" Field_City="0" Field_Date="1101" Field_Province="0" FileObject="省份" SheetID="1" SheetName="总体">
+<cols>
+<col ColDesc="" ColID="2" ColName="合同签订" DataLength="256" DataType="字符串" Example="0.00%" FieldOption=""/>
+<col ColDesc="" ColID="5" ColName="系统加电" DataLength="256" DataType="字符串" Example="0.00%" FieldOption=""/>
+<col ColDesc="" ColID="8" ColName="最终版本应用软件安装" DataLength="256" DataType="字符串" Example="90.00%" FieldOption=""/>
+<col ColDesc="" ColID="11" ColName="培训" DataLength="256" DataType="字符串" Example="60.00%" FieldOption=""/>
+<col ColDesc="" ColID="3" ColName="硬件到货" DataLength="256" DataType="字符串" Example="0.00%" FieldOption=""/>
+<col ColDesc="" ColID="9" ColName="功能调测与数据验证" DataLength="256" DataType="字符串" Example="90.00%" FieldOption=""/>
+<col ColDesc="" ColID="6" ColName="操作系统软件安装" DataLength="256" DataType="字符串" Example="90.00%" FieldOption=""/>
+<col ColDesc="" ColID="12" ColName="初验" DataLength="256" DataType="字符串" Example="0.00%" FieldOption=""/>
+<col ColDesc="" ColID="1" ColName="省" DataLength="256" DataType="字符串" Example="辽宁" FieldOption=""/>
+<col ColDesc="" ColID="4" ColName="系统集成实施" DataLength="256" DataType="字符串" Example="0.00%" FieldOption=""/>
+<col ColDesc="" ColID="7" ColName="数据采集软件步署" DataLength="256" DataType="字符串" Example="80.00%" FieldOption=""/>
+<col ColDesc="" ColID="10" ColName="系统上线 " DataLength="256" DataType="字符串" Example="60.00%" FieldOption=""/>
+<col ColDesc="" ColID="13" ColName="终验" DataLength="256" DataType="字符串" Example="0.00%" FieldOption=""/>
+</cols>
+</WorkSheet>
+<WorkSheet ColNum="14" Field_City="0" Field_Date="1110" Field_Province="0" FileObject="省份" SheetID="2" SheetName="部署进度概述">
+<cols>
+<col ColDesc="" ColID="1" ColName="上报时间" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="2" ColName="省" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="3" ColName="部署进度情况（软硬件、培训等）" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="4" ColName="已推广功能（三级菜单）" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="5" ColName="已推广地市" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="6" ColName="“作业计划”和“工单”推广进展" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="7" ColName="“基础数据管理”推广进展" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="8" ColName="“客服支撑”推广进展" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="9" ColName="“建设支撑”推广进展" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="10" ColName="发现问题" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="11" ColName="厂家整改情况" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="12" ColName="给集团的建议" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="13" ColName="本周部省接口缺失文件补报情况" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+<col ColDesc="" ColID="14" ColName="本周部省接口字段不准确核实情况" DataLength="256" DataType="字符串" Example="" FieldOption=""/>
+</cols>
+</WorkSheet>
+<FieldOptions/>
+</WorkBook>
+</TemplateInfo>
+</work_content>
+</work_content_list>
+</work_plan>
+</work_plan_list>

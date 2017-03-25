@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+	<include>
+		<property name="mapping">mapping.xml</property>
+		<property name="loop">false</property>
+	</include>
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="100">
+		<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:test10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">test_cnoap</property>
+		<property name="password">test_cnoap</property>
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签
+	 -->
+
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="${province_en}_PERF_COVERSTAT_%%Y%%M%%D.csv" templet="电信四期_覆盖分析统计_LTE.ftl" >
+				<sql>
+						<![CDATA[					
+				
+		SELECT  '1.42.01b_SP0'  as "版本号",(SELECT PROVINCE_NAME
+          FROM (SELECT DISTINCT T2.PROVINCE_NAME AS PROVINCE_NAME,
+                                ROWNUM           AS RN
+                  FROM CFG_CITY T1, CFG_PROVINCE_CITY T2
+                 WHERE T1.CITY_NAME = T2.CITY_NAME)
+         WHERE RN = 1) AS "省份",
+       CASE
+         WHEN T1.CITY_NAME IS NULL THEN
+          T2.CITY_NAME
+         ELSE
+          T1.CITY_NAME
+       END AS "地市",
+	   to_char(to_date('%%Y-%%M-%%D','yyyy/mm/dd'),'yyyy-mm-dd') AS "数据日期",
+       CASE
+         WHEN T1.SERVICE_OPTION IS NULL THEN
+          T2.SERVICE_OPTION
+         ELSE
+          T1.SERVICE_OPTION
+       END AS "网络类型",
+       CASE
+         WHEN OVER_COUNT IS NULL THEN
+          0
+         ELSE
+          OVER_COUNT
+       END AS "过覆盖扇区数量",
+       CASE
+         WHEN POOR_COUNT IS NULL THEN
+          0
+         ELSE
+          POOR_COUNT
+       END AS "弱覆盖扇区数量"
+  FROM (SELECT CITY_NAME, SERVICE_OPTION, COUNT(1) AS "OVER_COUNT"
+          FROM (SELECT /*+OPT_PARAM('_OPTIMIZER_MJC_ENABLED','FALSE') */
+                 NULL AS START_TIME,
+                 CITY_ID,
+                 CITY_NAME,
+                 NE_CELL_ID,
+                 CELL_NAME,
+                 CASE SERVICE_OPTION
+                   WHEN 3 THEN
+                    2
+                   ELSE
+                    1
+                 END AS SERVICE_OPTION,
+                 SUM(T_2_3_ECIO_N8_N9_NUM + T_3_4_ECIO_N8_N9_NUM +
+                     T_4UP_ECIO_N8_N9_NUM + T_2_3_ECIO_N7_N8_NUM +
+                     T_3_4_ECIO_N7_N8_NUM + T_4UP_ECIO_N7_N8_NUM +
+                     T_2_3_ECIO_N6_N7_NUM + T_3_4_ECIO_N6_N7_NUM +
+                     T_4UP_ECIO_N6_N7_NUM + T_2_3_ECIO_N5_N6_NUM +
+                     T_3_4_ECIO_N5_N6_NUM + T_4UP_ECIO_N5_N6_NUM +
+                     T_2_3_ECIO_N4_N5_NUM + T_3_4_ECIO_N4_N5_NUM +
+                     T_4UP_ECIO_N4_N5_NUM + T_2_3_ECIO_N3_N4_NUM +
+                     T_3_4_ECIO_N3_N4_NUM + T_4UP_ECIO_N3_N4_NUM +
+                     T_2_3_ECIO_N2_N3_NUM + T_3_4_ECIO_N2_N3_NUM +
+                     T_4UP_ECIO_N2_N3_NUM + T_2_3_ECIO_N1_N2_NUM +
+                     T_3_4_ECIO_N1_N2_NUM + T_4UP_ECIO_N1_N2_NUM +
+                     T_2_3_ECIO_0_N1_NUM + T_3_4_ECIO_0_N1_NUM +
+                     T_4UP_ECIO_0_N1_NUM) AS OVER_TICKET_NUM,
+                 SUM(T_0UP_ECIO_0_N31_NUM) AS TOTAL_TICKET_IN_CELL,
+                 ROUND(SUM(T_2_3_ECIO_N8_N9_NUM + T_3_4_ECIO_N8_N9_NUM +
+                           T_4UP_ECIO_N8_N9_NUM + T_2_3_ECIO_N7_N8_NUM +
+                           T_3_4_ECIO_N7_N8_NUM + T_4UP_ECIO_N7_N8_NUM +
+                           T_2_3_ECIO_N6_N7_NUM + T_3_4_ECIO_N6_N7_NUM +
+                           T_4UP_ECIO_N6_N7_NUM + T_2_3_ECIO_N5_N6_NUM +
+                           T_3_4_ECIO_N5_N6_NUM + T_4UP_ECIO_N5_N6_NUM +
+                           T_2_3_ECIO_N4_N5_NUM + T_3_4_ECIO_N4_N5_NUM +
+                           T_4UP_ECIO_N4_N5_NUM + T_2_3_ECIO_N3_N4_NUM +
+                           T_3_4_ECIO_N3_N4_NUM + T_4UP_ECIO_N3_N4_NUM +
+                           T_2_3_ECIO_N2_N3_NUM + T_3_4_ECIO_N2_N3_NUM +
+                           T_4UP_ECIO_N2_N3_NUM + T_2_3_ECIO_N1_N2_NUM +
+                           T_3_4_ECIO_N1_N2_NUM + T_4UP_ECIO_N1_N2_NUM +
+                           T_2_3_ECIO_0_N1_NUM + T_3_4_ECIO_0_N1_NUM +
+                           T_4UP_ECIO_0_N1_NUM) / SUM(T_0UP_ECIO_0_N31_NUM),
+                       2) AS OVER_TICKET_PERCENT_IN_CELL
+                  FROM MOD_COVER2_CARR_H T0,
+                       (SELECT NE_SYS_ID,
+                               NVL(F_LOCATION_TYPE, 'NULL') F_LOCATION_TYPE
+                          FROM NE_CELL_C) C
+                 WHERE T_0_0P25_ECIO_0_N1_NUM + T_0_0P25_ECIO_N1_N2_NUM +
+                       T_0_0P25_ECIO_N2_N3_NUM + T_0_0P25_ECIO_N3_N4_NUM +
+                       T_0_0P25_ECIO_N4_N5_NUM + T_0_0P25_ECIO_N5_N6_NUM +
+                       T_0_0P25_ECIO_N6_N7_NUM + T_0_0P25_ECIO_N7_N8_NUM +
+                       T_0_0P25_ECIO_N8_N9_NUM + T_0_0P25_ECIO_N9_N10_NUM +
+                       T_0_0P25_ECIO_N10_N11_NUM + T_0_0P25_ECIO_N11_N12_NUM +
+                       T_0_0P25_ECIO_N12_N13_NUM + T_0_0P25_ECIO_N13_N14_NUM +
+                       T_0_0P25_ECIO_N14_N15_NUM + T_0_0P25_ECIO_N15_N16_NUM +
+                       T_0_0P25_ECIO_N16_N17_NUM + T_0_0P25_ECIO_N17_N18_NUM +
+                       T_0_0P25_ECIO_N18_N19_NUM + T_0_0P25_ECIO_N19_N20_NUM +
+                       T_0_0P25_ECIO_N20_N21_NUM + T_0_0P25_ECIO_N21_N22_NUM +
+                       T_0_0P25_ECIO_N22_N23_NUM + T_0_0P25_ECIO_N23_N24_NUM +
+                       T_0_0P25_ECIO_N24_N25_NUM + T_0_0P25_ECIO_N25_N26_NUM +
+                       T_0_0P25_ECIO_N26_N27_NUM + T_0_0P25_ECIO_N27_N28_NUM +
+                       T_0_0P25_ECIO_N28_N29_NUM + T_0_0P25_ECIO_N29_N30_NUM +
+                       T_0_0P25_ECIO_N30_N31_NUM <> T_0UP_ECIO_0_N31_NUM
+                   AND NE_CELL_ID = C.NE_SYS_ID
+                   AND C.F_LOCATION_TYPE <> '室内'
+                   AND CARR IN
+                       (1013, 283, 201, 119, 242, 160, 204, 78, 129, 37, 1019)
+                   AND SERVICE_OPTION in (0, 1, 2, 3)
+                   AND STATISTIC_METHOD = 1
+                   AND (START_TIME >=
+                       TO_DATE('%%Y-%%M-%%D 00:00:00',
+                                'YYYY-MM-DD HH24:MI:SS') AND
+                       START_TIME <=
+                       TO_DATE('%%Y-%%M-%%D 23:59:59',
+                                'YYYY-MM-DD HH24:MI:SS'))
+                 GROUP BY CITY_ID,
+                          CITY_NAME,
+                          NE_CELL_ID,
+                          CELL_NAME,
+                          SERVICE_OPTION)
+         WHERE OVER_TICKET_NUM >= 100
+           AND OVER_TICKET_PERCENT_IN_CELL >= 0.15
+         GROUP BY CITY_NAME, SERVICE_OPTION) T1
+  full join (SELECT CITY_NAME, SERVICE_OPTION, COUNT(1) AS "POOR_COUNT"
+               FROM (SELECT /*+OPT_PARAM('_OPTIMIZER_MJC_ENABLED','FALSE') */
+                      CITY_ID,
+                      CITY_NAME,
+                      NE_CELL_ID,
+                      CELL_NAME,
+                      CASE SERVICE_OPTION
+                        WHEN 3 THEN
+                         2
+                        ELSE
+                         1
+                      END AS SERVICE_OPTION,
+                      SUM(T_0P25_0P5_ECIO_N11_N12_NUM +
+                          T_0_0P25_ECIO_N11_N12_NUM +
+                          T_0P25_0P5_ECIO_N12_N13_NUM +
+                          T_0_0P25_ECIO_N12_N13_NUM +
+                          T_0P25_0P5_ECIO_N13_N14_NUM +
+                          T_0_0P25_ECIO_N13_N14_NUM +
+                          T_0P25_0P5_ECIO_N14_N15_NUM +
+                          T_0_0P25_ECIO_N14_N15_NUM +
+                          T_0P25_0P5_ECIO_N15_N16_NUM +
+                          T_0_0P25_ECIO_N15_N16_NUM +
+                          T_0P25_0P5_ECIO_N16_N17_NUM +
+                          T_0_0P25_ECIO_N16_N17_NUM +
+                          T_0P25_0P5_ECIO_N17_N18_NUM +
+                          T_0_0P25_ECIO_N17_N18_NUM +
+                          T_0P25_0P5_ECIO_N18_N19_NUM +
+                          T_0_0P25_ECIO_N18_N19_NUM +
+                          T_0P25_0P5_ECIO_N19_N20_NUM +
+                          T_0_0P25_ECIO_N19_N20_NUM +
+                          T_0P25_0P5_ECIO_N20_N21_NUM +
+                          T_0_0P25_ECIO_N20_N21_NUM +
+                          T_0P25_0P5_ECIO_N21_N22_NUM +
+                          T_0_0P25_ECIO_N21_N22_NUM +
+                          T_0P25_0P5_ECIO_N22_N23_NUM +
+                          T_0_0P25_ECIO_N22_N23_NUM +
+                          T_0P25_0P5_ECIO_N23_N24_NUM +
+                          T_0_0P25_ECIO_N23_N24_NUM +
+                          T_0P25_0P5_ECIO_N24_N25_NUM +
+                          T_0_0P25_ECIO_N24_N25_NUM +
+                          T_0P25_0P5_ECIO_N25_N26_NUM +
+                          T_0_0P25_ECIO_N25_N26_NUM +
+                          T_0P25_0P5_ECIO_N26_N27_NUM +
+                          T_0_0P25_ECIO_N26_N27_NUM +
+                          T_0P25_0P5_ECIO_N27_N28_NUM +
+                          T_0_0P25_ECIO_N27_N28_NUM +
+                          T_0P25_0P5_ECIO_N28_N29_NUM +
+                          T_0_0P25_ECIO_N28_N29_NUM +
+                          T_0P25_0P5_ECIO_N29_N30_NUM +
+                          T_0_0P25_ECIO_N29_N30_NUM +
+                          T_0P25_0P5_ECIO_N30_N31_NUM +
+                          T_0_0P25_ECIO_N30_N31_NUM) AS POOR_TICKET_NUM,
+                      SUM(T_0UP_ECIO_0_N31_NUM) AS TOTAL_TICKET_IN_CELL,
+                      ROUND(SUM(T_0P25_0P5_ECIO_N11_N12_NUM +
+                                T_0_0P25_ECIO_N11_N12_NUM +
+                                T_0P25_0P5_ECIO_N12_N13_NUM +
+                                T_0_0P25_ECIO_N12_N13_NUM +
+                                T_0P25_0P5_ECIO_N13_N14_NUM +
+                                T_0_0P25_ECIO_N13_N14_NUM +
+                                T_0P25_0P5_ECIO_N14_N15_NUM +
+                                T_0_0P25_ECIO_N14_N15_NUM +
+                                T_0P25_0P5_ECIO_N15_N16_NUM +
+                                T_0_0P25_ECIO_N15_N16_NUM +
+                                T_0P25_0P5_ECIO_N16_N17_NUM +
+                                T_0_0P25_ECIO_N16_N17_NUM +
+                                T_0P25_0P5_ECIO_N17_N18_NUM +
+                                T_0_0P25_ECIO_N17_N18_NUM +
+                                T_0P25_0P5_ECIO_N18_N19_NUM +
+                                T_0_0P25_ECIO_N18_N19_NUM +
+                                T_0P25_0P5_ECIO_N19_N20_NUM +
+                                T_0_0P25_ECIO_N19_N20_NUM +
+                                T_0P25_0P5_ECIO_N20_N21_NUM +
+                                T_0_0P25_ECIO_N20_N21_NUM +
+                                T_0P25_0P5_ECIO_N21_N22_NUM +
+                                T_0_0P25_ECIO_N21_N22_NUM +
+                                T_0P25_0P5_ECIO_N22_N23_NUM +
+                                T_0_0P25_ECIO_N22_N23_NUM +
+                                T_0P25_0P5_ECIO_N23_N24_NUM +
+                                T_0_0P25_ECIO_N23_N24_NUM +
+                                T_0P25_0P5_ECIO_N24_N25_NUM +
+                                T_0_0P25_ECIO_N24_N25_NUM +
+                                T_0P25_0P5_ECIO_N25_N26_NUM +
+                                T_0_0P25_ECIO_N25_N26_NUM +
+                                T_0P25_0P5_ECIO_N26_N27_NUM +
+                                T_0_0P25_ECIO_N26_N27_NUM +
+                                T_0P25_0P5_ECIO_N27_N28_NUM +
+                                T_0_0P25_ECIO_N27_N28_NUM +
+                                T_0P25_0P5_ECIO_N28_N29_NUM +
+                                T_0_0P25_ECIO_N28_N29_NUM +
+                                T_0P25_0P5_ECIO_N29_N30_NUM +
+                                T_0_0P25_ECIO_N29_N30_NUM +
+                                T_0P25_0P5_ECIO_N30_N31_NUM +
+                                T_0_0P25_ECIO_N30_N31_NUM) /
+                            SUM(T_0UP_ECIO_0_N31_NUM),
+                            2) AS POOR_TICKET_PERCENT_IN_CELL
+                       FROM MOD_COVER2_CARR_H T0
+                      WHERE CARR IN (1013,
+                                     283,
+                                     201,
+                                     119,
+                                     242,
+                                     160,
+                                     204,
+                                     78,
+                                     129,
+                                     37,
+                                     1019)
+                        AND SERVICE_OPTION IN (0, 1, 2, 3)
+                        AND STATISTIC_METHOD = 1
+                        AND (START_TIME >=
+                            TO_DATE('%%Y-%%M-%%D 00:00:00',
+                                     'YYYY-MM-DD HH24:MI:SS') AND
+                            START_TIME <=
+                            TO_DATE('%%Y-%%M-%%D 23:59:59',
+                                     'YYYY-MM-DD HH24:MI:SS'))
+                      GROUP BY CITY_ID,
+                               CITY_NAME,
+                               NE_CELL_ID,
+                               CELL_NAME,
+                               SERVICE_OPTION)
+              WHERE POOR_TICKET_NUM >= 100
+                AND POOR_TICKET_PERCENT_IN_CELL >= 0.4
+              GROUP BY CITY_NAME, SERVICE_OPTION) T2
+    ON T1.CITY_NAME = T2.CITY_NAME
+   AND T1.SERVICE_OPTION = T2.SERVICE_OPTION
+					    						
+    						
+						]]>
+				</sql>
+			</mapping>
+		
+		</resolve>
+	</to>
+
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+	  	<property name="ftpip">192.168.15.43</property>
+		<property name="port">21</property>
+		<property name="username">ftp</property>
+		<property name="password">1</property>
+		<property name="path">/PERF/</property><!--可以配置通配符 -->
+		<property name="encode">UTF-8</property>
+	</ti>
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--数据库方式 -->
+	</t>
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

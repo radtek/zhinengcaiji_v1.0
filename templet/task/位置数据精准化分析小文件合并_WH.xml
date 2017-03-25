@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+        <include>
+			<property name="mapping">mapping.xml</property>
+			<property name="loop">false</property>
+        </include>
+
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<!-- ftp -->
+	<ds id="1" type="208">
+		<property name="ftpip">132.228.30.110</property>
+		<property name="port">21</property>
+		<property name="username">Uway166</property>
+		<property name="password">Js!@#$1234</property>
+		<property name="encode">UTF-8</property><!--可以配置通配符 -->
+		<property name="conn_ftp_passive">1</property><!--1被动 0主动，默认不配置时为被动 -->
+	</ds>
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+	<to id="1" chkName="CHK.chk" >
+	    <resolve dsid="1">			
+			<files id="1"  name="dd.zip"> 
+			<!-- /D/testfile/conf/ -->
+			    	<property name="filename">/huzq/NBISRC/*_10_15_TH.csv</property>
+			</files>
+
+		</resolve>
+	</to>
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+
+
+	<ti id="1" after="1">
+		<property name="ftpip">132.228.30.110</property>
+		<property name="port">21</property>
+		<property name="username">Uway166</property>
+		<property name="password">Js!@#$1234</property>
+		<property name="path">/TH</property>
+		<property name="encode">UTF-8</property>
+	</ti>
+
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="1" /><!--ftp文件方式 -->
+	</t>
+
+
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="1">
+		<property name="failure">1,2,3</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+	<trigger id="1" class="" />
+	<trigger id="2" class="" />
+</config>

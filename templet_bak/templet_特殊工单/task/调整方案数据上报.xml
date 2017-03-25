@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+        <include>
+			<property name="mapping">mapping.xml</property>
+			<property name="loop">false</property>
+        </include>
+
+	<!-- 100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others -->
+	<ds id="1" type="118">
+	<property name="url">jdbc:oracle:thin:@192.168.15.223:1521:test10</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">test_cnoap</property>
+		<property name="password">test_cnoap</property>
+	</ds>
+	 
+		<ds id="2" type="201">
+			<property name="ftpip">192.168.15.202</property>
+		<property name="port">21</property>
+		<property name="username">ftpuser</property>
+		<property name="password">!QAZxsw2#EDC</property>
+		<property name="encode">utf-8</property><!--可以配置通配符 -->
+	
+	</ds>
+	
+	<!-- to 与 resolve 是一对多关系, package为可选标签 -->
+	<to id="1">
+		<resolve dsid="1">
+			<mapping name="${province_en}_SOLUTIONPLAN_${workOrderID}_%%Y%%M%%D%%H%%m%%S.csv" templet="特殊工单之新增工单上报.ftl"  addHead="true"     >
+				<sql>
+				<![CDATA[
+			select *
+  from VRPT_SOLUTIONPLAN
+ where to_date(调整方案更新时间 ,'yyyy-mm-dd hh24:mi:ss')> to_date('%%Y-%%M-%%D %%H:%%m:00', 'yyyy-mm-dd hh24:mi:ss') - 1 / 24
+   and to_date(调整方案更新时间 ,'yyyy-mm-dd hh24:mi:ss') <=
+       to_date('%%Y-%%M-%%D %%H:%%m:00', 'yyyy-mm-dd hh24:mi:ss')
+				]]>
+		    </sql>
+		    </mapping>
+		</resolve>
+	</to>
+	<!-- 传输接口, 当只有path属性在时候为本地接口，其他则为远程接口 -->
+	<ti id="1" after="1">
+		<property name="ftpip">192.168.15.123</property>
+		<property name="port">21</property>
+		<property name="username">admin</property>
+		<property name="password">admin</property>
+		<property name="path">/workorder/</property><!--可以配置通配符 -->
+		<property name="encode">utf-8</property><!--可以配置通配符 -->
+		
+	</ti>
+
+	<t>
+		<action id="1" toid="1" tiid="1" strategyid="2" /><!--ftp文件方式 -->
+	</t>
+	 
+	<!-- 默认失败不处理 0:正常 1: 2: -->
+	<strategy id="2">
+		<property name="ids">1</property>
+	</strategy>
+
+	<!-- before ,after ,exception -->
+		<!-- before ,after ,exception -->
+		<trigger id="1" >
+	  </trigger>
+</config>

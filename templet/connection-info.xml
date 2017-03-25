@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+ 
+ <!--
+   此模板的功能： 把 连接信息 从原来的模板中独立出来，填写在这。
+      如果 一个属性，如 url，在原来的模板中 和 此处 都配制了， 则以 此处的为准。
+      如果 一个属性 在原来的模板中配制了 或是 在此处配制了 ，对于NBI来说 都可以读到。但如果这个属性是公共，并且不会变化的 如 URL信息，则推荐在此配制。
+   
+   属性说明：
+     id   值要求唯一，它与 原来模板中的   <property name="conn_id">${lte_db_info}</property>   进行关联    （必填项）
+     type 表示连接类型   100: db 200:file(200:local file , 201: ftp file) 300:socket 400:others   ,与 原来的模板中 	<ds id="1" type="100">  type 值一样， 
+                  但对于上报的FTP  type 统一填为 411  （选填项）
+     desc   描述    （选填项）
+    
+    注意： 如果是FTP  path 路径信息 不需要在此配制，还是在原来的模板中进行填写。因为  path 路径信息 可能每一个要求的都不一样。
+ 
+ -->
+	<conn id="lte_db_info" type="100"  desc="lte数据连接的数据库">
+                <property name="url">jdbc:oracle:thin:@192.168.101.106:1521:noap1</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noap</property>
+		<property name="password">uwaysoft2009</property>
+	</conn> 
+	
+        <conn id="lte_ftp" type="411" desc="lte数据上报的FTP信息">
+		<property name="ftpip">132.63.5.83</property>
+		<property name="port">21</property>
+		<property name="username">jsftp</property>
+		<property name="password">ExZp^yNz</property> 
+		<property name="encode">utf-8</property><!--可以配置通配符 -->
+	</conn>
+	
+	<conn id="cdma_db_info" type="100"  desc="cdma数据连接的数据库">
+		<property name="url">jdbc:oracle:thin:@192.168.101.107:1521:NOAP1</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noap</property>
+		<property name="password">uwaysoft2009</property>
+	</conn> 
+	
+      <conn id="cdma_ftp" type="411" desc="cdma数据上报的FTP信息">
+		<property name="ftpip">132.63.5.83</property>
+		<property name="port">21</property>
+		<property name="username">jsftp</property>
+		<property name="password">ExZp^yNz</property> 
+                 <property name="encode">utf-8</property>
+	</conn>
+
+      <conn id="xnwebservice" type="500" desc="性能webService">
+		<property name="url">http://92.168.101.155/noap_nbi_siqi/KpiSQLToolService.asmx</property>
+      </conn>
+
+	
+	<conn id="public_db_info" type="100"  desc="公共数据连接的数据库">
+		<property name="url">jdbc:oracle:thin:@192.168.101.106:1521:NOAP1</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noap</property>
+		<property name="password">uwaysoft2009</property>
+	</conn> 
+	
+      <conn id="public_ftp" type="411" desc="公共数据上报的FTP信息">
+		<property name="ftpip">132.63.5.83</property>
+		<property name="port">21</property>
+		<property name="username">jsftp</property>
+		<property name="password">ExZp^yNz</property>
+		<property name="encode">UTF-8</property>
+	</conn>
+
+	<conn id="local_db_info" type="100"  desc="个性化数据连接的数据库">
+		 <property name="url">jdbc:oracle:thin:@192.168.101.106:1521:noap1</property>
+		<property name="driver">oracle.jdbc.driver.OracleDriver</property>
+		<property name="username">noap</property>
+		<property name="password">uwaysoft2009</property>
+	</conn> 
+	
+      <conn id="local_ftp" type="411" desc="个性化数据上报的FTP信息">
+		<property name="ftpip">192.168.101.154</property>
+		<property name="port">21</property>
+		<property name="username">FTPUser</property>
+		<property name="password">Js!QAZ7</property>
+		<property name="path">/TAIZHANG_CHANGE/</property><!--可以配置通配符 -->
+		<property name="encode">utf-8</property><!--可以配置通配符 -->
+	</conn>
+
+     <conn id="shanxi_logfile_ftp" type="411" desc="陕西联通大数据整合项目数据源接口_基站小区">
+		<property name="ftpip">192.168.15.249</property>
+		<property name="port">21</property>
+		<property name="username">ftpuser</property>
+		<property name="password">ftpuser</property>
+		<property name="path">/group_province/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+		<!-- conn_ftp_passive主被动模式 -->
+	</conn>
+	
+	<conn id="chinatelecom_bigdata_palform_ftp" type="411" desc="中国电信大数据平台位置数据前置采集">
+		<property name="ftpip">192.168.15.249</property>
+		<property name="port">21</property>
+		<property name="username">ftpuser</property>
+		<property name="password">ftpuser</property>
+		<property name="path">/group_province/WCDR/LOG/cityID/%%Y%%M%%D/</property><!--可以配置通配符HUB/WORK/-->
+		<property name="encode">utf-8</property>
+		<!-- conn_ftp_passive主被动模式 -->
+	</conn>
+</config>
